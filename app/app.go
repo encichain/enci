@@ -83,17 +83,18 @@ import (
 	tmjson "github.com/tendermint/tendermint/libs/json"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	"github.com/user/charity/docs"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
+	"github.com/tendermint/spm/cosmoscmd"
 	charitymodule "github.com/user/charity/x/charity"
+	customante "github.com/user/charity/x/charity/ante"
 	charitymodulekeeper "github.com/user/charity/x/charity/keeper"
 	charitymoduletypes "github.com/user/charity/x/charity/types"
-
-	"github.com/tendermint/spm/cosmoscmd"
 )
 
 const (
-	AccountAddressPrefix = "cosmos"
-	Name                 = "charity"
+	AccountAddressPrefix = "charity"
+	Name                 = "charitycoin"
 )
 
 // this line is used by starport scaffolding # stargate/wasm/app/enabledProposals
@@ -435,12 +436,20 @@ func New(
 	// initialize BaseApp
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
-	app.SetAnteHandler(
-		ante.NewAnteHandler(
-			app.AccountKeeper, app.BankKeeper, ante.DefaultSigVerificationGasConsumer,
-			encodingConfig.TxConfig.SignModeHandler(),
-		),
+
+	anteHandler, err := customante.NewAnteHandler(
+		customante.HandlerOptions{
+			AccountKeeper:   app.AccountKeeper,
+			BankKeeper:      app.BankKeeper,
+			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+			SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
+		},
 	)
+	if err != nil {
+		panic(err)
+	}
+
+	app.SetAnteHandler(anteHandler)
 	app.SetEndBlocker(app.EndBlocker)
 
 	if loadLatest {
