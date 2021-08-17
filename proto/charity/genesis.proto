@@ -1,0 +1,12 @@
+syntax = "proto3";
+package user.charity.charity;
+
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/user/charity/x/charity/types";
+
+// GenesisState defines the charity module's genesis state.
+message GenesisState {
+    // this line is used by starport scaffolding # genesis/proto/state
+    // this line is used by starport scaffolding # ibc/genesis/proto
+}
