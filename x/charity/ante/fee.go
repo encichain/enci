@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
 // MempoolFeeDecorator will check if the transaction's fee is at least as large
@@ -135,6 +136,24 @@ func DeductFees(bankKeeper types.BankKeeper, ctx sdk.Context, acc types.AccountI
 	return nil
 }
 
+func ParseMsgAndComputeTax(ctx sdk.Context, msgs ...sdk.Msg) sdk.Coins {
+	taxFinal := sdk.Coins{}
+
+	for _, msg := range msgs {
+		switch msg := msg.(type) {
+		case *banktypes.MsgSend:
+			taxFinal = taxFinal.Add(computeTax(ctx, msg.Amount)...)
+
+		case *banktypes.MsgMultiSend:
+			for _, input := range msg.Inputs {
+				taxFinal = taxFinal.Add(computeTax(ctx, input.Coins)...)
+			}
+		}
+	}
+	return taxFinal
+}
+
+// Compute the charity tax due
 func computeTax(ctx sdk.Context, coins sdk.Coins) sdk.Coins {
 	DefaultTaxRate := sdk.NewDecWithPrec(1, 1) // 10%
 
