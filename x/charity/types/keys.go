@@ -10,6 +10,9 @@ const (
 	// RouterKey is the message route for slashing
 	RouterKey = ModuleName
 
+	//CharityCollectorName the root string for the fee collector account address
+	CharityCollectorName = "charity_collector"
+
 	// QuerierRoute defines the module's query routing key
 	QuerierRoute = ModuleName
 

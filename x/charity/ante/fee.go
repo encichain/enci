@@ -7,6 +7,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	coretypes "github.com/user/charity/x/charity/types"
 )
 
 // MempoolFeeDecorator will check if the transaction's fee is at least as large
@@ -82,8 +83,8 @@ func (dfd DeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 	if addr := dfd.ak.GetModuleAddress(types.FeeCollectorName); addr == nil {
 		panic(fmt.Sprintf("%s module account has not been set", types.FeeCollectorName))
 	}
-
 	fee := feeTx.GetFee()
+	tax := ParseMsgAndComputeTax(ctx, tx.GetMsgs()...)
 	feePayer := feeTx.FeePayer()
 	feeGranter := feeTx.FeeGranter()
 
@@ -112,7 +113,7 @@ func (dfd DeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 
 	// deduct the fees
 	if !feeTx.GetFee().IsZero() {
-		err = DeductFees(dfd.bankKeeper, ctx, deductFeesFromAcc, feeTx.GetFee())
+		err = DeductFees(dfd.bankKeeper, ctx, deductFeesFromAcc, feeTx.GetFee(), tax)
 		if err != nil {
 			return ctx, err
 		}
@@ -123,9 +124,9 @@ func (dfd DeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 }
 
 // DeductFees deducts fees from the given account.
-func DeductFees(bankKeeper types.BankKeeper, ctx sdk.Context, acc types.AccountI, fees sdk.Coins) error {
-	if !fees.IsValid() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFee, "invalid fee amount: %s", fees)
+func DeductFees(bankKeeper types.BankKeeper, ctx sdk.Context, acc types.AccountI, fees sdk.Coins, tax sdk.Coins) error {
+	if !fees.IsValid() || !tax.IsValid() {
+		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFee, "invalid fee amount: %s | %s", fees, tax)
 	}
 
 	err := bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), types.FeeCollectorName, fees)
@@ -133,9 +134,15 @@ func DeductFees(bankKeeper types.BankKeeper, ctx sdk.Context, acc types.AccountI
 		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
 	}
 
+	err = bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), coretypes.CharityCollectorName, tax)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
+	}
+
 	return nil
 }
 
+// Filter bank messages and compute tax on each transaction.
 func ParseMsgAndComputeTax(ctx sdk.Context, msgs ...sdk.Msg) sdk.Coins {
 	taxFinal := sdk.Coins{}
 
@@ -160,10 +167,6 @@ func computeTax(ctx sdk.Context, coins sdk.Coins) sdk.Coins {
 	taxFinal := sdk.Coins{}
 	for _, coin := range coins {
 		taxOwed := sdk.NewDecFromInt(coin.Amount).Mul(DefaultTaxRate).TruncateInt()
-
-		if taxOwed.Equal(sdk.ZeroInt()) {
-			continue
-		}
 
 		taxFinal = taxFinal.Add(sdk.NewCoin(coin.Denom, taxOwed))
 	}
