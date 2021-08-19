@@ -134,3 +134,19 @@ func DeductFees(bankKeeper types.BankKeeper, ctx sdk.Context, acc types.AccountI
 
 	return nil
 }
+
+func computeTax(ctx sdk.Context, coins sdk.Coins) sdk.Coins {
+	DefaultTaxRate := sdk.NewDecWithPrec(1, 1) // 10%
+
+	taxFinal := sdk.Coins{}
+	for _, coin := range coins {
+		taxOwed := sdk.NewDecFromInt(coin.Amount).Mul(DefaultTaxRate).TruncateInt()
+
+		if taxOwed.Equal(sdk.ZeroInt()) {
+			continue
+		}
+
+		taxFinal = taxFinal.Add(sdk.NewCoin(coin.Denom, taxOwed))
+	}
+	return taxFinal
+}
