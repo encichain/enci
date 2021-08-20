@@ -38,7 +38,7 @@ export default {
 		}
 	},
 	async created() {
-		await this.$store.dispatch('common/env/init')
+		await this.$store.dispatch('common/env/init', {addrPrefix: 'charity'})
 		this.initialized = true
 	},
 	errorCaptured(err) {

@@ -7,7 +7,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	coretypes "github.com/user/charity/x/charity/types"
+	charitytypes "github.com/user/charity/x/charity/types"
 )
 
 // MempoolFeeDecorator will check if the transaction's fee is at least as large
@@ -83,6 +83,11 @@ func (dfd DeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 	if addr := dfd.ak.GetModuleAddress(types.FeeCollectorName); addr == nil {
 		panic(fmt.Sprintf("%s module account has not been set", types.FeeCollectorName))
 	}
+
+	if addr := dfd.ak.GetModuleAddress(charitytypes.CharityCollectorName); addr == nil {
+		panic(fmt.Sprintf("%s module account has not been set", charitytypes.CharityCollectorName))
+	}
+
 	fee := feeTx.GetFee()
 	tax := ParseMsgAndComputeTax(ctx, tx.GetMsgs()...)
 	feePayer := feeTx.FeePayer()
@@ -134,7 +139,7 @@ func DeductFees(bankKeeper types.BankKeeper, ctx sdk.Context, acc types.AccountI
 		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
 	}
 
-	err = bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), coretypes.CharityCollectorName, tax)
+	err = bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), charitytypes.CharityCollectorName, tax)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
 	}
