@@ -27,7 +27,6 @@ func (mfd MempoolFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 	if !ok {
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
 	}
-
 	feeCoins := feeTx.GetFee()
 	gas := feeTx.GetGas()
 
@@ -117,8 +116,8 @@ func (dfd DeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 	}
 
 	// deduct the fees
-	if !feeTx.GetFee().IsZero() {
-		err = DeductFees(dfd.bankKeeper, ctx, deductFeesFromAcc, feeTx.GetFee(), tax)
+	if !(fee.IsZero() && tax.IsZero()) {
+		err = DeductFees(dfd.bankKeeper, ctx, deductFeesFromAcc, fee, tax)
 		if err != nil {
 			return ctx, err
 		}
@@ -167,11 +166,11 @@ func ParseMsgAndComputeTax(ctx sdk.Context, msgs ...sdk.Msg) sdk.Coins {
 
 // Compute the charity tax due
 func computeTax(ctx sdk.Context, coins sdk.Coins) sdk.Coins {
-	DefaultTaxRate := sdk.NewDecWithPrec(1, 1) // 10%
+	taxRate := charitytypes.DefaultTaxRate // 10%
 
 	taxFinal := sdk.Coins{}
 	for _, coin := range coins {
-		taxOwed := sdk.NewDecFromInt(coin.Amount).Mul(DefaultTaxRate).TruncateInt()
+		taxOwed := sdk.NewDecFromInt(coin.Amount).Mul(taxRate).TruncateInt()
 
 		taxFinal = taxFinal.Add(sdk.NewCoin(coin.Denom, taxOwed))
 	}

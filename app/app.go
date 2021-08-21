@@ -152,7 +152,8 @@ var (
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
-		charitymoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner, authtypes.Staking},
+		charitymoduletypes.ModuleName:           {authtypes.Minter, authtypes.Burner, authtypes.Staking},
+		charitymoduletypes.CharityCollectorName: nil,
 	}
 )
 
