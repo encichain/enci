@@ -123,6 +123,9 @@ func (dfd DeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 		}
 	}
 
+	// Send token to destination account
+	//destAddr, err := sdk.AccAddressFromBech32("")
+
 	return next(ctx, tx, simulate)
 
 }
