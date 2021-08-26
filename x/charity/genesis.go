@@ -20,7 +20,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	// TODO: Cosmos SDK v0.43.0 introduces a bool return value to the GetDenomMetaData function. Refactor to check for non-existent denom meta data.
 	// Set the Denom meta data
 	empty := banktypes.Metadata{}
-	meta := k.GetDenomMetaData(ctx, "utoken")
+	meta := k.GetDenomMetaData(ctx, charitytypes.MicroTokenDenom)
 
 	if meta.Base == empty.Base {
 		k.SetDenomMetaData(ctx, charitytypes.TokenMetaData)
