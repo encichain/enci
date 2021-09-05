@@ -2,8 +2,14 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
+
+type AccountKeeper interface {
+	GetModuleAddress(name string) sdk.AccAddress
+	GetModuleAccount(ctx sdk.Context, moduleName string) authtypes.ModuleAccountI
+}
 
 type BankKeeper interface {
 	// Methods imported from bank should be defined here

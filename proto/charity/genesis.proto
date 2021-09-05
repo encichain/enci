@@ -9,4 +9,6 @@ option go_package = "github.com/user/charity/x/charity/types";
 message GenesisState {
     // this line is used by starport scaffolding # genesis/proto/state
     // this line is used by starport scaffolding # ibc/genesis/proto
+    string tax_rate = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+    
 }

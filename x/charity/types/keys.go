@@ -22,6 +22,14 @@ const (
 	// this line is used by starport scaffolding # ibc/keys/name
 )
 
+// Keys for store
+// stored as format - key: value
+// 0x01: sdk.Dec
+
+var (
+	TaxRateKey = []byte{0x01} // Key for tax rate
+)
+
 // this line is used by starport scaffolding # ibc/keys/port
 
 func KeyPrefix(p string) []byte {

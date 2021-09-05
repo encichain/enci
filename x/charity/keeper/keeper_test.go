@@ -31,6 +31,7 @@ func setupKeeper(t testing.TB) (*Keeper, sdk.Context) {
 		storeKey,
 		memStoreKey,
 		nil,
+		nil,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
