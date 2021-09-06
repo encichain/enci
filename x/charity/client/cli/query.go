@@ -1,13 +1,16 @@
 package cli
 
 import (
+	"context"
 	"fmt"
-	// "strings"
+
+	//"strings"
 
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	// "github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+
 	// sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/user/charity/x/charity/types"
@@ -26,5 +29,35 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 
 	// this line is used by starport scaffolding # 1
 
+	cmd.AddCommand(
+		CmdQueryTaxRate(),
+	)
+
+	return cmd
+}
+
+// CmdQueryTaxRate implements the query taxrate command and returns the TaxRate
+func CmdQueryTaxRate() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "taxrate",
+		Args:  cobra.NoArgs,
+		Short: "Query the tax rate",
+		Long:  "Query the tax rate. Returned is a decimal.",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.TaxRate(context.Background(), &types.QueryTaxRateRequest{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+	flags.AddQueryFlagsToCmd(cmd)
 	return cmd
 }
