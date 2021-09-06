@@ -347,6 +347,7 @@ func New(
 		keys[charitymoduletypes.MemStoreKey],
 
 		app.BankKeeper,
+		app.AccountKeeper,
 	)
 	charityModule := charitymodule.NewAppModule(appCodec, app.CharityKeeper)
 

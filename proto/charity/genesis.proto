@@ -2,6 +2,7 @@ syntax = "proto3";
 package user.charity.charity;
 
 // this line is used by starport scaffolding # genesis/proto/import
+import "gogoproto/gogo.proto";
 
 option go_package = "github.com/user/charity/x/charity/types";
 

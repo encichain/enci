@@ -1,6 +1,8 @@
 package charity
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	charitytypes "github.com/user/charity/types"
 	"github.com/user/charity/x/charity/keeper"
@@ -25,6 +27,14 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	if meta.Base == empty.Base {
 		k.SetDenomMetaData(ctx, charitytypes.TokenMetaData)
 	}
+
+	k.SetTaxRate(ctx, genState.TaxRate)
+
+	//Ensure charity collector module account is set
+	if k.GetCharityCollectorAcc(ctx) == nil {
+		panic(fmt.Sprintf("Module account not set: %s", types.CharityCollectorName))
+	}
+
 }
 
 // ExportGenesis returns the capability module's exported genesis.
