@@ -6,24 +6,52 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 // this line is used by starport scaffolding # 1
 
+import "charity/charity.proto";
 option go_package = "github.com/user/charity/x/charity/types";
 
 // Query defines the gRPC querier service.
 service Query {
     // this line is used by starport scaffolding # 2
 
-    // TaxRate return the set tax rate
+    // TaxRate returns the set tax rate
     rpc TaxRate(QueryTaxRateRequest) returns (QueryTaxRateResponse) {
-        option (google.api.http).get = "/user/charity/charity/TaxRate";
+        option (google.api.http).get = "/charity/charity/taxrate";
+  }
+
+  // CharityOne returns the first set charity
+    rpc CharityOne(QueryCharityOneRequest) returns (QueryCharityOneResponse) {
+        option (google.api.http).get = "/charity/charity/charity_one";
+  }
+
+    // CharityTwo returns the second set charity
+    rpc CharityTwo(QueryCharityTwoRequest) returns (QueryCharityTwoResponse) {
+        option (google.api.http).get = "/charity/charity/charity_two";
   }
 }
 
 // this line is used by starport scaffolding # 3
 
-// QueryTaxRateRequest is the request type for the Query TaxRate RPC method
+// QueryTaxRateRequest is the request type for the Query TaxRate Request RPC method
 message QueryTaxRateRequest {}
 
-// QueryTaxRateResponse is the response type for the Query TaxRate RPC method
+// QueryTaxRateResponse is the response type for the Query TaxRate Request RPC method
 message QueryTaxRateResponse {
     string tax_rate = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+}
+
+
+// QueryCharityOneRequest is the request type for the Query CharityOne Request RPC method
+message QueryCharityOneRequest {}
+
+// QueryCharityOneResponse is the response type for the Query CharityOne Request RPC method
+message QueryCharityOneResponse {
+    Charity charity_one = 1 [(gogoproto.nullable) = true];
+}
+
+// QueryCharityTwoRequest is the request type for the Query CharityTwo Request RPC method
+message QueryCharityTwoRequest {}
+
+// QueryCharityTwoResponse is the response type for the Query CharityTwo Request RPC method
+message QueryCharityTwoResponse {
+    Charity charity_two = 1 [(gogoproto.nullable) = true];
 }

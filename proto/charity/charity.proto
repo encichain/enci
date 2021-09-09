@@ -1,0 +1,18 @@
+syntax = "proto3";
+package user.charity.charity;
+
+option go_package = "github.com/user/charity/x/charity/types";
+
+import "gogoproto/gogo.proto";
+
+// Charity defines the charity object
+message Charity {
+    string accAddress = 1 [(gogoproto.nullable) = true]; // Account address for the charity in the form of bech32 string
+    string dateCreated = 2 [(gogoproto.nullable) = true]; // Timestamp in string format representing when charity was first added
+}
+
+
+message Params {
+    Charity charity_one = 1;
+    Charity charity_two = 2;
+}

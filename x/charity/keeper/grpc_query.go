@@ -24,3 +24,17 @@ func (q Quierer) TaxRate(context context.Context, req *types.QueryTaxRateRequest
 	ctx := sdk.UnwrapSDKContext(context)
 	return &types.QueryTaxRateResponse{TaxRate: q.GetTaxRate(ctx)}, nil
 }
+
+// TODO: Implement CharityOne response logic
+// CharityOne returns the set charity one
+func (q Quierer) CharityOne(context context.Context, req *types.QueryCharityOneRequest) (*types.QueryCharityOneResponse, error) {
+	//ctx := sdk.UnwrapSDKContext(context)
+	return nil, nil
+}
+
+// TODO: Implement CharityTwo response logic
+// CharityOne returns the set charity two
+func (q Quierer) CharityTwo(context context.Context, req *types.QueryCharityTwoRequest) (*types.QueryCharityTwoResponse, error) {
+	//ctx := sdk.UnwrapSDKContext(context)
+	return nil, nil
+}
