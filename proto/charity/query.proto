@@ -18,7 +18,12 @@ service Query {
         option (google.api.http).get = "/charity/charity/taxrate";
   }
 
-  // CharityOne returns the first set charity
+    // Params returns all params
+    rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+        option (google.api.http).get = "/charity/charity/params";
+  }
+
+    // CharityOne returns the first set charity
     rpc CharityOne(QueryCharityOneRequest) returns (QueryCharityOneResponse) {
         option (google.api.http).get = "/charity/charity/charity_one";
   }
@@ -39,6 +44,13 @@ message QueryTaxRateResponse {
     string tax_rate = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
+// QueryParamsRequest is the request type for the Query Params Request RPC method
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query Params Request RPC method
+message QueryParamsResponse {
+    Params params = 1;
+}
 
 // QueryCharityOneRequest is the request type for the Query CharityOne Request RPC method
 message QueryCharityOneRequest {}

@@ -25,16 +25,21 @@ func (q Quierer) TaxRate(context context.Context, req *types.QueryTaxRateRequest
 	return &types.QueryTaxRateResponse{TaxRate: q.GetTaxRate(ctx)}, nil
 }
 
-// TODO: Implement CharityOne response logic
-// CharityOne returns the set charity one
-func (q Quierer) CharityOne(context context.Context, req *types.QueryCharityOneRequest) (*types.QueryCharityOneResponse, error) {
-	//ctx := sdk.UnwrapSDKContext(context)
-	return nil, nil
+// AllParams returns all params from param store
+func (q Quierer) Params(context context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(context)
+	return &types.QueryParamsResponse{Params: q.GetAllParams(ctx)}, nil
 }
 
-// TODO: Implement CharityTwo response logic
+// CharityOne returns the set charity one
+func (q Quierer) CharityOne(context context.Context, req *types.QueryCharityOneRequest) (*types.QueryCharityOneResponse, error) {
+	ctx := sdk.UnwrapSDKContext(context)
+	return &types.QueryCharityOneResponse{CharityOne: q.GetCharityOne(ctx)}, nil
+
+}
+
 // CharityOne returns the set charity two
 func (q Quierer) CharityTwo(context context.Context, req *types.QueryCharityTwoRequest) (*types.QueryCharityTwoResponse, error) {
-	//ctx := sdk.UnwrapSDKContext(context)
-	return nil, nil
+	ctx := sdk.UnwrapSDKContext(context)
+	return &types.QueryCharityTwoResponse{CharityTwo: q.GetCharityTwo(ctx)}, nil
 }
