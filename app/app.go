@@ -348,6 +348,7 @@ func New(
 
 		app.BankKeeper,
 		app.AccountKeeper,
+		app.GetSubspace(charitymoduletypes.ModuleName),
 	)
 	charityModule := charitymodule.NewAppModule(appCodec, app.CharityKeeper)
 

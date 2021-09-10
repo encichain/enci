@@ -8,7 +8,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/user/charity/x/charity/types"
+
 	// this line is used by starport scaffolding # ibc/keeper/import
+
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
 type (
@@ -20,6 +23,7 @@ type (
 
 		bankKeeper    types.BankKeeper
 		accountKeeper types.AccountKeeper
+		paramStore    paramstypes.Subspace
 	}
 )
 
@@ -30,6 +34,7 @@ func NewKeeper(
 	// this line is used by starport scaffolding # ibc/keeper/parameter
 	bankKeeper types.BankKeeper,
 	accountKeeper types.AccountKeeper,
+	paramStore paramstypes.Subspace,
 ) *Keeper {
 	return &Keeper{
 		cdc:      cdc,
@@ -38,6 +43,7 @@ func NewKeeper(
 		// this line is used by starport scaffolding # ibc/keeper/return
 		bankKeeper:    bankKeeper,
 		accountKeeper: accountKeeper,
+		paramStore:    paramStore,
 	}
 }
 
