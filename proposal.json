@@ -1,0 +1,12 @@
+{
+    "title": "Charity Param Change",
+    "description": "Update charityOne",
+    "changes": [
+      {
+        "subspace": "charity",
+        "key": "CharityOne",
+        "value": "charity1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6"
+      }
+    ],
+    "deposit": "1000stake"
+  }

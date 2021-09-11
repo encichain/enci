@@ -29,6 +29,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	}
 
 	k.SetTaxRate(ctx, genState.TaxRate)
+	k.SetParams(ctx, genState.Params)
 
 	//Ensure charity collector module account is set
 	if k.GetCharityCollectorAcc(ctx) == nil {

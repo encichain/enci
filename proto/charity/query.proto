@@ -49,7 +49,7 @@ message QueryParamsRequest {}
 
 // QueryParamsResponse is the response type for the Query Params Request RPC method
 message QueryParamsResponse {
-    Params params = 1;
+    Params params = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryCharityOneRequest is the request type for the Query CharityOne Request RPC method
@@ -57,7 +57,7 @@ message QueryCharityOneRequest {}
 
 // QueryCharityOneResponse is the response type for the Query CharityOne Request RPC method
 message QueryCharityOneResponse {
-    Charity charity_one = 1 [(gogoproto.nullable) = true];
+    Charity charity_one = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryCharityTwoRequest is the request type for the Query CharityTwo Request RPC method
@@ -65,5 +65,5 @@ message QueryCharityTwoRequest {}
 
 // QueryCharityTwoResponse is the response type for the Query CharityTwo Request RPC method
 message QueryCharityTwoResponse {
-    Charity charity_two = 1 [(gogoproto.nullable) = true];
+    Charity charity_two = 1 [(gogoproto.nullable) = false];
 }

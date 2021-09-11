@@ -36,6 +36,12 @@ func NewKeeper(
 	accountKeeper types.AccountKeeper,
 	paramStore paramstypes.Subspace,
 ) *Keeper {
+
+	// set KeyTable if it has not already been set
+	if !paramStore.HasKeyTable() {
+		paramStore = paramStore.WithKeyTable(types.ParamKeyTable())
+	}
+
 	return &Keeper{
 		cdc:      cdc,
 		storeKey: storeKey,

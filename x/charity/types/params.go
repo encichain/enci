@@ -16,17 +16,21 @@ var (
 // Default values
 var (
 	DefaultTaxRate    = sdk.NewDecWithPrec(1, 1) // 0.1 || 10%
-	DefaultCharityOne = Charity{}
-	DefaultCharityTwo = Charity{}
+	DefaultCharityOne = Charity{AccAddress: ""}
+	DefaultCharityTwo = Charity{AccAddress: ""}
+	DefaultParamsSet  = Params{
+		CharityOne: DefaultCharityOne,
+		CharityTwo: DefaultCharityTwo,
+	}
 )
 
-var _ paramstypes.ParamSet = (*Params)(nil)
+var _ paramstypes.ParamSet = &Params{}
 
 // DefaultParams creates default empty param charity sets
 func DefaultParams() Params {
 	return Params{
-		CharityOne: &DefaultCharityOne,
-		CharityTwo: &DefaultCharityTwo,
+		CharityOne: DefaultCharityOne,
+		CharityTwo: DefaultCharityTwo,
 	}
 }
 
@@ -41,6 +45,25 @@ func (p *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 		paramstypes.NewParamSetPair(KeyCharityOne, &p.CharityOne, validateCharity),
 		paramstypes.NewParamSetPair(KeyCharityTwo, &p.CharityTwo, validateCharity),
 	}
+}
+
+// Validate performs basic validation on charity parameters.
+func (p Params) Validate() error {
+	addrlength := len([]rune(p.CharityOne.AccAddress))
+
+	if p.CharityOne.AccAddress != "" {
+		if addrlength < 39 {
+			return fmt.Errorf("invalid address length")
+		}
+	}
+
+	addrlength = len([]rune(p.CharityTwo.AccAddress))
+	if p.CharityTwo.AccAddress != "" {
+		if addrlength < 39 {
+			return fmt.Errorf("invalid address length")
+		}
+	}
+	return nil
 }
 
 // validateCharity performs basic validation on charity parameter objects

@@ -6,19 +6,24 @@ import (
 )
 
 // GetAllParams returns total param set
-func (k Keeper) GetAllParams(ctx sdk.Context) (params *types.Params) {
-	k.paramStore.GetParamSet(ctx, params)
-	return params
+func (k Keeper) GetAllParams(ctx sdk.Context) (params types.Params) {
+	k.paramStore.GetParamSet(ctx, &params)
+	return
 }
 
 // GetCharityOne returns CharityOne of params.
-func (k Keeper) GetCharityOne(ctx sdk.Context) (charity *types.Charity) {
+func (k Keeper) GetCharityOne(ctx sdk.Context) (charity types.Charity) {
 	k.paramStore.Get(ctx, types.KeyCharityOne, &charity)
-	return charity
+	return
 }
 
 // GetCharityOne returns CharityOne of params.
-func (k Keeper) GetCharityTwo(ctx sdk.Context) (charity *types.Charity) {
+func (k Keeper) GetCharityTwo(ctx sdk.Context) (charity types.Charity) {
 	k.paramStore.Get(ctx, types.KeyCharityTwo, &charity)
-	return charity
+	return
+}
+
+// SetParams sets all params of charity module
+func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
+	k.paramStore.SetParamSet(ctx, &params)
 }
