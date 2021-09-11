@@ -42,6 +42,11 @@ func NewKeeper(
 		paramStore = paramStore.WithKeyTable(types.ParamKeyTable())
 	}
 
+	// Check if charity tax collector address is set. Panic if nil
+	if collectaddr := accountKeeper.GetModuleAddress(types.CharityCollectorName); collectaddr == nil {
+		panic(fmt.Sprintf("%s module account not set", types.CharityCollectorName))
+	}
+
 	return &Keeper{
 		cdc:      cdc,
 		storeKey: storeKey,
@@ -52,8 +57,6 @@ func NewKeeper(
 		paramStore:    paramStore,
 	}
 }
-
-// Check if charity tax collector account is set. Panic if nil
 
 // GetTaxRate gets the tax rate
 func (k Keeper) GetTaxRate(ctx sdk.Context) sdk.Dec {
