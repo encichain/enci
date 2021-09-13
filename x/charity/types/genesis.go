@@ -1,5 +1,9 @@
 package types
 
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
+
 // this line is used by starport scaffolding # genesis/types/import
 // this line is used by starport scaffolding # ibc/genesistype/import
 
@@ -13,6 +17,14 @@ func DefaultGenesis() *GenesisState {
 		// this line is used by starport scaffolding # genesis/types/default
 		TaxRate: DefaultTaxRate,
 		Params:  DefaultParamsSet,
+	}
+}
+
+// NewGenesis returns a new genesisState object. NOTE: For use with ExportGenesis
+func NewGenesis(taxrate sdk.Dec, params Params) *GenesisState {
+	return &GenesisState{
+		TaxRate: taxrate,
+		Params:  params,
 	}
 }
 

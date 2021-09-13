@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	charitytypes "github.com/user/charity/types"
+	charitymaintypes "github.com/user/charity/types"
 	"github.com/user/charity/x/charity/keeper"
 	"github.com/user/charity/x/charity/types"
 
@@ -22,10 +22,10 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	// TODO: Cosmos SDK v0.43.0 introduces a bool return value to the GetDenomMetaData function. Refactor to check for non-existent denom meta data.
 	// Set the Denom meta data
 	empty := banktypes.Metadata{}
-	meta := k.GetDenomMetaData(ctx, charitytypes.MicroTokenDenom)
+	meta := k.GetDenomMetaData(ctx, charitymaintypes.MicroTokenDenom)
 
 	if meta.Base == empty.Base {
-		k.SetDenomMetaData(ctx, charitytypes.TokenMetaData)
+		k.SetDenomMetaData(ctx, charitymaintypes.TokenMetaData)
 	}
 
 	k.SetTaxRate(ctx, genState.TaxRate)
@@ -40,11 +40,12 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 
 // ExportGenesis returns the capability module's exported genesis.
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
-	genesis := types.DefaultGenesis()
+	taxrate := k.GetTaxRate(ctx)
+	params := k.GetAllParams(ctx)
 
 	// this line is used by starport scaffolding # genesis/module/export
 
 	// this line is used by starport scaffolding # ibc/genesis/export
 
-	return genesis
+	return types.NewGenesis(taxrate, params)
 }
