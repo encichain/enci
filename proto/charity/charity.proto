@@ -7,7 +7,9 @@ import "gogoproto/gogo.proto";
 
 // Charity defines the charity object
 message Charity {
-    string accAddress = 1; // Account address for the charity in the form of bech32 string
+    string charity_name = 1; // Name of the charity
+    string accAddress = 2; // Account address for the charity in the form of bech32 string
+    string checksum = 3; // SHA-256 checksum of the charity_name + accAddress
 }
 
 

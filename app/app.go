@@ -88,8 +88,8 @@ import (
 	"github.com/tendermint/spm/cosmoscmd"
 	charitymodule "github.com/user/charity/x/charity"
 
-	customgov "github.com/user/charity/custom/gov"
-	customante "github.com/user/charity/x/charity/ante"
+	customante "github.com/user/charity/customcore/ante"
+	customgov "github.com/user/charity/customcore/gov"
 
 	charitymodulekeeper "github.com/user/charity/x/charity/keeper"
 	charitymoduletypes "github.com/user/charity/x/charity/types"

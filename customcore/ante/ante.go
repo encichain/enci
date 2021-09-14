@@ -4,6 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
+	cosmosante "github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 )
@@ -35,23 +36,23 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 
 	var sigGasConsumer = options.SigGasConsumer
 	if sigGasConsumer == nil {
-		sigGasConsumer = DefaultSigVerificationGasConsumer
+		sigGasConsumer = cosmosante.DefaultSigVerificationGasConsumer
 	}
 
 	anteDecorators := []sdk.AnteDecorator{
-		NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
-		NewRejectExtensionOptionsDecorator(),
+		cosmosante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
+		cosmosante.NewRejectExtensionOptionsDecorator(),
 		NewMempoolFeeDecorator(),
-		NewValidateBasicDecorator(),
-		TxTimeoutHeightDecorator{},
-		NewValidateMemoDecorator(options.AccountKeeper),
-		NewConsumeGasForTxSizeDecorator(options.AccountKeeper),
+		cosmosante.NewValidateBasicDecorator(),
+		cosmosante.TxTimeoutHeightDecorator{},
+		cosmosante.NewValidateMemoDecorator(options.AccountKeeper),
+		cosmosante.NewConsumeGasForTxSizeDecorator(options.AccountKeeper),
 		NewDeductFeeDecorator(options.AccountKeeper, options.BankKeeper, options.FeegrantKeeper),
-		NewSetPubKeyDecorator(options.AccountKeeper), // SetPubKeyDecorator must be called before all signature verification decorators
-		NewValidateSigCountDecorator(options.AccountKeeper),
-		NewSigGasConsumeDecorator(options.AccountKeeper, sigGasConsumer),
-		NewSigVerificationDecorator(options.AccountKeeper, options.SignModeHandler),
-		NewIncrementSequenceDecorator(options.AccountKeeper),
+		cosmosante.NewSetPubKeyDecorator(options.AccountKeeper), // SetPubKeyDecorator must be called before all signature verification decorators
+		cosmosante.NewValidateSigCountDecorator(options.AccountKeeper),
+		cosmosante.NewSigGasConsumeDecorator(options.AccountKeeper, sigGasConsumer),
+		cosmosante.NewSigVerificationDecorator(options.AccountKeeper, options.SignModeHandler),
+		cosmosante.NewIncrementSequenceDecorator(options.AccountKeeper),
 	}
 
 	return sdk.ChainAnteDecorators(anteDecorators...), nil

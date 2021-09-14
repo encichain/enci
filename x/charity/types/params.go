@@ -16,8 +16,8 @@ var (
 // Default values
 var (
 	DefaultTaxRate    = sdk.NewDecWithPrec(1, 1) // 0.1 || 10%
-	DefaultCharityOne = Charity{AccAddress: ""}
-	DefaultCharityTwo = Charity{AccAddress: ""}
+	DefaultCharityOne = Charity{CharityName: "", AccAddress: "", Checksum: ""}
+	DefaultCharityTwo = Charity{CharityName: "", AccAddress: "", Checksum: ""}
 	DefaultParamsSet  = Params{
 		CharityOne: DefaultCharityOne,
 		CharityTwo: DefaultCharityTwo,
