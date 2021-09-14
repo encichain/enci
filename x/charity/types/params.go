@@ -68,6 +68,7 @@ func (p Params) Validate() error {
 
 // validateCharity performs basic validation on charity parameter objects
 func validateCharity(i interface{}) error {
+	// Type check
 	v, ok := i.(Charity)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)

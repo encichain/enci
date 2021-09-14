@@ -87,7 +87,10 @@ import (
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 	"github.com/tendermint/spm/cosmoscmd"
 	charitymodule "github.com/user/charity/x/charity"
+
+	customgov "github.com/user/charity/custom/gov"
 	customante "github.com/user/charity/x/charity/ante"
+
 	charitymodulekeeper "github.com/user/charity/x/charity/keeper"
 	charitymoduletypes "github.com/user/charity/x/charity/types"
 )
@@ -129,7 +132,7 @@ var (
 		staking.AppModuleBasic{},
 		mint.AppModuleBasic{},
 		distr.AppModuleBasic{},
-		gov.NewAppModuleBasic(getGovProposalHandlers()...),
+		customgov.NewAppModuleBasic(getGovProposalHandlers()...),
 		params.AppModuleBasic{},
 		crisis.AppModuleBasic{},
 		slashing.AppModuleBasic{},
