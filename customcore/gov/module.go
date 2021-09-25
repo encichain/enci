@@ -17,7 +17,7 @@ var (
 )
 
 // AppModuleBasic defines the basic application module used by the gov module.
-// Contains core sdk gov appmodulebasic
+// Wrapper - contains core sdk gov appmodulebasic
 type AppModuleBasic struct {
 	gov.AppModuleBasic
 }
@@ -32,7 +32,7 @@ func NewAppModuleBasic(proposalHandlers ...govclient.ProposalHandler) AppModuleB
 func (am AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage {
 	defaultGenesisState := types.DefaultGenesisState()
 	// Customize the VotingPeriod to 3 minutes for testing purposes
-	defaultGenesisState.VotingParams.VotingPeriod = time.Minute * 3
+	defaultGenesisState.VotingParams.VotingPeriod = time.Minute * 1
 
 	return cdc.MustMarshalJSON(defaultGenesisState)
 }
