@@ -29,7 +29,7 @@ func NewAppModuleBasic(proposalHandlers ...govclient.ProposalHandler) AppModuleB
 
 // DefaultGenesis returns default genesis state as raw bytes for the gov
 // module.
-func (am AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage {
+func (am AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 	defaultGenesisState := types.DefaultGenesisState()
 	// Customize the VotingPeriod to 3 minutes for testing purposes
 	defaultGenesisState.VotingParams.VotingPeriod = time.Minute * 1

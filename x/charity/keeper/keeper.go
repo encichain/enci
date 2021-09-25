@@ -16,7 +16,7 @@ import (
 
 type (
 	Keeper struct {
-		cdc      codec.Marshaler
+		cdc      codec.BinaryCodec
 		storeKey sdk.StoreKey
 		memKey   sdk.StoreKey
 		// this line is used by starport scaffolding # ibc/keeper/attribute
@@ -28,7 +28,7 @@ type (
 )
 
 func NewKeeper(
-	cdc codec.Marshaler,
+	cdc codec.BinaryCodec,
 	storeKey,
 	memKey sdk.StoreKey,
 	// this line is used by starport scaffolding # ibc/keeper/parameter
@@ -66,7 +66,7 @@ func (k Keeper) GetTaxRate(ctx sdk.Context) sdk.Dec {
 		return types.DefaultTaxRate
 	}
 	decpro := sdk.DecProto{}
-	k.cdc.MustUnmarshalBinaryBare(b, &decpro)
+	k.cdc.MustUnmarshal(b, &decpro)
 
 	return decpro.Dec
 }
@@ -74,7 +74,7 @@ func (k Keeper) GetTaxRate(ctx sdk.Context) sdk.Dec {
 // SetTaxRate sets the TaxRate in the store
 func (k Keeper) SetTaxRate(ctx sdk.Context, taxRate sdk.Dec) {
 	store := ctx.KVStore(k.storeKey)
-	b := k.cdc.MustMarshalBinaryBare(&sdk.DecProto{Dec: taxRate})
+	b := k.cdc.MustMarshal(&sdk.DecProto{Dec: taxRate})
 
 	// Set the store
 	store.Set(types.TaxRateKey, b)

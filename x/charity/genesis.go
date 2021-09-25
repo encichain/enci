@@ -7,9 +7,7 @@ import (
 	charitymaintypes "github.com/user/charity/types"
 	"github.com/user/charity/x/charity/keeper"
 	"github.com/user/charity/x/charity/types"
-
 	//bankKeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
 // InitGenesis initializes the capability module's state from a provided genesis
@@ -21,13 +19,11 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 
 	// TODO: Cosmos SDK v0.43.0 introduces a bool return value to the GetDenomMetaData function. Refactor to check for non-existent denom meta data.
 	// Set the Denom meta data
-	empty := banktypes.Metadata{}
-	meta := k.GetDenomMetaData(ctx, charitymaintypes.MicroTokenDenom)
+	_, set := k.GetDenomMetaData(ctx, charitymaintypes.MicroTokenDenom)
 
-	if meta.Base == empty.Base {
+	if !set {
 		k.SetDenomMetaData(ctx, charitymaintypes.TokenMetaData)
 	}
-
 	k.SetTaxRate(ctx, genState.TaxRate)
 	k.SetParams(ctx, genState.Params)
 

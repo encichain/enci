@@ -8,7 +8,7 @@ import (
 	"github.com/user/charity/x/charity/types"
 )
 
-func (k Keeper) GetDenomMetaData(ctx sdk.Context, denom string) banktypes.Metadata {
+func (k Keeper) GetDenomMetaData(ctx sdk.Context, denom string) (banktypes.Metadata, bool) {
 	return k.bankKeeper.GetDenomMetaData(ctx, denom)
 }
 
