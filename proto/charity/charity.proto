@@ -13,7 +13,38 @@ message Charity {
 }
 
 
+// Params defines parameters of the charity module able to be changed by governance proposals
 message Params {
-    Charity charity_one = 1 [(gogoproto.nullable) = false];
-    Charity charity_two = 2 [(gogoproto.nullable) = false];
+    Charity charity = 1 [(gogoproto.nullable) = false]; // Set the target charity
+    
+    string tax_rate = 2 [               
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", 
+        (gogoproto.nullable) = false
+    ];
+    // Tax cap represents max tax amount
+    string tax_cap = 3 [                
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", 
+        (gogoproto.nullable) = false
+    ];  
+
+}
+// TaxRateLimits defines upper and lower limits to the tax_rate
+message TaxRateLimits {
+    string rate_min = 1 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable)   = false
+    ];
+    string rate_max = 2 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable)   = false
+    ];
+
+}
+
+// CollectionPeriod defines the record of each tax collection period
+message CollectionPeriod {
+    uint64 period = 1 [(gogoproto.nullable) = false];
+    int tax_collected = 2 [(gogoproto.nullable) = false];   // Tax collected during entire period
+    Charity target_charity = 3 [(gogoproto.nullable) = false]; // Target charity during duration of tax collection period
+    int payout_amount = 4 [(gogoproto.nullable) = false];   // Amount paid out to target charity
 }

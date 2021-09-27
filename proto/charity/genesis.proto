@@ -11,9 +11,9 @@ option go_package = "github.com/user/charity/x/charity/types";
 message GenesisState {
     // this line is used by starport scaffolding # genesis/proto/state
     // this line is used by starport scaffolding # ibc/genesis/proto
-    string tax_rate = 1 [
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", 
-        (gogoproto.nullable) = false
-    ];
-    Params params = 2 [(gogoproto.nullable) = false];
+    Params params = 1 [(gogoproto.nullable) = false];
+    TaxRateLimits tax_rate_limits = 2 [(gogoproto.nullable) = false]; 
+    int tax_proceeds = 3 [(gogoproto.nullable) = false];    // Current amount of tax collected during current collection period
+    repeated CollectionPeriod collection_periods = 3 [(gogoproto.nullable) = false];
+
 }
