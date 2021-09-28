@@ -1,8 +1,8 @@
 syntax = "proto3";
-package user.charity.charity;
+package user.encichain.charity;
 
 import "google/api/annotations.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
+//import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 // this line is used by starport scaffolding # 1
 
@@ -13,25 +13,36 @@ option go_package = "github.com/user/encichain/x/charity/types";
 service Query {
     // this line is used by starport scaffolding # 2
 
-    // TaxRate returns the set tax rate
-    rpc TaxRate(QueryTaxRateRequest) returns (QueryTaxRateResponse) {
-        option (google.api.http).get = "/charity/charity/taxrate";
-  }
-
     // Params returns all params
     rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
         option (google.api.http).get = "/charity/charity/params";
-  }
+    }
 
-    // CharityOne returns the first set charity
-    rpc CharityOne(QueryCharityOneRequest) returns (QueryCharityOneResponse) {
-        option (google.api.http).get = "/charity/charity/charity_one";
-  }
+    // TaxRate returns the set tax rate
+    rpc TaxRate(QueryTaxRateRequest) returns (QueryTaxRateResponse) {
+        option (google.api.http).get = "/encichain/charity/taxrate";
+    }
 
-    // CharityTwo returns the second set charity
-    rpc CharityTwo(QueryCharityTwoRequest) returns (QueryCharityTwoResponse) {
-        option (google.api.http).get = "/charity/charity/charity_two";
-  }
+    // Charity returns the set charity
+    rpc Charity(QueryCharityRequest) returns (QueryCharityResponse) {
+        option (google.api.http).get = "/encichain/charity/charity";
+    } 
+
+    // TaxCap returns the tax cap amount
+    rpc TaxCap(QueryTaxCapRequest) returns (QueryTaxCapResponse) {
+        option (google.api.http).get = "/encichain/charity/taxcap";
+    }
+
+    // TaxRateLimits returns the tax rate limits
+    rpc TaxRateLimits(QueryTaxRateLimitsRequest) returns (QueryTaxRateLimitsResponse) {
+        option (google.api.http).get = "/encichain/charity/taxratelimits";
+    }
+
+    // CollectionPeriods returns the list of collection periods 
+    rpc CollectionPeriods(QueryCollectionPeriodsRequest) returns (QueryCollectionPeriodsResponse) {
+        option (google.api.http).get = "/encichain/charity/collectionperiods";
+    }
+
 }
 
 // this line is used by starport scaffolding # 3
@@ -41,7 +52,10 @@ message QueryTaxRateRequest {}
 
 // QueryTaxRateResponse is the response type for the Query TaxRate Request RPC method
 message QueryTaxRateResponse {
-    string tax_rate = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+    string tax_rate = 1 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", 
+        (gogoproto.nullable) = false
+    ];
 }
 
 // QueryParamsRequest is the request type for the Query Params Request RPC method
@@ -52,18 +66,37 @@ message QueryParamsResponse {
     Params params = 1 [(gogoproto.nullable) = false];
 }
 
-// QueryCharityOneRequest is the request type for the Query CharityOne Request RPC method
-message QueryCharityOneRequest {}
+// QueryCharityRequest is the request type for the Query Charity Request RPC method
+message QueryCharityRequest {}
 
-// QueryCharityOneResponse is the response type for the Query CharityOne Request RPC method
-message QueryCharityOneResponse {
-    Charity charity_one = 1 [(gogoproto.nullable) = false];
+// QueryCharityResponse is the response type for the Query Charity Request RPC method
+message QueryCharityResponse {
+    Charity charity = 1 [(gogoproto.nullable) = false];
 }
 
-// QueryCharityTwoRequest is the request type for the Query CharityTwo Request RPC method
-message QueryCharityTwoRequest {}
+// QueryTaxCapRequest is the request type for the Query TaxCap Request RPC method
+message QueryTaxCapRequest {}
 
-// QueryCharityTwoResponse is the response type for the Query CharityTwo Request RPC method
-message QueryCharityTwoResponse {
-    Charity charity_two = 1 [(gogoproto.nullable) = false];
+// QueryTaxCapResponse is the response type for the Query TaxCap Request RPC method
+message QueryTaxCapResponse {
+    string tax_cap = 1 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", 
+        (gogoproto.nullable) = false
+        ];
+}
+
+// QueryTaxRateLimitsRequest is the request type for the Query TaxRateLimits Request RPC method
+message QueryTaxRateLimitsRequest {}
+
+// QueryTaxRateLimitsResponse is the response type for the Query TaxRateLimits Request RPC method
+message QueryTaxRateLimitsResponse {
+    TaxRateLimits tax_rate_limits = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryCollectionPeriodsRequest is the request type for the Query CollectionPeriods Request RPC method
+message QueryCollectionPeriodsRequest {}
+
+// QueryCollectionPeriodsResponse is the response type for the Query CollectionPeriods Request RPC method
+message QueryCollectionPeriodsResponse {
+    repeated CollectionPeriod collection_periods = 1 [(gogoproto.nullable) = false];
 }

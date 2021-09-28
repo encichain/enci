@@ -1,5 +1,5 @@
 syntax = "proto3";
-package user.charity.charity;
+package user.encichain.charity;
 
 option go_package = "github.com/user/encichain/x/charity/types";
 
@@ -43,8 +43,16 @@ message TaxRateLimits {
 
 // CollectionPeriod defines the record of each tax collection period
 message CollectionPeriod {
-    uint64 period = 1 [(gogoproto.nullable) = false];
-    int tax_collected = 2 [(gogoproto.nullable) = false];   // Tax collected during entire period
+    uint64 period = 1;
+    // Tax collected during entire period
+    string tax_collected = 2 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+        (gogoproto.nullable) = false
+    ];  
     Charity target_charity = 3 [(gogoproto.nullable) = false]; // Target charity during duration of tax collection period
-    int payout_amount = 4 [(gogoproto.nullable) = false];   // Amount paid out to target charity
+    // Amount paid out to target charity
+    string payout_amount = 4 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+        (gogoproto.nullable) = false
+    ];
 }

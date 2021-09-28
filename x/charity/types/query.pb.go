@@ -7,7 +7,6 @@ import (
 	context "context"
 	fmt "fmt"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
-	_ "github.com/cosmos/cosmos-sdk/types/query"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
@@ -188,22 +187,22 @@ func (m *QueryParamsResponse) GetParams() Params {
 	return Params{}
 }
 
-// QueryCharityOneRequest is the request type for the Query CharityOne Request RPC method
-type QueryCharityOneRequest struct {
+// QueryCharityRequest is the request type for the Query Charity Request RPC method
+type QueryCharityRequest struct {
 }
 
-func (m *QueryCharityOneRequest) Reset()         { *m = QueryCharityOneRequest{} }
-func (m *QueryCharityOneRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryCharityOneRequest) ProtoMessage()    {}
-func (*QueryCharityOneRequest) Descriptor() ([]byte, []int) {
+func (m *QueryCharityRequest) Reset()         { *m = QueryCharityRequest{} }
+func (m *QueryCharityRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryCharityRequest) ProtoMessage()    {}
+func (*QueryCharityRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd4bd1d3aa6ffcce, []int{4}
 }
-func (m *QueryCharityOneRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryCharityRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryCharityOneRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryCharityRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryCharityOneRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryCharityRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -213,35 +212,35 @@ func (m *QueryCharityOneRequest) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
-func (m *QueryCharityOneRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryCharityOneRequest.Merge(m, src)
+func (m *QueryCharityRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryCharityRequest.Merge(m, src)
 }
-func (m *QueryCharityOneRequest) XXX_Size() int {
+func (m *QueryCharityRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryCharityOneRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryCharityOneRequest.DiscardUnknown(m)
+func (m *QueryCharityRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryCharityRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryCharityOneRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryCharityRequest proto.InternalMessageInfo
 
-// QueryCharityOneResponse is the response type for the Query CharityOne Request RPC method
-type QueryCharityOneResponse struct {
-	CharityOne Charity `protobuf:"bytes,1,opt,name=charity_one,json=charityOne,proto3" json:"charity_one"`
+// QueryCharityResponse is the response type for the Query Charity Request RPC method
+type QueryCharityResponse struct {
+	Charity Charity `protobuf:"bytes,1,opt,name=charity,proto3" json:"charity"`
 }
 
-func (m *QueryCharityOneResponse) Reset()         { *m = QueryCharityOneResponse{} }
-func (m *QueryCharityOneResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryCharityOneResponse) ProtoMessage()    {}
-func (*QueryCharityOneResponse) Descriptor() ([]byte, []int) {
+func (m *QueryCharityResponse) Reset()         { *m = QueryCharityResponse{} }
+func (m *QueryCharityResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryCharityResponse) ProtoMessage()    {}
+func (*QueryCharityResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd4bd1d3aa6ffcce, []int{5}
 }
-func (m *QueryCharityOneResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryCharityResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryCharityOneResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryCharityResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryCharityOneResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryCharityResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -251,41 +250,41 @@ func (m *QueryCharityOneResponse) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-func (m *QueryCharityOneResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryCharityOneResponse.Merge(m, src)
+func (m *QueryCharityResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryCharityResponse.Merge(m, src)
 }
-func (m *QueryCharityOneResponse) XXX_Size() int {
+func (m *QueryCharityResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryCharityOneResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryCharityOneResponse.DiscardUnknown(m)
+func (m *QueryCharityResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryCharityResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryCharityOneResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryCharityResponse proto.InternalMessageInfo
 
-func (m *QueryCharityOneResponse) GetCharityOne() Charity {
+func (m *QueryCharityResponse) GetCharity() Charity {
 	if m != nil {
-		return m.CharityOne
+		return m.Charity
 	}
 	return Charity{}
 }
 
-// QueryCharityTwoRequest is the request type for the Query CharityTwo Request RPC method
-type QueryCharityTwoRequest struct {
+// QueryTaxCapRequest is the request type for the Query TaxCap Request RPC method
+type QueryTaxCapRequest struct {
 }
 
-func (m *QueryCharityTwoRequest) Reset()         { *m = QueryCharityTwoRequest{} }
-func (m *QueryCharityTwoRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryCharityTwoRequest) ProtoMessage()    {}
-func (*QueryCharityTwoRequest) Descriptor() ([]byte, []int) {
+func (m *QueryTaxCapRequest) Reset()         { *m = QueryTaxCapRequest{} }
+func (m *QueryTaxCapRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryTaxCapRequest) ProtoMessage()    {}
+func (*QueryTaxCapRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd4bd1d3aa6ffcce, []int{6}
 }
-func (m *QueryCharityTwoRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryTaxCapRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryCharityTwoRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryTaxCapRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryCharityTwoRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryTaxCapRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -295,35 +294,35 @@ func (m *QueryCharityTwoRequest) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
-func (m *QueryCharityTwoRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryCharityTwoRequest.Merge(m, src)
+func (m *QueryTaxCapRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryTaxCapRequest.Merge(m, src)
 }
-func (m *QueryCharityTwoRequest) XXX_Size() int {
+func (m *QueryTaxCapRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryCharityTwoRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryCharityTwoRequest.DiscardUnknown(m)
+func (m *QueryTaxCapRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryTaxCapRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryCharityTwoRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryTaxCapRequest proto.InternalMessageInfo
 
-// QueryCharityTwoResponse is the response type for the Query CharityTwo Request RPC method
-type QueryCharityTwoResponse struct {
-	CharityTwo Charity `protobuf:"bytes,1,opt,name=charity_two,json=charityTwo,proto3" json:"charity_two"`
+// QueryTaxCapResponse is the response type for the Query TaxCap Request RPC method
+type QueryTaxCapResponse struct {
+	TaxCap github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,1,opt,name=tax_cap,json=taxCap,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"tax_cap"`
 }
 
-func (m *QueryCharityTwoResponse) Reset()         { *m = QueryCharityTwoResponse{} }
-func (m *QueryCharityTwoResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryCharityTwoResponse) ProtoMessage()    {}
-func (*QueryCharityTwoResponse) Descriptor() ([]byte, []int) {
+func (m *QueryTaxCapResponse) Reset()         { *m = QueryTaxCapResponse{} }
+func (m *QueryTaxCapResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryTaxCapResponse) ProtoMessage()    {}
+func (*QueryTaxCapResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd4bd1d3aa6ffcce, []int{7}
 }
-func (m *QueryCharityTwoResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryTaxCapResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryCharityTwoResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryTaxCapResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryCharityTwoResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryTaxCapResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -333,72 +332,242 @@ func (m *QueryCharityTwoResponse) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-func (m *QueryCharityTwoResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryCharityTwoResponse.Merge(m, src)
+func (m *QueryTaxCapResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryTaxCapResponse.Merge(m, src)
 }
-func (m *QueryCharityTwoResponse) XXX_Size() int {
+func (m *QueryTaxCapResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryCharityTwoResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryCharityTwoResponse.DiscardUnknown(m)
+func (m *QueryTaxCapResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryTaxCapResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryCharityTwoResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryTaxCapResponse proto.InternalMessageInfo
 
-func (m *QueryCharityTwoResponse) GetCharityTwo() Charity {
-	if m != nil {
-		return m.CharityTwo
+// QueryTaxRateLimitsRequest is the request type for the Query TaxRateLimits Request RPC method
+type QueryTaxRateLimitsRequest struct {
+}
+
+func (m *QueryTaxRateLimitsRequest) Reset()         { *m = QueryTaxRateLimitsRequest{} }
+func (m *QueryTaxRateLimitsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryTaxRateLimitsRequest) ProtoMessage()    {}
+func (*QueryTaxRateLimitsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fd4bd1d3aa6ffcce, []int{8}
+}
+func (m *QueryTaxRateLimitsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryTaxRateLimitsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryTaxRateLimitsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
 	}
-	return Charity{}
+}
+func (m *QueryTaxRateLimitsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryTaxRateLimitsRequest.Merge(m, src)
+}
+func (m *QueryTaxRateLimitsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryTaxRateLimitsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryTaxRateLimitsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryTaxRateLimitsRequest proto.InternalMessageInfo
+
+// QueryTaxRateLimitsResponse is the response type for the Query TaxRateLimits Request RPC method
+type QueryTaxRateLimitsResponse struct {
+	TaxRateLimits TaxRateLimits `protobuf:"bytes,1,opt,name=tax_rate_limits,json=taxRateLimits,proto3" json:"tax_rate_limits"`
+}
+
+func (m *QueryTaxRateLimitsResponse) Reset()         { *m = QueryTaxRateLimitsResponse{} }
+func (m *QueryTaxRateLimitsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryTaxRateLimitsResponse) ProtoMessage()    {}
+func (*QueryTaxRateLimitsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fd4bd1d3aa6ffcce, []int{9}
+}
+func (m *QueryTaxRateLimitsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryTaxRateLimitsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryTaxRateLimitsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryTaxRateLimitsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryTaxRateLimitsResponse.Merge(m, src)
+}
+func (m *QueryTaxRateLimitsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryTaxRateLimitsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryTaxRateLimitsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryTaxRateLimitsResponse proto.InternalMessageInfo
+
+func (m *QueryTaxRateLimitsResponse) GetTaxRateLimits() TaxRateLimits {
+	if m != nil {
+		return m.TaxRateLimits
+	}
+	return TaxRateLimits{}
+}
+
+// QueryCollectionPeriodsRequest is the request type for the Query CollectionPeriods Request RPC method
+type QueryCollectionPeriodsRequest struct {
+}
+
+func (m *QueryCollectionPeriodsRequest) Reset()         { *m = QueryCollectionPeriodsRequest{} }
+func (m *QueryCollectionPeriodsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryCollectionPeriodsRequest) ProtoMessage()    {}
+func (*QueryCollectionPeriodsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fd4bd1d3aa6ffcce, []int{10}
+}
+func (m *QueryCollectionPeriodsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryCollectionPeriodsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryCollectionPeriodsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryCollectionPeriodsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryCollectionPeriodsRequest.Merge(m, src)
+}
+func (m *QueryCollectionPeriodsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryCollectionPeriodsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryCollectionPeriodsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryCollectionPeriodsRequest proto.InternalMessageInfo
+
+// QueryCollectionPeriodsResponse is the response type for the Query CollectionPeriods Request RPC method
+type QueryCollectionPeriodsResponse struct {
+	CollectionPeriods []CollectionPeriod `protobuf:"bytes,1,rep,name=collection_periods,json=collectionPeriods,proto3" json:"collection_periods"`
+}
+
+func (m *QueryCollectionPeriodsResponse) Reset()         { *m = QueryCollectionPeriodsResponse{} }
+func (m *QueryCollectionPeriodsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryCollectionPeriodsResponse) ProtoMessage()    {}
+func (*QueryCollectionPeriodsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fd4bd1d3aa6ffcce, []int{11}
+}
+func (m *QueryCollectionPeriodsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryCollectionPeriodsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryCollectionPeriodsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryCollectionPeriodsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryCollectionPeriodsResponse.Merge(m, src)
+}
+func (m *QueryCollectionPeriodsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryCollectionPeriodsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryCollectionPeriodsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryCollectionPeriodsResponse proto.InternalMessageInfo
+
+func (m *QueryCollectionPeriodsResponse) GetCollectionPeriods() []CollectionPeriod {
+	if m != nil {
+		return m.CollectionPeriods
+	}
+	return nil
 }
 
 func init() {
-	proto.RegisterType((*QueryTaxRateRequest)(nil), "user.charity.charity.QueryTaxRateRequest")
-	proto.RegisterType((*QueryTaxRateResponse)(nil), "user.charity.charity.QueryTaxRateResponse")
-	proto.RegisterType((*QueryParamsRequest)(nil), "user.charity.charity.QueryParamsRequest")
-	proto.RegisterType((*QueryParamsResponse)(nil), "user.charity.charity.QueryParamsResponse")
-	proto.RegisterType((*QueryCharityOneRequest)(nil), "user.charity.charity.QueryCharityOneRequest")
-	proto.RegisterType((*QueryCharityOneResponse)(nil), "user.charity.charity.QueryCharityOneResponse")
-	proto.RegisterType((*QueryCharityTwoRequest)(nil), "user.charity.charity.QueryCharityTwoRequest")
-	proto.RegisterType((*QueryCharityTwoResponse)(nil), "user.charity.charity.QueryCharityTwoResponse")
+	proto.RegisterType((*QueryTaxRateRequest)(nil), "user.encichain.charity.QueryTaxRateRequest")
+	proto.RegisterType((*QueryTaxRateResponse)(nil), "user.encichain.charity.QueryTaxRateResponse")
+	proto.RegisterType((*QueryParamsRequest)(nil), "user.encichain.charity.QueryParamsRequest")
+	proto.RegisterType((*QueryParamsResponse)(nil), "user.encichain.charity.QueryParamsResponse")
+	proto.RegisterType((*QueryCharityRequest)(nil), "user.encichain.charity.QueryCharityRequest")
+	proto.RegisterType((*QueryCharityResponse)(nil), "user.encichain.charity.QueryCharityResponse")
+	proto.RegisterType((*QueryTaxCapRequest)(nil), "user.encichain.charity.QueryTaxCapRequest")
+	proto.RegisterType((*QueryTaxCapResponse)(nil), "user.encichain.charity.QueryTaxCapResponse")
+	proto.RegisterType((*QueryTaxRateLimitsRequest)(nil), "user.encichain.charity.QueryTaxRateLimitsRequest")
+	proto.RegisterType((*QueryTaxRateLimitsResponse)(nil), "user.encichain.charity.QueryTaxRateLimitsResponse")
+	proto.RegisterType((*QueryCollectionPeriodsRequest)(nil), "user.encichain.charity.QueryCollectionPeriodsRequest")
+	proto.RegisterType((*QueryCollectionPeriodsResponse)(nil), "user.encichain.charity.QueryCollectionPeriodsResponse")
 }
 
 func init() { proto.RegisterFile("charity/query.proto", fileDescriptor_fd4bd1d3aa6ffcce) }
 
 var fileDescriptor_fd4bd1d3aa6ffcce = []byte{
-	// 503 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x94, 0x31, 0x6f, 0xd3, 0x40,
-	0x14, 0xc7, 0x63, 0x54, 0x52, 0xb8, 0x6e, 0xd7, 0x94, 0x06, 0x2b, 0x38, 0x95, 0x85, 0xa0, 0xad,
-	0xa8, 0x4f, 0x2d, 0x1b, 0x1b, 0xa1, 0x0b, 0x13, 0x34, 0xf2, 0xc4, 0x12, 0x9d, 0xcd, 0xc9, 0xb5,
-	0x20, 0x7e, 0xae, 0xef, 0x8c, 0x9d, 0x85, 0xa1, 0x5f, 0x00, 0x24, 0xbe, 0x08, 0x1f, 0xa3, 0x63,
-	0x25, 0x16, 0xc4, 0x50, 0xa1, 0x84, 0x0f, 0x82, 0x7c, 0x77, 0x4e, 0xdc, 0xda, 0x54, 0x16, 0x93,
-	0xad, 0x77, 0xef, 0xfd, 0xff, 0xbf, 0xe4, 0xfd, 0xcf, 0x68, 0xd3, 0x3f, 0xa5, 0x49, 0x28, 0x66,
-	0xe4, 0x2c, 0x65, 0xc9, 0xcc, 0x89, 0x13, 0x10, 0x80, 0x7b, 0x29, 0x67, 0x89, 0xa3, 0x4f, 0xca,
-	0xa7, 0x39, 0x08, 0x00, 0x82, 0x8f, 0x8c, 0xd0, 0x38, 0x24, 0x34, 0x8a, 0x40, 0x50, 0x11, 0x42,
-	0xc4, 0xd5, 0x8c, 0xb9, 0xef, 0x03, 0x9f, 0x02, 0x27, 0x1e, 0xe5, 0x4c, 0x89, 0x91, 0x4f, 0x87,
-	0x1e, 0x13, 0xf4, 0x90, 0xc4, 0x34, 0x08, 0x23, 0xd9, 0xac, 0x7b, 0x7b, 0x01, 0x04, 0x20, 0x5f,
-	0x49, 0xf1, 0xa6, 0xab, 0x5b, 0x25, 0x4a, 0x69, 0x2c, 0xcb, 0xf6, 0x16, 0xda, 0x3c, 0x29, 0xe4,
-	0x5c, 0x9a, 0x8f, 0xa9, 0x60, 0x63, 0x76, 0x96, 0x32, 0x2e, 0x6c, 0x8a, 0x7a, 0xd7, 0xcb, 0x3c,
-	0x86, 0x88, 0x33, 0xfc, 0x1a, 0xdd, 0x13, 0x34, 0x9f, 0x24, 0x54, 0xb0, 0xbe, 0xb1, 0x63, 0xec,
-	0xde, 0x1f, 0x39, 0x17, 0x57, 0xc3, 0xce, 0xaf, 0xab, 0xe1, 0x93, 0x20, 0x14, 0xa7, 0xa9, 0xe7,
-	0xf8, 0x30, 0x25, 0x1a, 0x56, 0x3d, 0x0e, 0xf8, 0xfb, 0x0f, 0x44, 0xcc, 0x62, 0xc6, 0x9d, 0x63,
-	0xe6, 0x8f, 0xd7, 0x85, 0x92, 0xb4, 0x7b, 0x08, 0x4b, 0x8b, 0xb7, 0x34, 0xa1, 0x53, 0x5e, 0x1a,
-	0x9f, 0x68, 0x9e, 0xb2, 0xaa, 0x7d, 0x5f, 0xa0, 0x6e, 0x2c, 0x2b, 0xd2, 0x75, 0xe3, 0x68, 0xe0,
-	0x34, 0xfd, 0x89, 0x8e, 0x9a, 0x1a, 0xad, 0x15, 0x4c, 0x63, 0x3d, 0x61, 0xf7, 0xd1, 0x03, 0x29,
-	0xf9, 0x4a, 0x35, 0xbd, 0x89, 0x96, 0xbf, 0x72, 0x82, 0xb6, 0x6b, 0x27, 0xda, 0xf0, 0x18, 0x6d,
-	0x68, 0xd1, 0x09, 0x44, 0x4c, 0xbb, 0x3e, 0x6a, 0x76, 0xd5, 0xe3, 0xda, 0x16, 0xf9, 0x4b, 0xb5,
-	0x9b, 0xd6, 0x6e, 0x06, 0xff, 0xb0, 0x96, 0x27, 0x75, 0x6b, 0x91, 0xc1, 0xff, 0x58, 0xbb, 0x19,
-	0x1c, 0x7d, 0x5f, 0x43, 0x77, 0xa5, 0x03, 0x3e, 0x37, 0xd0, 0xba, 0xde, 0x23, 0xde, 0x6b, 0x96,
-	0x69, 0x88, 0x80, 0xb9, 0xdf, 0xa6, 0x55, 0x21, 0xdb, 0x3b, 0xe7, 0x3f, 0xfe, 0x7c, 0xbb, 0x63,
-	0xe2, 0x3e, 0xb9, 0x91, 0x32, 0x22, 0x68, 0x5e, 0x84, 0x05, 0x7f, 0x46, 0x5d, 0xb5, 0x1c, 0xbc,
-	0x7b, 0x8b, 0xee, 0xb5, 0x2c, 0x98, 0x7b, 0x2d, 0x3a, 0x35, 0xc0, 0x50, 0x02, 0x3c, 0xc4, 0xdb,
-	0x35, 0x00, 0x15, 0x02, 0xfc, 0xc5, 0x40, 0x68, 0xb5, 0x66, 0xfc, 0xec, 0x16, 0xe9, 0x5a, 0x4e,
-	0xcc, 0x83, 0x96, 0xdd, 0x1a, 0xe6, 0xb1, 0x84, 0xb1, 0xf0, 0xa0, 0x06, 0x53, 0x89, 0x54, 0x95,
-	0xc8, 0xcd, 0xa0, 0x0d, 0xd1, 0x2a, 0x3e, 0x6d, 0x88, 0x2a, 0x91, 0x6a, 0x41, 0x24, 0x32, 0x18,
-	0xbd, 0xbc, 0x98, 0x5b, 0xc6, 0xe5, 0xdc, 0x32, 0x7e, 0xcf, 0x2d, 0xe3, 0xeb, 0xc2, 0xea, 0x5c,
-	0x2e, 0xac, 0xce, 0xcf, 0x85, 0xd5, 0x79, 0xf7, 0xb4, 0x72, 0xb9, 0x0b, 0xe3, 0xe5, 0x78, 0xbe,
-	0x5a, 0x74, 0x71, 0xc3, 0xbd, 0xae, 0xfc, 0xaa, 0x3c, 0xff, 0x1b, 0x00, 0x00, 0xff, 0xff, 0xe1,
-	0xb7, 0x3b, 0x57, 0xf9, 0x04, 0x00, 0x00,
+	// 651 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x55, 0x4f, 0x6b, 0x13, 0x41,
+	0x14, 0xcf, 0xfa, 0x67, 0xab, 0x53, 0x8a, 0x74, 0xda, 0x6a, 0xbb, 0xad, 0x9b, 0xb8, 0x68, 0x89,
+	0xb6, 0xee, 0x62, 0x44, 0x4f, 0x82, 0x90, 0x08, 0x52, 0xf0, 0x50, 0xd3, 0x82, 0x20, 0x68, 0x98,
+	0x4e, 0x87, 0x64, 0x31, 0xd9, 0xd9, 0xec, 0x4e, 0x20, 0x39, 0x09, 0xc5, 0x83, 0x47, 0xc1, 0x2f,
+	0xe0, 0x47, 0xf0, 0x63, 0xf4, 0x58, 0xf0, 0x22, 0x1e, 0x8a, 0x24, 0x7e, 0x0f, 0x65, 0x67, 0xde,
+	0x6e, 0xb3, 0x69, 0x36, 0x49, 0x3d, 0xcd, 0xf2, 0xe6, 0xbd, 0xf7, 0xfb, 0xbd, 0x3f, 0xbf, 0x59,
+	0xb4, 0x44, 0x1b, 0x24, 0x70, 0x45, 0xcf, 0x69, 0x77, 0x58, 0xd0, 0xb3, 0xfd, 0x80, 0x0b, 0x8e,
+	0x6f, 0x76, 0x42, 0x16, 0xd8, 0xcc, 0xa3, 0x2e, 0x6d, 0x10, 0xd7, 0xb3, 0xc1, 0xc7, 0xd8, 0xa8,
+	0x73, 0x5e, 0x6f, 0x32, 0x87, 0xf8, 0xae, 0x43, 0x3c, 0x8f, 0x0b, 0x22, 0x5c, 0xee, 0x85, 0x2a,
+	0xca, 0x58, 0xae, 0xf3, 0x3a, 0x97, 0x9f, 0x4e, 0xf4, 0x05, 0xd6, 0x95, 0x18, 0x00, 0x4e, 0x65,
+	0xb6, 0x56, 0xd0, 0xd2, 0xeb, 0x08, 0x71, 0x9f, 0x74, 0xab, 0x44, 0xb0, 0x2a, 0x6b, 0x77, 0x58,
+	0x28, 0x2c, 0x82, 0x96, 0xd3, 0xe6, 0xd0, 0xe7, 0x5e, 0xc8, 0xf0, 0x0e, 0xba, 0x26, 0x48, 0xb7,
+	0x16, 0x10, 0xc1, 0x56, 0xb5, 0x82, 0x56, 0xbc, 0x5e, 0xb6, 0x8f, 0x4f, 0xf3, 0xb9, 0x5f, 0xa7,
+	0xf9, 0xcd, 0xba, 0x2b, 0x1a, 0x9d, 0x03, 0x9b, 0xf2, 0x96, 0x43, 0x79, 0xd8, 0xe2, 0x21, 0x1c,
+	0x0f, 0xc3, 0xc3, 0x0f, 0x8e, 0xe8, 0xf9, 0x2c, 0xb4, 0x5f, 0x30, 0x5a, 0x9d, 0x13, 0x2a, 0xa5,
+	0xb5, 0x8c, 0xb0, 0x84, 0xd8, 0x25, 0x01, 0x69, 0x85, 0x31, 0xf0, 0x1e, 0xf0, 0x89, 0xad, 0x80,
+	0xfb, 0x0c, 0xe9, 0xbe, 0xb4, 0x48, 0xd4, 0xf9, 0x92, 0x69, 0x8f, 0x6f, 0x8d, 0xad, 0xe2, 0xca,
+	0x57, 0x22, 0x56, 0x55, 0x88, 0x49, 0x8a, 0xac, 0x28, 0xa7, 0x18, 0xeb, 0x0d, 0x14, 0x99, 0x98,
+	0x01, 0xec, 0x39, 0x9a, 0x83, 0x74, 0x80, 0x96, 0xcf, 0x42, 0x83, 0x48, 0x80, 0x8b, 0xa3, 0x92,
+	0xd2, 0xf6, 0x49, 0xb7, 0x42, 0xfc, 0x18, 0xee, 0xfd, 0x59, 0xab, 0xa5, 0x15, 0xd0, 0x5e, 0xa2,
+	0xa8, 0x25, 0x35, 0x4a, 0xfc, 0xff, 0xe8, 0xe8, 0x8e, 0x27, 0xaa, 0xba, 0x90, 0x09, 0xad, 0x75,
+	0xb4, 0x36, 0x3c, 0xb3, 0x57, 0x6e, 0xcb, 0x15, 0x49, 0x5f, 0xdb, 0xc8, 0x18, 0x77, 0x09, 0x1c,
+	0xf6, 0xd0, 0x8d, 0x78, 0xac, 0xb5, 0xa6, 0xbc, 0x82, 0xca, 0xef, 0x65, 0x55, 0x9e, 0xca, 0x03,
+	0xf5, 0x2f, 0x88, 0x61, 0xa3, 0x95, 0x47, 0xb7, 0x55, 0x7b, 0x79, 0xb3, 0xc9, 0x68, 0xb4, 0xa1,
+	0xbb, 0x2c, 0x70, 0xf9, 0x61, 0xc2, 0xe9, 0x23, 0x32, 0xb3, 0x1c, 0x80, 0xd7, 0x3b, 0x84, 0x69,
+	0x72, 0x59, 0xf3, 0xd5, 0xed, 0xaa, 0x56, 0xb8, 0x5c, 0x9c, 0x2f, 0x15, 0x33, 0x87, 0x32, 0x92,
+	0x0e, 0xd8, 0x2d, 0xd2, 0x51, 0x98, 0xd2, 0x5f, 0x1d, 0x5d, 0x95, 0x0c, 0xf0, 0x91, 0x86, 0x74,
+	0xb5, 0x3a, 0xf8, 0x41, 0x56, 0xde, 0xf3, 0xdb, 0x6a, 0x6c, 0xcd, 0xe4, 0xab, 0x8a, 0xb1, 0xf2,
+	0x47, 0x3f, 0xfe, 0x7c, 0xbd, 0xb4, 0x86, 0x6f, 0x39, 0x23, 0x52, 0x74, 0xd4, 0x9a, 0xe2, 0xcf,
+	0x1a, 0x9a, 0x83, 0xbe, 0xe2, 0xc9, 0x99, 0xd3, 0x6a, 0x35, 0xb6, 0x67, 0x73, 0x06, 0x1e, 0x96,
+	0xe4, 0xb1, 0x81, 0x0d, 0x27, 0x09, 0x48, 0x98, 0x08, 0xd2, 0x8d, 0x96, 0x40, 0x52, 0x81, 0xe5,
+	0x9e, 0x42, 0x25, 0xad, 0xa9, 0x29, 0x54, 0x46, 0x94, 0x36, 0x91, 0x0a, 0x9c, 0xf8, 0x93, 0x86,
+	0x74, 0x25, 0x99, 0x29, 0xa3, 0x49, 0xa9, 0xcd, 0xd8, 0x9a, 0xc9, 0x17, 0x78, 0xdc, 0x91, 0x3c,
+	0xd6, 0xf1, 0xda, 0xf8, 0x96, 0x50, 0xe2, 0xe3, 0x6f, 0x1a, 0x5a, 0x48, 0x2d, 0x3d, 0x7e, 0x34,
+	0x4b, 0xd7, 0x53, 0x2a, 0x34, 0x4a, 0x17, 0x09, 0x01, 0x6e, 0x45, 0xc9, 0xcd, 0xc2, 0x85, 0xec,
+	0x71, 0x29, 0xc9, 0xe2, 0xef, 0x1a, 0x5a, 0x3c, 0xa7, 0x25, 0xfc, 0x64, 0xf2, 0x44, 0x32, 0xc4,
+	0x69, 0x3c, 0xbd, 0x68, 0x18, 0xd0, 0xdd, 0x96, 0x74, 0x37, 0xf1, 0xdd, 0x71, 0x23, 0x4d, 0xa2,
+	0x40, 0xca, 0xe5, 0xca, 0x71, 0xdf, 0xd4, 0x4e, 0xfa, 0xa6, 0xf6, 0xbb, 0x6f, 0x6a, 0x5f, 0x06,
+	0x66, 0xee, 0x64, 0x60, 0xe6, 0x7e, 0x0e, 0xcc, 0xdc, 0xdb, 0xfb, 0x43, 0xaf, 0x5f, 0xc4, 0x64,
+	0x28, 0x5d, 0xf7, 0xac, 0xfe, 0xe8, 0x11, 0x3c, 0xd0, 0xe5, 0xaf, 0xec, 0xf1, 0xbf, 0x00, 0x00,
+	0x00, 0xff, 0xff, 0xdc, 0x95, 0x5d, 0x67, 0x44, 0x07, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -413,14 +582,18 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
-	// TaxRate returns the set tax rate
-	TaxRate(ctx context.Context, in *QueryTaxRateRequest, opts ...grpc.CallOption) (*QueryTaxRateResponse, error)
 	// Params returns all params
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// CharityOne returns the first set charity
-	CharityOne(ctx context.Context, in *QueryCharityOneRequest, opts ...grpc.CallOption) (*QueryCharityOneResponse, error)
-	// CharityTwo returns the second set charity
-	CharityTwo(ctx context.Context, in *QueryCharityTwoRequest, opts ...grpc.CallOption) (*QueryCharityTwoResponse, error)
+	// TaxRate returns the set tax rate
+	TaxRate(ctx context.Context, in *QueryTaxRateRequest, opts ...grpc.CallOption) (*QueryTaxRateResponse, error)
+	// Charity returns the set charity
+	Charity(ctx context.Context, in *QueryCharityRequest, opts ...grpc.CallOption) (*QueryCharityResponse, error)
+	// TaxCap returns the tax cap amount
+	TaxCap(ctx context.Context, in *QueryTaxCapRequest, opts ...grpc.CallOption) (*QueryTaxCapResponse, error)
+	// TaxRateLimits returns the tax rate limits
+	TaxRateLimits(ctx context.Context, in *QueryTaxRateLimitsRequest, opts ...grpc.CallOption) (*QueryTaxRateLimitsResponse, error)
+	// CollectionPeriods returns the list of collection periods
+	CollectionPeriods(ctx context.Context, in *QueryCollectionPeriodsRequest, opts ...grpc.CallOption) (*QueryCollectionPeriodsResponse, error)
 }
 
 type queryClient struct {
@@ -431,36 +604,54 @@ func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 	return &queryClient{cc}
 }
 
-func (c *queryClient) TaxRate(ctx context.Context, in *QueryTaxRateRequest, opts ...grpc.CallOption) (*QueryTaxRateResponse, error) {
-	out := new(QueryTaxRateResponse)
-	err := c.cc.Invoke(ctx, "/user.charity.charity.Query/TaxRate", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
 	out := new(QueryParamsResponse)
-	err := c.cc.Invoke(ctx, "/user.charity.charity.Query/Params", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.encichain.charity.Query/Params", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) CharityOne(ctx context.Context, in *QueryCharityOneRequest, opts ...grpc.CallOption) (*QueryCharityOneResponse, error) {
-	out := new(QueryCharityOneResponse)
-	err := c.cc.Invoke(ctx, "/user.charity.charity.Query/CharityOne", in, out, opts...)
+func (c *queryClient) TaxRate(ctx context.Context, in *QueryTaxRateRequest, opts ...grpc.CallOption) (*QueryTaxRateResponse, error) {
+	out := new(QueryTaxRateResponse)
+	err := c.cc.Invoke(ctx, "/user.encichain.charity.Query/TaxRate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) CharityTwo(ctx context.Context, in *QueryCharityTwoRequest, opts ...grpc.CallOption) (*QueryCharityTwoResponse, error) {
-	out := new(QueryCharityTwoResponse)
-	err := c.cc.Invoke(ctx, "/user.charity.charity.Query/CharityTwo", in, out, opts...)
+func (c *queryClient) Charity(ctx context.Context, in *QueryCharityRequest, opts ...grpc.CallOption) (*QueryCharityResponse, error) {
+	out := new(QueryCharityResponse)
+	err := c.cc.Invoke(ctx, "/user.encichain.charity.Query/Charity", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) TaxCap(ctx context.Context, in *QueryTaxCapRequest, opts ...grpc.CallOption) (*QueryTaxCapResponse, error) {
+	out := new(QueryTaxCapResponse)
+	err := c.cc.Invoke(ctx, "/user.encichain.charity.Query/TaxCap", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) TaxRateLimits(ctx context.Context, in *QueryTaxRateLimitsRequest, opts ...grpc.CallOption) (*QueryTaxRateLimitsResponse, error) {
+	out := new(QueryTaxRateLimitsResponse)
+	err := c.cc.Invoke(ctx, "/user.encichain.charity.Query/TaxRateLimits", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) CollectionPeriods(ctx context.Context, in *QueryCollectionPeriodsRequest, opts ...grpc.CallOption) (*QueryCollectionPeriodsResponse, error) {
+	out := new(QueryCollectionPeriodsResponse)
+	err := c.cc.Invoke(ctx, "/user.encichain.charity.Query/CollectionPeriods", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -469,53 +660,45 @@ func (c *queryClient) CharityTwo(ctx context.Context, in *QueryCharityTwoRequest
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
-	// TaxRate returns the set tax rate
-	TaxRate(context.Context, *QueryTaxRateRequest) (*QueryTaxRateResponse, error)
 	// Params returns all params
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// CharityOne returns the first set charity
-	CharityOne(context.Context, *QueryCharityOneRequest) (*QueryCharityOneResponse, error)
-	// CharityTwo returns the second set charity
-	CharityTwo(context.Context, *QueryCharityTwoRequest) (*QueryCharityTwoResponse, error)
+	// TaxRate returns the set tax rate
+	TaxRate(context.Context, *QueryTaxRateRequest) (*QueryTaxRateResponse, error)
+	// Charity returns the set charity
+	Charity(context.Context, *QueryCharityRequest) (*QueryCharityResponse, error)
+	// TaxCap returns the tax cap amount
+	TaxCap(context.Context, *QueryTaxCapRequest) (*QueryTaxCapResponse, error)
+	// TaxRateLimits returns the tax rate limits
+	TaxRateLimits(context.Context, *QueryTaxRateLimitsRequest) (*QueryTaxRateLimitsResponse, error)
+	// CollectionPeriods returns the list of collection periods
+	CollectionPeriods(context.Context, *QueryCollectionPeriodsRequest) (*QueryCollectionPeriodsResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
 type UnimplementedQueryServer struct {
 }
 
-func (*UnimplementedQueryServer) TaxRate(ctx context.Context, req *QueryTaxRateRequest) (*QueryTaxRateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TaxRate not implemented")
-}
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (*UnimplementedQueryServer) CharityOne(ctx context.Context, req *QueryCharityOneRequest) (*QueryCharityOneResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CharityOne not implemented")
+func (*UnimplementedQueryServer) TaxRate(ctx context.Context, req *QueryTaxRateRequest) (*QueryTaxRateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaxRate not implemented")
 }
-func (*UnimplementedQueryServer) CharityTwo(ctx context.Context, req *QueryCharityTwoRequest) (*QueryCharityTwoResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CharityTwo not implemented")
+func (*UnimplementedQueryServer) Charity(ctx context.Context, req *QueryCharityRequest) (*QueryCharityResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Charity not implemented")
+}
+func (*UnimplementedQueryServer) TaxCap(ctx context.Context, req *QueryTaxCapRequest) (*QueryTaxCapResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaxCap not implemented")
+}
+func (*UnimplementedQueryServer) TaxRateLimits(ctx context.Context, req *QueryTaxRateLimitsRequest) (*QueryTaxRateLimitsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaxRateLimits not implemented")
+}
+func (*UnimplementedQueryServer) CollectionPeriods(ctx context.Context, req *QueryCollectionPeriodsRequest) (*QueryCollectionPeriodsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CollectionPeriods not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
 	s.RegisterService(&_Query_serviceDesc, srv)
-}
-
-func _Query_TaxRate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryTaxRateRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).TaxRate(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/user.charity.charity.Query/TaxRate",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).TaxRate(ctx, req.(*QueryTaxRateRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -528,7 +711,7 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.charity.charity.Query/Params",
+		FullMethod: "/user.encichain.charity.Query/Params",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).Params(ctx, req.(*QueryParamsRequest))
@@ -536,61 +719,123 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_CharityOne_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryCharityOneRequest)
+func _Query_TaxRate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryTaxRateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).CharityOne(ctx, in)
+		return srv.(QueryServer).TaxRate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.charity.charity.Query/CharityOne",
+		FullMethod: "/user.encichain.charity.Query/TaxRate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).CharityOne(ctx, req.(*QueryCharityOneRequest))
+		return srv.(QueryServer).TaxRate(ctx, req.(*QueryTaxRateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_CharityTwo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryCharityTwoRequest)
+func _Query_Charity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryCharityRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).CharityTwo(ctx, in)
+		return srv.(QueryServer).Charity(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.charity.charity.Query/CharityTwo",
+		FullMethod: "/user.encichain.charity.Query/Charity",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).CharityTwo(ctx, req.(*QueryCharityTwoRequest))
+		return srv.(QueryServer).Charity(ctx, req.(*QueryCharityRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_TaxCap_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryTaxCapRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).TaxCap(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.encichain.charity.Query/TaxCap",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).TaxCap(ctx, req.(*QueryTaxCapRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_TaxRateLimits_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryTaxRateLimitsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).TaxRateLimits(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.encichain.charity.Query/TaxRateLimits",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).TaxRateLimits(ctx, req.(*QueryTaxRateLimitsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_CollectionPeriods_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryCollectionPeriodsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).CollectionPeriods(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.encichain.charity.Query/CollectionPeriods",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).CollectionPeriods(ctx, req.(*QueryCollectionPeriodsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 var _Query_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "user.charity.charity.Query",
+	ServiceName: "user.encichain.charity.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "TaxRate",
-			Handler:    _Query_TaxRate_Handler,
-		},
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "CharityOne",
-			Handler:    _Query_CharityOne_Handler,
+			MethodName: "TaxRate",
+			Handler:    _Query_TaxRate_Handler,
 		},
 		{
-			MethodName: "CharityTwo",
-			Handler:    _Query_CharityTwo_Handler,
+			MethodName: "Charity",
+			Handler:    _Query_Charity_Handler,
+		},
+		{
+			MethodName: "TaxCap",
+			Handler:    _Query_TaxCap_Handler,
+		},
+		{
+			MethodName: "TaxRateLimits",
+			Handler:    _Query_TaxRateLimits_Handler,
+		},
+		{
+			MethodName: "CollectionPeriods",
+			Handler:    _Query_CollectionPeriods_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -709,7 +954,7 @@ func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryCharityOneRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryCharityRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -719,12 +964,12 @@ func (m *QueryCharityOneRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryCharityOneRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryCharityRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryCharityOneRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryCharityRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -732,7 +977,7 @@ func (m *QueryCharityOneRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryCharityOneResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryCharityResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -742,18 +987,18 @@ func (m *QueryCharityOneResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryCharityOneResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryCharityResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryCharityOneResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryCharityResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
 	{
-		size, err := m.CharityOne.MarshalToSizedBuffer(dAtA[:i])
+		size, err := m.Charity.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -765,7 +1010,7 @@ func (m *QueryCharityOneResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryCharityTwoRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryTaxCapRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -775,12 +1020,12 @@ func (m *QueryCharityTwoRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryCharityTwoRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryTaxCapRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryCharityTwoRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryTaxCapRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -788,7 +1033,7 @@ func (m *QueryCharityTwoRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryCharityTwoResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryTaxCapResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -798,18 +1043,74 @@ func (m *QueryCharityTwoResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryCharityTwoResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryTaxCapResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryCharityTwoResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryTaxCapResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
 	{
-		size, err := m.CharityTwo.MarshalToSizedBuffer(dAtA[:i])
+		size := m.TaxCap.Size()
+		i -= size
+		if _, err := m.TaxCap.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintQuery(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryTaxRateLimitsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryTaxRateLimitsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryTaxRateLimitsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryTaxRateLimitsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryTaxRateLimitsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryTaxRateLimitsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.TaxRateLimits.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -818,6 +1119,66 @@ func (m *QueryCharityTwoResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	}
 	i--
 	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryCollectionPeriodsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryCollectionPeriodsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryCollectionPeriodsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryCollectionPeriodsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryCollectionPeriodsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryCollectionPeriodsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.CollectionPeriods) > 0 {
+		for iNdEx := len(m.CollectionPeriods) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.CollectionPeriods[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -872,7 +1233,7 @@ func (m *QueryParamsResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryCharityOneRequest) Size() (n int) {
+func (m *QueryCharityRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -881,18 +1242,18 @@ func (m *QueryCharityOneRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryCharityOneResponse) Size() (n int) {
+func (m *QueryCharityResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = m.CharityOne.Size()
+	l = m.Charity.Size()
 	n += 1 + l + sovQuery(uint64(l))
 	return n
 }
 
-func (m *QueryCharityTwoRequest) Size() (n int) {
+func (m *QueryTaxCapRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -901,14 +1262,58 @@ func (m *QueryCharityTwoRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryCharityTwoResponse) Size() (n int) {
+func (m *QueryTaxCapResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = m.CharityTwo.Size()
+	l = m.TaxCap.Size()
 	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryTaxRateLimitsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *QueryTaxRateLimitsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.TaxRateLimits.Size()
+	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryCollectionPeriodsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *QueryCollectionPeriodsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.CollectionPeriods) > 0 {
+		for _, e := range m.CollectionPeriods {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
 	return n
 }
 
@@ -1185,7 +1590,7 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryCharityOneRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryCharityRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1208,10 +1613,10 @@ func (m *QueryCharityOneRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryCharityOneRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryCharityRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryCharityOneRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryCharityRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -1235,7 +1640,7 @@ func (m *QueryCharityOneRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryCharityOneResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryCharityResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1258,15 +1663,15 @@ func (m *QueryCharityOneResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryCharityOneResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryCharityResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryCharityOneResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryCharityResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CharityOne", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Charity", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -1293,7 +1698,7 @@ func (m *QueryCharityOneResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.CharityOne.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.Charity.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -1318,7 +1723,7 @@ func (m *QueryCharityOneResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryCharityTwoRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryTaxCapRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1341,10 +1746,10 @@ func (m *QueryCharityTwoRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryCharityTwoRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryTaxCapRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryCharityTwoRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryTaxCapRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -1368,7 +1773,7 @@ func (m *QueryCharityTwoRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryCharityTwoResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryTaxCapResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1391,15 +1796,149 @@ func (m *QueryCharityTwoResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryCharityTwoResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryTaxCapResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryCharityTwoResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryTaxCapResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CharityTwo", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TaxCap", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.TaxCap.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryTaxRateLimitsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryTaxRateLimitsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryTaxRateLimitsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryTaxRateLimitsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryTaxRateLimitsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryTaxRateLimitsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TaxRateLimits", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -1426,7 +1965,141 @@ func (m *QueryCharityTwoResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.CharityTwo.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.TaxRateLimits.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryCollectionPeriodsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryCollectionPeriodsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryCollectionPeriodsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryCollectionPeriodsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryCollectionPeriodsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryCollectionPeriodsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CollectionPeriods", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CollectionPeriods = append(m.CollectionPeriods, CollectionPeriod{})
+			if err := m.CollectionPeriods[len(m.CollectionPeriods)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

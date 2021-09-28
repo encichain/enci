@@ -5,6 +5,7 @@ package types
 
 import (
 	fmt "fmt"
+	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	io "io"
@@ -84,9 +85,12 @@ func (m *Charity) GetChecksum() string {
 	return ""
 }
 
+// Params defines parameters of the charity module able to be changed by governance proposals
 type Params struct {
-	CharityOne Charity `protobuf:"bytes,1,opt,name=charity_one,json=charityOne,proto3" json:"charity_one"`
-	CharityTwo Charity `protobuf:"bytes,2,opt,name=charity_two,json=charityTwo,proto3" json:"charity_two"`
+	Charity Charity                                `protobuf:"bytes,1,opt,name=charity,proto3" json:"charity"`
+	TaxRate github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=tax_rate,json=taxRate,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"tax_rate"`
+	// Tax cap represents max tax amount
+	TaxCap github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=tax_cap,json=taxCap,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"tax_cap"`
 }
 
 func (m *Params) Reset()         { *m = Params{} }
@@ -122,45 +126,148 @@ func (m *Params) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Params proto.InternalMessageInfo
 
-func (m *Params) GetCharityOne() Charity {
+func (m *Params) GetCharity() Charity {
 	if m != nil {
-		return m.CharityOne
+		return m.Charity
 	}
 	return Charity{}
 }
 
-func (m *Params) GetCharityTwo() Charity {
+// TaxRateLimits defines upper and lower limits to the tax_rate
+type TaxRateLimits struct {
+	RateMin github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,1,opt,name=rate_min,json=rateMin,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"rate_min"`
+	RateMax github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=rate_max,json=rateMax,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"rate_max"`
+}
+
+func (m *TaxRateLimits) Reset()         { *m = TaxRateLimits{} }
+func (m *TaxRateLimits) String() string { return proto.CompactTextString(m) }
+func (*TaxRateLimits) ProtoMessage()    {}
+func (*TaxRateLimits) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5b141662e81c4bb5, []int{2}
+}
+func (m *TaxRateLimits) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *TaxRateLimits) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_TaxRateLimits.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *TaxRateLimits) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TaxRateLimits.Merge(m, src)
+}
+func (m *TaxRateLimits) XXX_Size() int {
+	return m.Size()
+}
+func (m *TaxRateLimits) XXX_DiscardUnknown() {
+	xxx_messageInfo_TaxRateLimits.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TaxRateLimits proto.InternalMessageInfo
+
+// CollectionPeriod defines the record of each tax collection period
+type CollectionPeriod struct {
+	Period uint64 `protobuf:"varint,1,opt,name=period,proto3" json:"period,omitempty"`
+	// Tax collected during entire period
+	TaxCollected  github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,2,opt,name=tax_collected,json=taxCollected,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"tax_collected"`
+	TargetCharity Charity                                `protobuf:"bytes,3,opt,name=target_charity,json=targetCharity,proto3" json:"target_charity"`
+	// Amount paid out to target charity
+	PayoutAmount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=payout_amount,json=payoutAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"payout_amount"`
+}
+
+func (m *CollectionPeriod) Reset()         { *m = CollectionPeriod{} }
+func (m *CollectionPeriod) String() string { return proto.CompactTextString(m) }
+func (*CollectionPeriod) ProtoMessage()    {}
+func (*CollectionPeriod) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5b141662e81c4bb5, []int{3}
+}
+func (m *CollectionPeriod) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CollectionPeriod) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CollectionPeriod.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CollectionPeriod) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CollectionPeriod.Merge(m, src)
+}
+func (m *CollectionPeriod) XXX_Size() int {
+	return m.Size()
+}
+func (m *CollectionPeriod) XXX_DiscardUnknown() {
+	xxx_messageInfo_CollectionPeriod.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CollectionPeriod proto.InternalMessageInfo
+
+func (m *CollectionPeriod) GetPeriod() uint64 {
 	if m != nil {
-		return m.CharityTwo
+		return m.Period
+	}
+	return 0
+}
+
+func (m *CollectionPeriod) GetTargetCharity() Charity {
+	if m != nil {
+		return m.TargetCharity
 	}
 	return Charity{}
 }
 
 func init() {
-	proto.RegisterType((*Charity)(nil), "user.charity.charity.Charity")
-	proto.RegisterType((*Params)(nil), "user.charity.charity.Params")
+	proto.RegisterType((*Charity)(nil), "user.encichain.charity.Charity")
+	proto.RegisterType((*Params)(nil), "user.encichain.charity.Params")
+	proto.RegisterType((*TaxRateLimits)(nil), "user.encichain.charity.TaxRateLimits")
+	proto.RegisterType((*CollectionPeriod)(nil), "user.encichain.charity.CollectionPeriod")
 }
 
 func init() { proto.RegisterFile("charity/charity.proto", fileDescriptor_5b141662e81c4bb5) }
 
 var fileDescriptor_5b141662e81c4bb5 = []byte{
-	// 251 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x4d, 0xce, 0x48, 0x2c,
-	0xca, 0x2c, 0xa9, 0xd4, 0x87, 0xd2, 0x7a, 0x05, 0x45, 0xf9, 0x25, 0xf9, 0x42, 0x22, 0xa5, 0xc5,
-	0xa9, 0x45, 0x7a, 0x30, 0x31, 0x28, 0x2d, 0x25, 0x92, 0x9e, 0x9f, 0x9e, 0x0f, 0x56, 0xa0, 0x0f,
-	0x62, 0x41, 0xd4, 0x2a, 0x65, 0x70, 0xb1, 0x3b, 0x43, 0x14, 0x08, 0x29, 0x72, 0xf1, 0x40, 0xd5,
-	0xc6, 0xe7, 0x25, 0xe6, 0xa6, 0x4a, 0x30, 0x2a, 0x30, 0x6a, 0x70, 0x06, 0x71, 0x43, 0xc5, 0xfc,
-	0x12, 0x73, 0x53, 0x85, 0xe4, 0xb8, 0xb8, 0x12, 0x93, 0x93, 0x1d, 0x53, 0x52, 0x8a, 0x52, 0x8b,
-	0x8b, 0x25, 0x98, 0xc0, 0x0a, 0x90, 0x44, 0x84, 0xa4, 0xb8, 0x38, 0x92, 0x33, 0x52, 0x93, 0xb3,
-	0x8b, 0x4b, 0x73, 0x25, 0x98, 0xc1, 0xb2, 0x70, 0xbe, 0xd2, 0x14, 0x46, 0x2e, 0xb6, 0x80, 0xc4,
-	0xa2, 0xc4, 0xdc, 0x62, 0x21, 0x17, 0x2e, 0x98, 0xa9, 0xf1, 0xf9, 0x79, 0x10, 0x8b, 0xb8, 0x8d,
-	0x64, 0xf5, 0xb0, 0x39, 0x5b, 0x0f, 0xea, 0x3a, 0x27, 0x96, 0x13, 0xf7, 0xe4, 0x19, 0x82, 0xb8,
-	0xa0, 0xc2, 0xfe, 0x79, 0xa9, 0xc8, 0xa6, 0x94, 0x94, 0xe7, 0x83, 0x5d, 0x43, 0xa2, 0x29, 0x21,
-	0xe5, 0xf9, 0x4e, 0x8e, 0x27, 0x1e, 0xc9, 0x31, 0x5e, 0x78, 0x24, 0xc7, 0xf8, 0xe0, 0x91, 0x1c,
-	0xe3, 0x84, 0xc7, 0x72, 0x0c, 0x17, 0x1e, 0xcb, 0x31, 0xdc, 0x78, 0x2c, 0xc7, 0x10, 0xa5, 0x9e,
-	0x9e, 0x59, 0x92, 0x51, 0x9a, 0xa4, 0x97, 0x9c, 0x9f, 0xab, 0x0f, 0x32, 0x14, 0x16, 0xca, 0xfa,
-	0x15, 0x70, 0x56, 0x49, 0x65, 0x41, 0x6a, 0x71, 0x12, 0x1b, 0x38, 0x28, 0x8d, 0x01, 0x01, 0x00,
-	0x00, 0xff, 0xff, 0x4e, 0xa0, 0xa7, 0x6b, 0x8f, 0x01, 0x00, 0x00,
+	// 444 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x93, 0xc1, 0x6a, 0x1b, 0x31,
+	0x10, 0x86, 0xbd, 0x89, 0xb1, 0xd3, 0x49, 0x5c, 0x8a, 0x68, 0x83, 0xc9, 0x61, 0xdd, 0xfa, 0x50,
+	0xda, 0x43, 0x77, 0xa1, 0x7d, 0x80, 0x12, 0xbb, 0x50, 0x02, 0x69, 0x09, 0x9b, 0x9e, 0x7a, 0x59,
+	0x26, 0x5a, 0xe1, 0x15, 0x89, 0x56, 0xcb, 0x6a, 0x16, 0xd6, 0x6f, 0xd1, 0x67, 0x28, 0xf4, 0x5d,
+	0x72, 0xcc, 0xb1, 0x14, 0x1a, 0x8a, 0xfd, 0x22, 0x45, 0xd2, 0x6e, 0xea, 0x43, 0x2f, 0xf6, 0x49,
+	0x23, 0xe9, 0x9f, 0x5f, 0x9f, 0x86, 0x19, 0x78, 0xc6, 0x73, 0xac, 0x24, 0x2d, 0xe3, 0x76, 0x8d,
+	0xca, 0x4a, 0x93, 0x66, 0xc7, 0xb5, 0x11, 0x55, 0x24, 0x0a, 0x2e, 0x79, 0x8e, 0xb2, 0x88, 0xda,
+	0xdb, 0x93, 0xa7, 0x0b, 0xbd, 0xd0, 0x4e, 0x12, 0xdb, 0xc8, 0xab, 0xa7, 0x39, 0x0c, 0xe7, 0x5e,
+	0xc0, 0x5e, 0xc0, 0x51, 0xab, 0x4d, 0x0b, 0x54, 0x62, 0x1c, 0x3c, 0x0f, 0x5e, 0x3d, 0x4a, 0x0e,
+	0xdb, 0xb3, 0xcf, 0xa8, 0x04, 0x0b, 0x01, 0x90, 0xf3, 0xd3, 0x2c, 0xab, 0x84, 0x31, 0xe3, 0x3d,
+	0x27, 0xd8, 0x38, 0x61, 0x27, 0x70, 0xc0, 0x73, 0xc1, 0xaf, 0x4d, 0xad, 0xc6, 0xfb, 0xee, 0xf6,
+	0x61, 0x3f, 0xfd, 0x1d, 0xc0, 0xe0, 0x02, 0x2b, 0x54, 0x86, 0xbd, 0x87, 0x61, 0xeb, 0xea, 0x1e,
+	0x39, 0x7c, 0x3b, 0x89, 0xfe, 0x0f, 0x1d, 0xb5, 0x6c, 0xb3, 0xfe, 0xed, 0xfd, 0xa4, 0x97, 0x74,
+	0x59, 0xec, 0x0c, 0x0e, 0x08, 0x9b, 0xb4, 0x42, 0x12, 0x9e, 0x62, 0x16, 0x59, 0xc1, 0xaf, 0xfb,
+	0xc9, 0xcb, 0x85, 0xa4, 0xbc, 0xbe, 0x8a, 0xb8, 0x56, 0x31, 0xd7, 0x46, 0x69, 0xd3, 0x2e, 0x6f,
+	0x4c, 0x76, 0x1d, 0xd3, 0xb2, 0x14, 0x26, 0xfa, 0x20, 0x78, 0x32, 0x24, 0x6c, 0x12, 0x24, 0xc1,
+	0x3e, 0x82, 0x0d, 0x53, 0x8e, 0xa5, 0x27, 0xde, 0xca, 0xe9, 0xac, 0xa0, 0x64, 0x40, 0xd8, 0xcc,
+	0xb1, 0x9c, 0xfe, 0x08, 0x60, 0xf4, 0xc5, 0x9b, 0x9e, 0x4b, 0x25, 0xc9, 0x58, 0x4a, 0x4b, 0x98,
+	0x2a, 0x59, 0xf8, 0x62, 0x6e, 0x4f, 0x69, 0xf3, 0x3f, 0xc9, 0xe2, 0x9f, 0x15, 0x36, 0xbb, 0x7e,
+	0xd8, 0x59, 0x61, 0x33, 0xfd, 0xbe, 0x07, 0x4f, 0xe6, 0xfa, 0xe6, 0x46, 0x70, 0x92, 0xba, 0xb8,
+	0x10, 0x95, 0xd4, 0x19, 0x3b, 0x86, 0x41, 0xe9, 0x22, 0x07, 0xda, 0x4f, 0xda, 0x1d, 0xbb, 0x84,
+	0x91, 0xab, 0x8e, 0xd7, 0x8b, 0x6c, 0x87, 0xc7, 0x6d, 0x8d, 0x8e, 0x6c, 0x8d, 0x3a, 0x0f, 0x76,
+	0x0e, 0x8f, 0x09, 0xab, 0x85, 0xa0, 0xb4, 0xeb, 0x82, 0xfd, 0x6d, 0xba, 0x60, 0xe4, 0x93, 0xbb,
+	0xb6, 0xbd, 0x84, 0x51, 0x89, 0x4b, 0x5d, 0x53, 0x8a, 0x4a, 0xd7, 0x05, 0x8d, 0xfb, 0xbb, 0x21,
+	0x7a, 0x93, 0x53, 0xe7, 0x31, 0x9b, 0xdf, 0xae, 0xc2, 0xe0, 0x6e, 0x15, 0x06, 0x7f, 0x56, 0x61,
+	0xf0, 0x6d, 0x1d, 0xf6, 0xee, 0xd6, 0x61, 0xef, 0xe7, 0x3a, 0xec, 0x7d, 0x7d, 0xbd, 0xe1, 0x67,
+	0x71, 0xe3, 0x07, 0xdc, 0xb8, 0xe9, 0x26, 0xd1, 0xdb, 0x5e, 0x0d, 0xdc, 0x88, 0xbd, 0xfb, 0x1b,
+	0x00, 0x00, 0xff, 0xff, 0x43, 0x91, 0x5f, 0xae, 0xa9, 0x03, 0x00, 0x00,
 }
 
 func (m *Charity) Marshal() (dAtA []byte, err error) {
@@ -228,17 +335,27 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	var l int
 	_ = l
 	{
-		size, err := m.CharityTwo.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
+		size := m.TaxCap.Size()
+		i -= size
+		if _, err := m.TaxCap.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
+		i = encodeVarintCharity(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	{
+		size := m.TaxRate.Size()
 		i -= size
+		if _, err := m.TaxRate.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
 		i = encodeVarintCharity(dAtA, i, uint64(size))
 	}
 	i--
 	dAtA[i] = 0x12
 	{
-		size, err := m.CharityOne.MarshalToSizedBuffer(dAtA[:i])
+		size, err := m.Charity.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -247,6 +364,107 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	i--
 	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *TaxRateLimits) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *TaxRateLimits) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *TaxRateLimits) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.RateMax.Size()
+		i -= size
+		if _, err := m.RateMax.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintCharity(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	{
+		size := m.RateMin.Size()
+		i -= size
+		if _, err := m.RateMin.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintCharity(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *CollectionPeriod) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CollectionPeriod) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CollectionPeriod) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.PayoutAmount.Size()
+		i -= size
+		if _, err := m.PayoutAmount.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintCharity(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x22
+	{
+		size, err := m.TargetCharity.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintCharity(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	{
+		size := m.TaxCollected.Size()
+		i -= size
+		if _, err := m.TaxCollected.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintCharity(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	if m.Period != 0 {
+		i = encodeVarintCharity(dAtA, i, uint64(m.Period))
+		i--
+		dAtA[i] = 0x8
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -288,9 +506,42 @@ func (m *Params) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = m.CharityOne.Size()
+	l = m.Charity.Size()
 	n += 1 + l + sovCharity(uint64(l))
-	l = m.CharityTwo.Size()
+	l = m.TaxRate.Size()
+	n += 1 + l + sovCharity(uint64(l))
+	l = m.TaxCap.Size()
+	n += 1 + l + sovCharity(uint64(l))
+	return n
+}
+
+func (m *TaxRateLimits) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.RateMin.Size()
+	n += 1 + l + sovCharity(uint64(l))
+	l = m.RateMax.Size()
+	n += 1 + l + sovCharity(uint64(l))
+	return n
+}
+
+func (m *CollectionPeriod) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Period != 0 {
+		n += 1 + sovCharity(uint64(m.Period))
+	}
+	l = m.TaxCollected.Size()
+	n += 1 + l + sovCharity(uint64(l))
+	l = m.TargetCharity.Size()
+	n += 1 + l + sovCharity(uint64(l))
+	l = m.PayoutAmount.Size()
 	n += 1 + l + sovCharity(uint64(l))
 	return n
 }
@@ -478,7 +729,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CharityOne", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Charity", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -505,13 +756,302 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.CharityOne.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.Charity.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CharityTwo", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TaxRate", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCharity
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCharity
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCharity
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.TaxRate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TaxCap", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCharity
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCharity
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCharity
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.TaxCap.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCharity(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCharity
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *TaxRateLimits) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCharity
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: TaxRateLimits: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: TaxRateLimits: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RateMin", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCharity
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCharity
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCharity
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.RateMin.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RateMax", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCharity
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCharity
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCharity
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.RateMax.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCharity(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCharity
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CollectionPeriod) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCharity
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CollectionPeriod: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CollectionPeriod: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Period", wireType)
+			}
+			m.Period = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCharity
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Period |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TaxCollected", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCharity
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCharity
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCharity
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.TaxCollected.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TargetCharity", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -538,7 +1078,41 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.CharityTwo.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.TargetCharity.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PayoutAmount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCharity
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCharity
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCharity
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.PayoutAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

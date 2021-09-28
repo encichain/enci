@@ -186,7 +186,7 @@ func init() {
 	DefaultNodeHome = filepath.Join(userHomeDir, ".encichain")
 }
 
-// App extends an ABCI application, but with most of its parameters exported.
+// EnciApp extends an ABCI application, but with most of its parameters exported.
 // They are exported for convenience in creating helper functions, as object
 // capabilities aren't needed for testing.
 type EnciApp struct {
@@ -239,7 +239,7 @@ type EnciApp struct {
 	configurator module.Configurator
 }
 
-// New returns a reference to an initialized Charity App.
+// NewEnciApp returns a reference to an initialized Enci App.
 func NewEnciApp(
 	logger log.Logger,
 	db dbm.DB,
