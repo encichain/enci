@@ -4,7 +4,7 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/user/charity/x/charity/types"
+	"github.com/user/encichain/x/charity/types"
 )
 
 // Querier used as alias to Keeper to avoid duplicate methods.

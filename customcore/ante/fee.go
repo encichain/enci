@@ -7,7 +7,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	charitytypes "github.com/user/charity/x/charity/types"
+	charitytypes "github.com/user/encichain/x/charity/types"
 )
 
 // MempoolFeeDecorator will check if the transaction's fee is at least as large

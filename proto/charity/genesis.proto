@@ -5,7 +5,7 @@ package user.charity.charity;
 import "gogoproto/gogo.proto";
 import "charity/charity.proto";
 
-option go_package = "github.com/user/charity/x/charity/types";
+option go_package = "github.com/user/encichain/x/charity/types";
 
 // GenesisState defines the charity module's genesis state.
 message GenesisState {

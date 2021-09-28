@@ -5,7 +5,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	"github.com/user/charity/x/charity/types"
+	"github.com/user/encichain/x/charity/types"
 )
 
 func (k Keeper) GetDenomMetaData(ctx sdk.Context, denom string) (banktypes.Metadata, bool) {

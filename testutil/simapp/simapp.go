@@ -11,7 +11,7 @@ import (
 	tmtypes "github.com/tendermint/tendermint/types"
 	tmdb "github.com/tendermint/tm-db"
 
-	"github.com/user/charity/app"
+	"github.com/user/encichain/app"
 )
 
 // New creates application instance with in-memory database and disabled logging.
@@ -21,7 +21,7 @@ func New(dir string) cosmoscmd.App {
 
 	encoding := cosmoscmd.MakeEncodingConfig(app.ModuleBasics)
 
-	a := app.New(logger, db, nil, true, map[int64]bool{}, dir, 0, encoding,
+	a := app.NewEnciApp(logger, db, nil, true, map[int64]bool{}, dir, 0, encoding,
 		simapp.EmptyAppOptions{})
 	// InitChain updates deliverState which is required when app.NewContext is called
 	a.InitChain(abci.RequestInitChain{

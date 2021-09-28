@@ -17,9 +17,9 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/user/charity/x/charity/client/cli"
-	"github.com/user/charity/x/charity/keeper"
-	"github.com/user/charity/x/charity/types"
+	"github.com/user/encichain/x/charity/client/cli"
+	"github.com/user/encichain/x/charity/keeper"
+	"github.com/user/encichain/x/charity/types"
 	// this line is used by starport scaffolding # ibc/module/import
 )
 
