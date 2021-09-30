@@ -32,7 +32,7 @@ func TestParams(t *testing.T) {
 	p3.Charity.Checksum = "D821F6C986794B80524D765385A106C9D68F79FA6EAD18FF2F79F58B45DAA84"
 	require.Error(t, p3.Validate())
 
-	// Settings param set pairs should not result in nil
+	// Setting param set pairs should not result in nil
 	p4 := DefaultParams()
 	require.NotNil(t, p4.ParamSetPairs())
 	require.NoError(t, p4.Validate())

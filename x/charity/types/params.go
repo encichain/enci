@@ -16,10 +16,14 @@ var (
 
 // Default values
 var (
-	DefaultTaxRate   = sdk.NewDecWithPrec(1, 1)   // 0.1 || 10%
-	DefaultTaxCap    = sdk.NewInt(int64(1000000)) // 1000000 utoken or 1 token
-	DefaultCharity   = Charity{CharityName: "", AccAddress: "", Checksum: ""}
-	DefaultParamsSet = Params{
+	DefaultTaxRate       = sdk.NewDecWithPrec(1, 1)   // 0.1 || 10%
+	DefaultTaxCap        = sdk.NewInt(int64(1000000)) // 1000000 utoken or 1 token
+	DefaultCharity       = Charity{CharityName: "", AccAddress: "", Checksum: ""}
+	DefaultRateMin       = sdk.NewDecWithPrec(1, 3) // 0.001 || 0.1%
+	DefaultRateMax       = sdk.NewDecWithPrec(1, 2) // 0.01 || 1%
+	DefaultTaxRateLimits = TaxRateLimits{RateMin: DefaultRateMin, RateMax: DefaultRateMax}
+	DefaultTaxProceeds   = sdk.ZeroInt()
+	DefaultParamsSet     = Params{
 		Charity: DefaultCharity,
 		TaxCap:  DefaultTaxCap,
 		TaxRate: DefaultTaxRate,

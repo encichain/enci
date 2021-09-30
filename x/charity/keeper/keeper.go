@@ -83,3 +83,17 @@ func (k Keeper) SetTaxRate(ctx sdk.Context, taxRate sdk.Dec) {
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
+
+// GetTaxRateLimits gets the tax rate limits
+func (k Keeper) GetTaxRateLimits(ctx sdk.Context) types.TaxRateLimits {
+	store := ctx.KVStore(k.storeKey)
+	b := store.Get(types.KeyTaxRateLimits)
+	if b == nil {
+		return types.DefaultTaxRateLimits
+	}
+
+	taxlimits := types.TaxRateLimits{}
+	k.cdc.MustUnmarshal(b, &taxlimits)
+
+	return taxlimits
+}

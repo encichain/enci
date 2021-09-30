@@ -24,10 +24,12 @@ const (
 
 // Keys for store
 // stored as format - key: value
-// 0x01: sdk.Dec
+// 0x01: TaxRateLimits
+// 0x02: sdk.Int
 
 var (
-	TaxRateKey = []byte{0x01} // Key for tax rate
+	KeyTaxRateLimits = []byte{0x01} // Key for tax rate limits
+	KeyTaxProceeds   = []byte{0x02} // Key for tax proceeds
 )
 
 // this line is used by starport scaffolding # ibc/keys/port
