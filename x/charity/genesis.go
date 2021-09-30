@@ -17,7 +17,6 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 
 	// this line is used by starport scaffolding # ibc/genesis/init
 
-	// TODO: Cosmos SDK v0.43.0 introduces a bool return value to the GetDenomMetaData function. Refactor to check for non-existent denom meta data.
 	// Set the Denom meta data
 	_, set := k.GetDenomMetaData(ctx, charitymaintypes.MicroTokenDenom)
 
@@ -43,5 +42,5 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 
 	// this line is used by starport scaffolding # ibc/genesis/export
 
-	return types.NewGenesis(taxrate, params)
+	return types.NewGenesisState(taxrate, params)
 }

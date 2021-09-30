@@ -11,7 +11,7 @@ const (
 )
 
 var TokenMetaData = banktypes.Metadata{
-	Description: "The native token of the Charity Chain",
+	Description: "The native token of EnciChain",
 	DenomUnits: []*banktypes.DenomUnit{
 		{Denom: MicroTokenDenom, Exponent: uint32(0), Aliases: []string{"microtoken"}},
 		{Denom: MilliTokenDenom, Exponent: uint32(3), Aliases: []string{"millitoken"}},
