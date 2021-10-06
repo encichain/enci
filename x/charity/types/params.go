@@ -9,24 +9,33 @@ import (
 
 //Parameter keys
 var (
-	KeyCharity = []byte("Charity")
-	KeyTaxCap  = []byte("Taxcap")
-	KeyTaxRate = []byte("TaxRate")
+	KeyCharities = []byte("Charities")
+	KeyTaxCaps   = []byte("Taxcaps")
+	KeyTaxRate   = []byte("TaxRate")
 )
 
 // Default values
 var (
-	DefaultTaxRate       = sdk.NewDecWithPrec(1, 1)   // 0.1 || 10%
-	DefaultTaxCap        = sdk.NewInt(int64(1000000)) // 1000000 utoken or 1 token
-	DefaultCharity       = Charity{CharityName: "", AccAddress: "", Checksum: ""}
+	DefaultTaxRate = sdk.NewDecWithPrec(1, 1)   // 0.1 || 10%
+	DefaultCap     = sdk.NewInt(int64(1000000)) // 1000000 utoken or 1 token
+	DefaultTaxCaps = []TaxCap{TaxCap{
+		Denom: "utoken",
+		Cap:   DefaultCap,
+	}}
+	DefaultCharity = Charity{
+		CharityName: "",
+		AccAddress:  "",
+		Checksum:    "",
+	}
+	DefaultCharities     = []Charity{}
 	DefaultRateMin       = sdk.NewDecWithPrec(1, 3) // 0.001 || 0.1%
 	DefaultRateMax       = sdk.NewDecWithPrec(1, 2) // 0.01 || 1%
 	DefaultTaxRateLimits = TaxRateLimits{RateMin: DefaultRateMin, RateMax: DefaultRateMax}
 	DefaultTaxProceeds   = sdk.ZeroInt()
 	DefaultParamsSet     = Params{
-		Charity: DefaultCharity,
-		TaxCap:  DefaultTaxCap,
-		TaxRate: DefaultTaxRate,
+		Charities: DefaultCharities,
+		TaxCaps:   DefaultTaxCaps,
+		TaxRate:   DefaultTaxRate,
 	}
 )
 
@@ -45,47 +54,73 @@ func ParamKeyTable() paramstypes.KeyTable {
 // ParamSetPairs implements paramstypes.ParamSet interface. Returns ParamSetPairs (key/value pairs)
 func (p *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 	return paramstypes.ParamSetPairs{
-		paramstypes.NewParamSetPair(KeyCharity, &p.Charity, validateCharity),
+		paramstypes.NewParamSetPair(KeyCharities, &p.Charities, validateCharities),
 		paramstypes.NewParamSetPair(KeyTaxRate, &p.TaxRate, validateTaxRate),
-		paramstypes.NewParamSetPair(KeyTaxCap, &p.TaxCap, validateTaxCap),
+		paramstypes.NewParamSetPair(KeyTaxCaps, &p.TaxCaps, validateTaxCaps),
 	}
 }
 
 // Validate performs basic validation on charity parameters.
 func (p Params) Validate() error {
-	addrlength := len([]rune(p.Charity.AccAddress))
+	// Validate charities
+	for _, charity := range p.Charities {
+		addrlength := len([]rune(charity.AccAddress))
+		if charity.AccAddress != "" {
+			if addrlength < 39 {
+				return fmt.Errorf("invalid address length")
+			}
+		}
 
-	if p.Charity.AccAddress != "" {
-		if addrlength < 39 {
-			return fmt.Errorf("invalid address length")
+		hashlength := len([]rune(charity.Checksum))
+		if charity.Checksum != "" && hashlength != 64 {
+			return fmt.Errorf("invalid sha256 hash length")
 		}
 	}
 
-	hashlength := len([]rune(p.Charity.Checksum))
-	if p.Charity.Checksum != "" && hashlength != 64 {
-		return fmt.Errorf("invalid sha256 hash length")
+	// validate taxrate
+	if p.TaxRate.IsNegative() {
+		return fmt.Errorf("Tax Rate must be positive")
+	}
+
+	// Validate taxcaps
+	for _, taxcap := range p.TaxCaps {
+
+		_, exists := sdk.GetDenomUnit(taxcap.Denom)
+
+		if !exists {
+			return fmt.Errorf("TaxCap Denom must be valid")
+		}
+
+		if taxcap.Cap.IsNegative() || taxcap.Cap.IsZero() || taxcap.Cap.IsNil() {
+			return fmt.Errorf("TaxCap Cap is invalid: Must not be negative, 0, nor nil")
+		}
 	}
 
 	return nil
 }
 
 // validateCharity performs basic validation on charity parameter objects
-func validateCharity(i interface{}) error {
+func validateCharities(i interface{}) error {
 	// Type check
-	v, ok := i.(Charity)
+	v, ok := i.([]Charity)
+
 	if !ok {
-		return fmt.Errorf("invalid parameter type: %T. Expected Charity object", i)
-	}
-	addrlength := len([]rune(v.AccAddress))
-	if v.AccAddress != "" {
-		if addrlength < 39 {
-			return fmt.Errorf("invalid address length")
-		}
+		return fmt.Errorf("Invalid parameter type: %T. Expected []Charity", i)
 	}
 
-	hashlength := len([]rune(v.Checksum))
-	if v.Checksum != "" && hashlength != 64 {
-		return fmt.Errorf("invalid sha256 hash length")
+	// Iterate charities
+	for _, charity := range v {
+		addrlength := len([]rune(charity.AccAddress))
+		if charity.AccAddress != "" {
+			if addrlength < 39 {
+				return fmt.Errorf("invalid address length")
+			}
+		}
+
+		hashlength := len([]rune(charity.Checksum))
+		if charity.Checksum != "" && hashlength != 64 {
+			return fmt.Errorf("invalid sha256 hash length")
+		}
 	}
 	return nil
 }
@@ -106,15 +141,24 @@ func validateTaxRate(i interface{}) error {
 }
 
 // validateTaxCap performs basic validation on TaxCap
-func validateTaxCap(i interface{}) error {
+func validateTaxCaps(i interface{}) error {
 	// Type check
-	v, ok := i.(sdk.Int)
+	v, ok := i.([]TaxCap)
 	if !ok {
 		return fmt.Errorf("Invalid parameter type: %T. Expected sdk.Int", i)
 	}
+	// Iterate tax caps
+	for _, taxcap := range v {
 
-	if v.IsNegative() {
-		return fmt.Errorf("Tax cap must be positive")
+		_, exists := sdk.GetDenomUnit(taxcap.Denom)
+
+		if !exists {
+			return fmt.Errorf("TaxCap Denom must be valid")
+		}
+
+		if taxcap.Cap.IsNegative() || taxcap.Cap.IsZero() || taxcap.Cap.IsNil() {
+			return fmt.Errorf("TaxCap Cap is invalid: Must not be negative, 0, nor nil")
+		}
 	}
 	return nil
 }

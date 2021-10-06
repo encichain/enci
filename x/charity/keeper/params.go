@@ -11,15 +11,19 @@ func (k Keeper) GetAllParams(ctx sdk.Context) (params types.Params) {
 	return
 }
 
-// GetCharityOne returns CharityOne of params.
-func (k Keeper) GetCharityOne(ctx sdk.Context) (charity types.Charity) {
-	k.paramStore.Get(ctx, types.KeyCharityOne, &charity)
+// GetCharity returns all Charities of params.
+func (k Keeper) GetCharity(ctx sdk.Context) (charities []types.Charity) {
+	k.paramStore.Get(ctx, types.KeyCharities, &charities)
 	return
 }
 
-// GetCharityOne returns CharityOne of params.
-func (k Keeper) GetCharityTwo(ctx sdk.Context) (charity types.Charity) {
-	k.paramStore.Get(ctx, types.KeyCharityTwo, &charity)
+func (k Keeper) GetTaxRate(ctx sdk.Context) (taxrate sdk.Dec) {
+	k.paramStore.Get(ctx, types.KeyTaxRate, &taxrate)
+	return
+}
+
+func (k Keeper) GetTaxCaps(ctx sdk.Context) (taxcaps []types.TaxCap) {
+	k.paramStore.Get(ctx, types.KeyTaxCaps, &taxcaps)
 	return
 }
 

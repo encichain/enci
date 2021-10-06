@@ -4,6 +4,7 @@ package user.encichain.charity;
 option go_package = "github.com/user/encichain/x/charity/types";
 
 import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 // Charity defines the charity object
 message Charity {
@@ -15,19 +16,26 @@ message Charity {
 
 // Params defines parameters of the charity module able to be changed by governance proposals
 message Params {
-    Charity charity = 1 [(gogoproto.nullable) = false]; // Set the target charity
+    repeated Charity charities = 1 [(gogoproto.nullable) = false]; // Set the target charities
     
     string tax_rate = 2 [               
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", 
         (gogoproto.nullable) = false
     ];
-    // Tax cap represents max tax amount
-    string tax_cap = 3 [                
+    // Tax_caps represent max tax amount for each denom
+    repeated TaxCap tax_caps = 3 [(gogoproto.nullable) = false];  
+}
+
+// TaxCap defines a tax cap for a denom
+message TaxCap {
+    string denom = 1;
+    string Cap = 2 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", 
         (gogoproto.nullable) = false
-    ];  
-
+    ];
 }
+
+
 // TaxRateLimits defines upper and lower limits to the tax_rate
 message TaxRateLimits {
     string rate_min = 1 [
@@ -45,14 +53,20 @@ message TaxRateLimits {
 message CollectionPeriod {
     uint64 period = 1;
     // Tax collected during entire period
-    string tax_collected = 2 [
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    repeated cosmos.base.v1beta1.Coin tax_collected = 2 [
+        (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin",
         (gogoproto.nullable) = false
     ];  
-    Charity target_charity = 3 [(gogoproto.nullable) = false]; // Target charity during duration of tax collection period
-    // Amount paid out to target charity
-    string payout_amount = 4 [
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-        (gogoproto.nullable) = false
+    // Amount paid out to target charities
+    repeated Payout payouts = 3 [(gogoproto.nullable) = false];
+}
+
+// Payout defines a payment to a charity
+message Payout {
+    string denom = 1;
+    string amount = 2 [
+        (gogoproto.nullable) = false, 
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
     ];
+    string recipientaddr = 3;
 }

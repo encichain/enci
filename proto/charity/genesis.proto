@@ -4,6 +4,7 @@ package user.encichain.charity;
 // this line is used by starport scaffolding # genesis/proto/import
 import "gogoproto/gogo.proto";
 import "charity/charity.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/user/encichain/x/charity/types";
 
@@ -13,10 +14,11 @@ message GenesisState {
     // this line is used by starport scaffolding # ibc/genesis/proto
     Params params = 1 [(gogoproto.nullable) = false];
     TaxRateLimits tax_rate_limits = 2 [(gogoproto.nullable) = false]; 
+    repeated TaxCap tax_caps = 3 [(gogoproto.nullable) = false];
     // Current amount of tax collected during current collection period
-    string tax_proceeds = 3 [
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    repeated cosmos.base.v1beta1.Coin tax_proceeds = 4 [
+        (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin",
         (gogoproto.nullable) = false];
-    repeated CollectionPeriod collection_periods = 4 [(gogoproto.nullable) = false];
+    repeated CollectionPeriod collection_periods = 5 [(gogoproto.nullable) = false];
 
 }

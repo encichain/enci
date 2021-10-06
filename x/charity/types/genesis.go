@@ -18,16 +18,20 @@ func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		// this line is used by starport scaffolding # ibc/genesistype/default
 		// this line is used by starport scaffolding # genesis/types/default
-		TaxRate: DefaultTaxRate,
-		Params:  DefaultParams(),
+		Params:            DefaultParams(),
+		TaxRateLimits:     DefaultTaxRateLimits,
+		TaxProceeds:       DefaultTaxProceeds,
+		CollectionPeriods: []CollectionPeriod{},
 	}
 }
 
 // NewGenesis returns a new genesisState object. NOTE: For use with ExportGenesis
-func NewGenesisState(taxrate sdk.Dec, params Params) *GenesisState {
+func NewGenesisState(params Params, taxratelimits TaxRateLimits, taxproceeds sdk.Int, collection_periods []CollectionPeriod) *GenesisState {
 	return &GenesisState{
-		TaxRate: taxrate,
-		Params:  params,
+		Params:            params,
+		TaxRateLimits:     taxratelimits,
+		TaxProceeds:       taxproceeds,
+		CollectionPeriods: collection_periods,
 	}
 }
 

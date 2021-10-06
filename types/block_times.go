@@ -1,7 +1,7 @@
 package types
 
 const (
-	BlockTime       = uint64(7)
+	BlockTime       = uint64(5)
 	BlocksPerMinute = 60 / BlockTime
 	BlocksPerHour   = BlocksPerMinute * 60
 	BlocksPerDay    = BlocksPerHour * 24

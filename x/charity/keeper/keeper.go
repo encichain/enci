@@ -7,6 +7,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	coretypes "github.com/user/encichain/types"
 	"github.com/user/encichain/x/charity/types"
 
 	// this line is used by starport scaffolding # ibc/keeper/import
@@ -58,28 +59,7 @@ func NewKeeper(
 	}
 }
 
-// GetTaxRate gets the tax rate
-func (k Keeper) GetTaxRate(ctx sdk.Context) sdk.Dec {
-	store := ctx.KVStore(k.storeKey)
-	b := store.Get(types.TaxRateKey)
-	if b == nil {
-		return types.DefaultTaxRate
-	}
-	decpro := sdk.DecProto{}
-	k.cdc.MustUnmarshal(b, &decpro)
-
-	return decpro.Dec
-}
-
-// SetTaxRate sets the TaxRate in the store
-func (k Keeper) SetTaxRate(ctx sdk.Context, taxRate sdk.Dec) {
-	store := ctx.KVStore(k.storeKey)
-	b := k.cdc.MustMarshal(&sdk.DecProto{Dec: taxRate})
-
-	// Set the store
-	store.Set(types.TaxRateKey, b)
-}
-
+// Logger returns a module specific logger
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
@@ -96,4 +76,21 @@ func (k Keeper) GetTaxRateLimits(ctx sdk.Context) types.TaxRateLimits {
 	k.cdc.MustUnmarshal(b, &taxlimits)
 
 	return taxlimits
+}
+
+// SetTaxRate sets the TaxRate in the store
+func (k Keeper) SetTaxRateLimits(ctx sdk.Context, taxratelimits types.TaxRateLimits) {
+	store := ctx.KVStore(k.storeKey)
+	b := k.cdc.MustMarshal(&types.TaxRateLimits{
+		RateMin: taxratelimits.RateMin,
+		RateMax: taxratelimits.RateMax,
+	})
+
+	// Set the store
+	store.Set(types.KeyTaxRateLimits, b)
+}
+
+// GetCurrentPeriod calculates the current CollectionPeriod period by dividing current Block height by a Block week.
+func GetCurrentPeriod(ctx sdk.Context) int64 {
+	return (ctx.BlockHeight() / int64(coretypes.BlocksPerWeek))
 }

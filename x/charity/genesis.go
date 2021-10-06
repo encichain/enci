@@ -23,7 +23,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	if !set {
 		k.SetDenomMetaData(ctx, charitymaintypes.TokenMetaData)
 	}
-	k.SetTaxRate(ctx, genState.TaxRate)
+	k.SetTaxRateLimits(ctx, genState.TaxRateLimits)
 	k.SetParams(ctx, genState.Params)
 
 	//Ensure charity collector module account is set
@@ -35,12 +35,12 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 
 // ExportGenesis returns the capability module's exported genesis.
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
-	taxrate := k.GetTaxRate(ctx)
+	taxratelimits := k.GetTaxRateLimits(ctx)
 	params := k.GetAllParams(ctx)
 
 	// this line is used by starport scaffolding # genesis/module/export
 
 	// this line is used by starport scaffolding # ibc/genesis/export
 
-	return types.NewGenesisState(taxrate, params)
+	return types.NewGenesisState(params, taxratelimits)
 }
