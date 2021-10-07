@@ -30,15 +30,15 @@ const (
 // stored as format - key: value
 // 0x01: TaxRateLimits
 // 0x02<denom bytes>: sdk.Int
-// 0x03: sdk.Int
-// 0x04<period bytes>: sdk.Coin
+// 0x03: sdk.Coins
+// 0x04<period bytes>: sdk.Coins
 // 0x05<period bytes>: []Payout
 var (
 	TaxRateLimitsKey     = []byte{0x01} // Key for tax rate limits
 	TaxCapSubKey         = []byte{0x02} // Prefix to taxcaps key
 	TaxProceedsKey       = []byte{0x03} // Key for tax proceeds
-	PeriodTaxProceedsKey = []byte{0x04} // Prefix to period TaxProceeds Key
-	PayoutsKey           = []byte{0x05} // Prefix to period Payouts Key
+	PeriodTaxProceedsKey = []byte{0x04} // Prefix to *period* TaxProceeds Key
+	PayoutsKey           = []byte{0x05} // Prefix to *period* Payouts Key
 )
 
 // this line is used by starport scaffolding # ibc/keys/port

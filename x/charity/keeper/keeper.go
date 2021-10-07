@@ -67,13 +67,13 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 // GetTaxRateLimits gets the tax rate limits
 func (k Keeper) GetTaxRateLimits(ctx sdk.Context) types.TaxRateLimits {
 	store := ctx.KVStore(k.storeKey)
-	b := store.Get(types.KeyTaxRateLimits)
-	if b == nil {
+	bz := store.Get(types.TaxRateLimitsKey)
+	if bz == nil {
 		return types.DefaultTaxRateLimits
 	}
 
 	taxlimits := types.TaxRateLimits{}
-	k.cdc.MustUnmarshal(b, &taxlimits)
+	k.cdc.MustUnmarshal(bz, &taxlimits)
 
 	return taxlimits
 }
@@ -81,16 +81,72 @@ func (k Keeper) GetTaxRateLimits(ctx sdk.Context) types.TaxRateLimits {
 // SetTaxRate sets the TaxRate in the store
 func (k Keeper) SetTaxRateLimits(ctx sdk.Context, taxratelimits types.TaxRateLimits) {
 	store := ctx.KVStore(k.storeKey)
-	b := k.cdc.MustMarshal(&types.TaxRateLimits{
+	bz := k.cdc.MustMarshal(&types.TaxRateLimits{
 		RateMin: taxratelimits.RateMin,
 		RateMax: taxratelimits.RateMax,
 	})
 
 	// Set the store
-	store.Set(types.KeyTaxRateLimits, b)
+	store.Set(types.TaxRateLimitsKey, bz)
 }
 
 // GetCurrentPeriod calculates the current CollectionPeriod period by dividing current Block height by a Block week.
 func GetCurrentPeriod(ctx sdk.Context) int64 {
 	return (ctx.BlockHeight() / int64(coretypes.BlocksPerWeek))
+}
+
+// GetTaxCap fetches a TaxCap Cap from the store stored by *denom*
+func (k Keeper) GetTaxCap(ctx sdk.Context, denom string) sdk.Int {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.GetTaxCapSubKey(denom))
+
+	// Return default cap is no tax cap has been set
+	if bz == nil {
+		return types.DefaultCap
+	}
+
+	ip := sdk.IntProto{}
+	k.cdc.MustUnmarshal(bz, &ip)
+	return ip.Int
+}
+
+// SetTaxCap sets a TaxCap to the store
+func (k Keeper) SetTaxCap(ctx sdk.Context, denom string, taxcap sdk.Int) {
+	store := ctx.KVStore(k.storeKey)
+	bz := k.cdc.MustMarshal(&sdk.IntProto{Int: taxcap})
+
+	store.Set(types.GetTaxCapSubKey(denom), bz)
+}
+
+// AddTaxProceeds adds collected tax to the TaxProceeds record for the current *Period*
+func (k Keeper) AddTaxProceeds(ctx sdk.Context, proceeds sdk.Coins) {
+	// Check if proceeds are positive
+	proceeds.Sort()
+	if proceeds.IsZero() {
+		return
+	}
+	taxproceeds := k.GetTaxProceeds(ctx)
+	taxproceeds.Add(proceeds...)
+	k.SetTaxProceeds(ctx, taxproceeds)
+}
+
+// GetTaxProceeds fetches the current tax proceeds collected in the current *Period* before the end of said *Period*
+func (k Keeper) GetTaxProceeds(ctx sdk.Context) sdk.Coins {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.TaxProceedsKey)
+
+	if bz == nil {
+		return sdk.Coins{}
+	}
+	cs := types.TaxProceeds{}
+	k.cdc.MustUnmarshal(bz, &cs)
+	return cs.TaxProceeds
+}
+
+// SetTaxProceeds sets the tax proceeds to the store
+func (k Keeper) SetTaxProceeds(ctx sdk.Context, proceeds sdk.Coins) {
+	store := ctx.KVStore(k.storeKey)
+	bz := k.cdc.MustMarshal(&types.TaxProceeds{TaxProceeds: proceeds})
+
+	store.Set(types.TaxProceedsKey, bz)
 }

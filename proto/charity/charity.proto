@@ -54,7 +54,7 @@ message CollectionPeriod {
     uint64 period = 1;
     // Tax collected during entire period
     repeated cosmos.base.v1beta1.Coin tax_collected = 2 [
-        (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin",
+        (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
         (gogoproto.nullable) = false
     ];  
     // Amount paid out to target charities
@@ -69,4 +69,11 @@ message Payout {
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
     ];
     string recipientaddr = 3;
+}
+
+// TaxProceeds defines a TaxProceed object containing sdk.Coins field
+message TaxProceeds {
+    repeated cosmos.base.v1beta1.Coin tax_proceeds = 1 [
+        (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+        (gogoproto.nullable) = false];
 }

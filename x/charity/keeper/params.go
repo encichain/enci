@@ -17,12 +17,14 @@ func (k Keeper) GetCharity(ctx sdk.Context) (charities []types.Charity) {
 	return
 }
 
+// GetTaxRate returns the current charity tax rate
 func (k Keeper) GetTaxRate(ctx sdk.Context) (taxrate sdk.Dec) {
 	k.paramStore.Get(ctx, types.KeyTaxRate, &taxrate)
 	return
 }
 
-func (k Keeper) GetTaxCaps(ctx sdk.Context) (taxcaps []types.TaxCap) {
+// GetParamTaxCaps returns the []TaxCap from the paramstore
+func (k Keeper) GetParamTaxCaps(ctx sdk.Context) (taxcaps []types.TaxCap) {
 	k.paramStore.Get(ctx, types.KeyTaxCaps, &taxcaps)
 	return
 }

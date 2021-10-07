@@ -16,9 +16,6 @@ message GenesisState {
     TaxRateLimits tax_rate_limits = 2 [(gogoproto.nullable) = false]; 
     repeated TaxCap tax_caps = 3 [(gogoproto.nullable) = false];
     // Current amount of tax collected during current collection period
-    repeated cosmos.base.v1beta1.Coin tax_proceeds = 4 [
-        (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin",
-        (gogoproto.nullable) = false];
-    repeated CollectionPeriod collection_periods = 5 [(gogoproto.nullable) = false];
+    repeated CollectionPeriod collection_periods = 4 [(gogoproto.nullable) = false];
 
 }
