@@ -205,7 +205,7 @@ func (k Keeper) GetPayouts(ctx sdk.Context, period int64) []types.Payout {
 }
 
 // SetPayouts sets the []Payout to the store, stored under *period*.
-// Payout is for query purposes only, hence the lack of need for storing individual Payout objects.
+// Payout is used for query purposes only, hence the lack of need for storing individual Payout objects.
 func (k Keeper) SetPayouts(ctx sdk.Context, period int64, payouts []types.Payout) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(&types.Payouts{Payouts: payouts})

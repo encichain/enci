@@ -7,6 +7,7 @@ import "gogoproto/gogo.proto";
 // this line is used by starport scaffolding # 1
 
 import "charity/charity.proto";
+import "cosmos/base/v1beta1/coin.proto";
 option go_package = "github.com/user/encichain/x/charity/types";
 
 // Query defines the gRPC querier service.
@@ -23,14 +24,19 @@ service Query {
         option (google.api.http).get = "/encichain/charity/taxrate";
     }
 
-    // Charity returns the set charity
-    rpc Charity(QueryCharityRequest) returns (QueryCharityResponse) {
-        option (google.api.http).get = "/encichain/charity/charity";
+    // Charities returns the set charities
+    rpc Charities(QueryCharitiesRequest) returns (QueryCharitiesResponse) {
+        option (google.api.http).get = "/encichain/charity/charities";
     } 
 
-    // TaxCap returns the tax cap amount
+    // TaxCaps returns the tax caps
+    rpc TaxCaps(QueryTaxCapsRequest) returns (QueryTaxCapsResponse) {
+        option (google.api.http).get = "/encichain/charity/taxcaps";
+    }
+
+    // TaxCap returns the tax cap based on denom
     rpc TaxCap(QueryTaxCapRequest) returns (QueryTaxCapResponse) {
-        option (google.api.http).get = "/encichain/charity/taxcap";
+        option (google.api.http).get = "/encichain/charity/taxcaps/{denom}";
     }
 
     // TaxRateLimits returns the tax rate limits
@@ -38,9 +44,19 @@ service Query {
         option (google.api.http).get = "/encichain/charity/taxratelimits";
     }
 
+    // TaxProceeds returns the tax proceeds for the current period
+    rpc TaxProceeds(QueryTaxProceedsRequest) returns (QueryTaxProceedsResponse) {
+        option (google.api.http).get = "/encichain/charity/taxproceeds";
+    }
+
     // CollectionPeriods returns the list of collection periods 
-    rpc CollectionPeriods(QueryCollectionPeriodsRequest) returns (QueryCollectionPeriodsResponse) {
+    rpc CollectionPeriods(QueryAllCollectionPeriodsRequest) returns (QueryAllCollectionPeriodsResponse) {
         option (google.api.http).get = "/encichain/charity/collectionperiods";
+    }
+    
+    // CollectionPeriod returns a single collection period based on *period*
+    rpc CollectionPeriod(QueryCollectionPeriodRequest) returns (QueryCollectionPeriodResponse) {
+        option (google.api.http).get = "/encichain/charity/collectionperiods/{period}";
     }
 
 }
@@ -66,37 +82,73 @@ message QueryParamsResponse {
     Params params = 1 [(gogoproto.nullable) = false];
 }
 
-// QueryCharityRequest is the request type for the Query Charity Request RPC method
-message QueryCharityRequest {}
+// QueryCharitiesRequest is the request type for the Query Charity Request RPC method
+message QueryCharitiesRequest {}
 
-// QueryCharityResponse is the response type for the Query Charity Request RPC method
-message QueryCharityResponse {
-    Charity charity = 1 [(gogoproto.nullable) = false];
+// QueryCharitiesResponse is the response type for the Query Charity Request RPC method
+message QueryCharitiesResponse {
+    repeated Charity charity = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryTaxCapRequest is the request type for the Query TaxCap Request RPC method
-message QueryTaxCapRequest {}
+// Request type for a single denom taxcap
+message QueryTaxCapRequest {
+    // denom defines the requested denom for the request
+    string denom = 1;
+}
 
-// QueryTaxCapResponse is the response type for the Query TaxCap Request RPC method
+// QueryTaxCapResponse is the response type for the Query TaxCap Request gRPC method
 message QueryTaxCapResponse {
-    string tax_cap = 1 [
+    string Cap = 1 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", 
         (gogoproto.nullable) = false
         ];
 }
 
-// QueryTaxRateLimitsRequest is the request type for the Query TaxRateLimits Request RPC method
+// QueryTaxCapsRequest is the request type for the Query TaxCaps Request gRPC method
+// Request type for all taxcaps
+message QueryTaxCapsRequest {}
+
+// QueryTaxCapsResponse is the response type for the Query TaxCaps Request gRPC method
+message QueryTaxCapsResponse {
+    repeated TaxCap tax_caps = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryTaxProceedsRequest is the request type for the Query TaxProceeds RPC method.
+message QueryTaxProceedsRequest {}
+
+// QueryTaxProceedsResponse is response type for the Query TaxProceeds RPC method
+message QueryTaxProceedsResponse {
+    repeated cosmos.base.v1beta1.Coin tax_proceeds = 1[
+        (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+        (gogoproto.nullable) = false
+    ];
+}
+
+// QueryTaxRateLimitsRequest is the request type for the Query TaxRateLimits Request gRPC method
 message QueryTaxRateLimitsRequest {}
 
-// QueryTaxRateLimitsResponse is the response type for the Query TaxRateLimits Request RPC method
+// QueryTaxRateLimitsResponse is the response type for the Query TaxRateLimits Request gRPC method
 message QueryTaxRateLimitsResponse {
     TaxRateLimits tax_rate_limits = 1 [(gogoproto.nullable) = false];
 }
 
-// QueryCollectionPeriodsRequest is the request type for the Query CollectionPeriods Request RPC method
-message QueryCollectionPeriodsRequest {}
+// QueryAllCollectionPeriodsRequest is the request type for the QueryAllCollectionPeriods Request gRPC method
+message QueryAllCollectionPeriodsRequest {}
 
-// QueryCollectionPeriodsResponse is the response type for the Query CollectionPeriods Request RPC method
-message QueryCollectionPeriodsResponse {
+// QueryAllCollectionPeriodsResponse is the response type for the QueryAllCollectionPeriods Request gRPC method
+message QueryAllCollectionPeriodsResponse {
     repeated CollectionPeriod collection_periods = 1 [(gogoproto.nullable) = false];
+}
+
+//QueryCollectionPeriodRequest is the request type for the Query CollectionPeriod Request RPC method
+// Queries a single CollectionPeriod based on *period*
+message QueryCollectionPeriodRequest {
+    uint64 period = 1;
+}
+
+//QueryCollectionPeriodResponse is the response type for the Query CollectionPeriod Request RPC method
+// Responds with a single CollectionPeriod based on *period*
+message QueryCollectionPeriodResponse {
+   CollectionPeriod collection_period = 1 [(gogoproto.nullable) = false];
 }

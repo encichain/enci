@@ -388,7 +388,7 @@ func (m *TaxProceeds) GetTaxProceeds() github_com_cosmos_cosmos_sdk_types.Coins 
 	return nil
 }
 
-// Payouts defines a storage of Payouts
+// Payouts defines an array of Payout
 type Payouts struct {
 	Payouts []Payout `protobuf:"bytes,1,rep,name=payouts,proto3" json:"payouts"`
 }

@@ -31,15 +31,9 @@ func (q Quierer) Params(context context.Context, req *types.QueryParamsRequest) 
 	return &types.QueryParamsResponse{Params: q.GetAllParams(ctx)}, nil
 }
 
-// CharityOne returns the set charity one
-func (q Quierer) CharityOne(context context.Context, req *types.QueryCharityOneRequest) (*types.QueryCharityOneResponse, error) {
+// Charities returns the set charities or []Charity{} if empty
+func (q Quierer) Charities(context context.Context, req *types.QueryCharityOneRequest) (*types.QueryCharityOneResponse, error) {
 	ctx := sdk.UnwrapSDKContext(context)
-	return &types.QueryCharityOneResponse{CharityOne: q.GetCharityOne(ctx)}, nil
+	return &types.QueryCharityResponse{CharityOne: q.GetCharityOne(ctx)}, nil
 
-}
-
-// CharityOne returns the set charity two
-func (q Quierer) CharityTwo(context context.Context, req *types.QueryCharityTwoRequest) (*types.QueryCharityTwoResponse, error) {
-	ctx := sdk.UnwrapSDKContext(context)
-	return &types.QueryCharityTwoResponse{CharityTwo: q.GetCharityTwo(ctx)}, nil
 }
