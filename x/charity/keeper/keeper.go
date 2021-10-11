@@ -64,6 +64,11 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
+// GetCurrentPeriod calculates the current CollectionPeriod period by dividing current Block height by a Block week.
+func (k Keeper) GetCurrentPeriod(ctx sdk.Context) int64 {
+	return (ctx.BlockHeight() / int64(coretypes.BlocksPerWeek))
+}
+
 // GetTaxRateLimits gets the tax rate limits
 func (k Keeper) GetTaxRateLimits(ctx sdk.Context) types.TaxRateLimits {
 	store := ctx.KVStore(k.storeKey)
@@ -88,11 +93,6 @@ func (k Keeper) SetTaxRateLimits(ctx sdk.Context, taxratelimits types.TaxRateLim
 
 	// Set the store
 	store.Set(types.TaxRateLimitsKey, bz)
-}
-
-// GetCurrentPeriod calculates the current CollectionPeriod period by dividing current Block height by a Block week.
-func GetCurrentPeriod(ctx sdk.Context) int64 {
-	return (ctx.BlockHeight() / int64(coretypes.BlocksPerWeek))
 }
 
 // GetTaxCap fetches a TaxCap Cap from the store stored by *denom*
