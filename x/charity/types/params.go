@@ -18,7 +18,7 @@ var (
 var (
 	DefaultTaxRate = sdk.NewDecWithPrec(1, 1)   // 0.1 || 10%
 	DefaultCap     = sdk.NewInt(int64(1000000)) // 1000000 utoken or 1 token
-	DefaultTaxCaps = []TaxCap{TaxCap{
+	DefaultTaxCaps = []TaxCap{{
 		Denom: "utoken",
 		Cap:   DefaultCap,
 	}}
@@ -31,7 +31,7 @@ var (
 	DefaultRateMin       = sdk.NewDecWithPrec(1, 3) // 0.001 || 0.1%
 	DefaultRateMax       = sdk.NewDecWithPrec(1, 2) // 0.01 || 1%
 	DefaultTaxRateLimits = TaxRateLimits{RateMin: DefaultRateMin, RateMax: DefaultRateMax}
-	DefaultTaxProceeds   = sdk.ZeroInt()
+	DefaultTaxProceeds   = sdk.Coins{}
 	DefaultParamsSet     = Params{
 		Charities: DefaultCharities,
 		TaxCaps:   DefaultTaxCaps,
@@ -79,7 +79,7 @@ func (p Params) Validate() error {
 
 	// validate taxrate
 	if p.TaxRate.IsNegative() {
-		return fmt.Errorf("Tax Rate must be positive")
+		return fmt.Errorf("tax Rate must be positive")
 	}
 
 	// Validate taxcaps
@@ -88,11 +88,11 @@ func (p Params) Validate() error {
 		_, exists := sdk.GetDenomUnit(taxcap.Denom)
 
 		if !exists {
-			return fmt.Errorf("TaxCap Denom must be valid")
+			return fmt.Errorf("taxCap Denom must be valid")
 		}
 
 		if taxcap.Cap.IsNegative() || taxcap.Cap.IsZero() || taxcap.Cap.IsNil() {
-			return fmt.Errorf("TaxCap Cap is invalid: Must not be negative, 0, nor nil")
+			return fmt.Errorf("taxCap Cap is invalid: Must not be negative, 0, nor nil")
 		}
 	}
 
@@ -105,7 +105,7 @@ func validateCharities(i interface{}) error {
 	v, ok := i.([]Charity)
 
 	if !ok {
-		return fmt.Errorf("Invalid parameter type: %T. Expected []Charity", i)
+		return fmt.Errorf("invalid parameter type: %T. Expected []Charity", i)
 	}
 
 	// Iterate charities
@@ -130,11 +130,11 @@ func validateTaxRate(i interface{}) error {
 	// Type check
 	v, ok := i.(sdk.Dec)
 	if !ok {
-		return fmt.Errorf("Invalid parameter type: %T. Expected sdk.Dec", i)
+		return fmt.Errorf("invalid parameter type: %T. Expected sdk.Dec", i)
 	}
 
 	if v.IsNegative() {
-		return fmt.Errorf("Tax Rate must be positive")
+		return fmt.Errorf("tax Rate must be positive")
 	}
 
 	return nil
@@ -145,7 +145,7 @@ func validateTaxCaps(i interface{}) error {
 	// Type check
 	v, ok := i.([]TaxCap)
 	if !ok {
-		return fmt.Errorf("Invalid parameter type: %T. Expected sdk.Int", i)
+		return fmt.Errorf("invalid parameter type: %T. Expected sdk.Int", i)
 	}
 	// Iterate tax caps
 	for _, taxcap := range v {
@@ -153,11 +153,11 @@ func validateTaxCaps(i interface{}) error {
 		_, exists := sdk.GetDenomUnit(taxcap.Denom)
 
 		if !exists {
-			return fmt.Errorf("TaxCap Denom must be valid")
+			return fmt.Errorf("taxCap Denom must be valid")
 		}
 
 		if taxcap.Cap.IsNegative() || taxcap.Cap.IsZero() || taxcap.Cap.IsNil() {
-			return fmt.Errorf("TaxCap Cap is invalid: Must not be negative, 0, nor nil")
+			return fmt.Errorf("taxCap Cap is invalid: Must not be negative, 0, nor nil")
 		}
 	}
 	return nil

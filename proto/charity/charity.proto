@@ -78,7 +78,7 @@ message TaxProceeds {
         (gogoproto.nullable) = false];
 }
 
-// Payouts defines an array of Payout
+// Payouts defines a slice of Payout
 message Payouts {
     repeated Payout payouts = 1 [(gogoproto.nullable) = false];
 }

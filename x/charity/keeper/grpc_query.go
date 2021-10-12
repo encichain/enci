@@ -46,7 +46,7 @@ func (q Querier) TaxCap(context context.Context, req *types.QueryTaxCapRequest) 
 	ctx := sdk.UnwrapSDKContext(context)
 
 	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "Request cannot be nil")
+		return nil, status.Error(codes.InvalidArgument, "request cannot be nil")
 	}
 	err := sdk.ValidateDenom(req.Denom)
 	if err != nil {
@@ -107,11 +107,11 @@ func (q Querier) CollectionPeriod(context context.Context, req *types.QueryColle
 	ctx := sdk.UnwrapSDKContext(context)
 
 	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "Request cannot be nil")
+		return nil, status.Error(codes.InvalidArgument, "request cannot be nil")
 	}
 
 	if req.Period >= uint64(q.GetCurrentPeriod(ctx)) {
-		return nil, status.Error(codes.InvalidArgument, "Period must be valid")
+		return nil, status.Error(codes.InvalidArgument, "period must be valid")
 	}
 
 	collectionPeriod := types.CollectionPeriod{

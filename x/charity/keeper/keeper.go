@@ -95,6 +95,24 @@ func (k Keeper) SetTaxRateLimits(ctx sdk.Context, taxratelimits types.TaxRateLim
 	store.Set(types.TaxRateLimitsKey, bz)
 }
 
+// IterateTaxCaps iterates over all the stored TaxCap and performs a callback function.
+// Stops iteration when callback returns true.
+func (k Keeper) IterateTaxCaps(ctx sdk.Context, cb func(denom string, taxcap sdk.Int) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.TaxCapSubKey)
+
+	defer iterator.Close()
+	for ; iterator.Valid(); iterator.Next() {
+		denom := string(iterator.Key()[len(types.TaxCapSubKey):])
+		ip := sdk.IntProto{}
+		k.cdc.MustUnmarshal(iterator.Value(), &ip)
+
+		if cb(denom, ip.Int) {
+			break
+		}
+	}
+}
+
 // GetTaxCap fetches a TaxCap Cap from the store stored by *denom*
 func (k Keeper) GetTaxCap(ctx sdk.Context, denom string) sdk.Int {
 	store := ctx.KVStore(k.storeKey)
@@ -118,22 +136,19 @@ func (k Keeper) SetTaxCap(ctx sdk.Context, denom string, taxcap sdk.Int) {
 	store.Set(types.GetTaxCapSubKey(denom), bz)
 }
 
-// IterateTaxCaps iterates over all the stored TaxCap and performs a callback function.
-// Stops iteration when callback returns true.
-func (k Keeper) IterateTaxCaps(ctx sdk.Context, cb func(denom string, taxcap sdk.Int) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.TaxCapSubKey)
+// GetTaxCaps returns all TaxCap
+func (k Keeper) GetTaxCaps(ctx sdk.Context) []types.TaxCap {
+	var taxCaps []types.TaxCap
 
-	defer iterator.Close()
-	for ; iterator.Valid(); iterator.Next() {
-		denom := string(iterator.Key()[len(types.TaxCapSubKey):])
-		ip := sdk.IntProto{}
-		k.cdc.MustUnmarshal(iterator.Value(), &ip)
+	k.IterateTaxCaps(ctx, func(denom string, taxcap sdk.Int) bool {
+		taxCaps = append(taxCaps, types.TaxCap{
+			Denom: denom,
+			Cap:   taxcap,
+		})
+		return false
+	})
 
-		if cb(denom, ip.Int) {
-			break
-		}
-	}
+	return taxCaps
 }
 
 // AddTaxProceeds adds collected tax to the TaxProceeds record for the current *Period*
@@ -211,4 +226,21 @@ func (k Keeper) SetPayouts(ctx sdk.Context, period int64, payouts []types.Payout
 	bz := k.cdc.MustMarshal(&types.Payouts{Payouts: payouts})
 
 	store.Set(types.GetPayoutsKey(period), bz)
+}
+
+// GetCollectionPeriods creates and returns a slice of all existing CollectionPeriod
+func (k Keeper) GetCollectionPeriods(ctx sdk.Context) []types.CollectionPeriod {
+	var collectionPeriods []types.CollectionPeriod
+
+	// Iterate through existing *period*s and create CollectionPeriod per period
+	for p := int64(0); p < k.GetCurrentPeriod(ctx); p++ {
+		collectionPeriod := types.CollectionPeriod{
+			Period:       uint64(p),
+			TaxCollected: k.GetPeriodTaxProceeds(ctx, p),
+			Payouts:      k.GetPayouts(ctx, p),
+		}
+		collectionPeriods = append(collectionPeriods, collectionPeriod)
+	}
+
+	return collectionPeriods
 }
