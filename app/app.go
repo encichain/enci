@@ -495,6 +495,7 @@ func NewEnciApp(
 		customante.HandlerOptions{
 			AccountKeeper:   app.AccountKeeper,
 			BankKeeper:      app.BankKeeper,
+			CharityKeeper:   app.CharityKeeper,
 			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			FeegrantKeeper:  app.FeeGrantKeeper,
 			SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),

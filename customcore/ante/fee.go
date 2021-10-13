@@ -62,6 +62,7 @@ func (mfd MempoolFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 type DeductFeeDecorator struct {
 	ak             AccountKeeper
 	bankKeeper     types.BankKeeper
+	CharityKeeper  CharityKeeper
 	feegrantKeeper FeegrantKeeper
 }
 
@@ -130,7 +131,7 @@ func (dfd DeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 
 }
 
-// DeductFees deducts fees from the given account.
+// DeductFees deducts fees and taxes from the given account. sending the fees and taxes to the specified collector accounts
 func DeductFees(bankKeeper types.BankKeeper, ctx sdk.Context, acc types.AccountI, fees sdk.Coins, tax sdk.Coins) error {
 	if !fees.IsValid() || !tax.IsValid() {
 		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFee, "invalid fee amount: %s | %s", fees, tax)

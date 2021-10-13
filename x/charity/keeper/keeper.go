@@ -153,8 +153,6 @@ func (k Keeper) GetTaxCaps(ctx sdk.Context) []types.TaxCap {
 
 // AddTaxProceeds adds collected tax to the TaxProceeds record for the current *Period*
 func (k Keeper) AddTaxProceeds(ctx sdk.Context, proceeds sdk.Coins) {
-	// Check if proceeds are positive
-	proceeds.Sort()
 	if proceeds.IsZero() {
 		return
 	}

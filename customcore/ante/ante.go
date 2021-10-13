@@ -14,6 +14,7 @@ type HandlerOptions struct {
 	AccountKeeper   AccountKeeper
 	BankKeeper      types.BankKeeper
 	FeegrantKeeper  FeegrantKeeper
+	CharityKeeper   CharityKeeper
 	SignModeHandler authsigning.SignModeHandler
 	SigGasConsumer  func(meter sdk.GasMeter, sig signing.SignatureV2, params types.Params) error
 }

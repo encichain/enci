@@ -18,3 +18,8 @@ type AccountKeeper interface {
 type FeegrantKeeper interface {
 	UseGrantedFees(ctx sdk.Context, granter, grantee sdk.AccAddress, fee sdk.Coins, msgs []sdk.Msg) error
 }
+
+type CharityKeeper interface {
+	AddTaxProceeds(ctx sdk.Context, proceeds sdk.Coins)
+	GetTaxCap(ctx sdk.Context, denom string) sdk.Int
+}
