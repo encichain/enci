@@ -106,7 +106,8 @@ import (
 
 const (
 	AccountAddressPrefix = "enci"
-	AppName              = "EnciApp"
+	AppName              = "encichain"
+	Name                 = "encichain"
 )
 
 // Cosmos SDK version: v044
@@ -332,7 +333,7 @@ func NewEnciApp(
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath, app.BaseApp)
 
 	//Register upgrade handlers for migration
-	app.registerUpgradeHandlers()
+	//app.registerUpgradeHandlers()
 
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks

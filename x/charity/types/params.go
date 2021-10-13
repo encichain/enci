@@ -12,6 +12,7 @@ var (
 	KeyCharities = []byte("Charities")
 	KeyTaxCaps   = []byte("Taxcaps")
 	KeyTaxRate   = []byte("TaxRate")
+	KeyCharity   = []byte("Charity")
 )
 
 // Default values
@@ -19,7 +20,7 @@ var (
 	DefaultTaxRate = sdk.NewDecWithPrec(1, 1)   // 0.1 || 10%
 	DefaultCap     = sdk.NewInt(int64(1000000)) // 1000000 utoken or 1 token
 	DefaultTaxCaps = []TaxCap{{
-		Denom: "utoken",
+		Denom: "uenci",
 		Cap:   DefaultCap,
 	}}
 	DefaultCharity = Charity{
@@ -27,7 +28,7 @@ var (
 		AccAddress:  "",
 		Checksum:    "",
 	}
-	DefaultCharities     = []Charity{}
+	DefaultCharities     = []Charity{DefaultCharity, DefaultCharity}
 	DefaultRateMin       = sdk.NewDecWithPrec(1, 3) // 0.001 || 0.1%
 	DefaultRateMax       = sdk.NewDecWithPrec(1, 2) // 0.01 || 1%
 	DefaultTaxRateLimits = TaxRateLimits{RateMin: DefaultRateMin, RateMax: DefaultRateMax}
@@ -36,6 +37,7 @@ var (
 		Charities: DefaultCharities,
 		TaxCaps:   DefaultTaxCaps,
 		TaxRate:   DefaultTaxRate,
+		Charity:   DefaultCharity,
 	}
 )
 
@@ -57,6 +59,7 @@ func (p *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 		paramstypes.NewParamSetPair(KeyCharities, &p.Charities, validateCharities),
 		paramstypes.NewParamSetPair(KeyTaxRate, &p.TaxRate, validateTaxRate),
 		paramstypes.NewParamSetPair(KeyTaxCaps, &p.TaxCaps, validateTaxCaps),
+		paramstypes.NewParamSetPair(KeyCharity, &p.Charity, validateCharity),
 	}
 }
 
@@ -85,9 +88,9 @@ func (p Params) Validate() error {
 	// Validate taxcaps
 	for _, taxcap := range p.TaxCaps {
 
-		_, exists := sdk.GetDenomUnit(taxcap.Denom)
+		err := sdk.ValidateDenom(taxcap.Denom)
 
-		if !exists {
+		if err != nil {
 			return fmt.Errorf("taxCap Denom must be valid")
 		}
 
@@ -150,15 +153,23 @@ func validateTaxCaps(i interface{}) error {
 	// Iterate tax caps
 	for _, taxcap := range v {
 
-		_, exists := sdk.GetDenomUnit(taxcap.Denom)
+		err := sdk.ValidateDenom(taxcap.Denom)
 
-		if !exists {
+		if err != nil {
 			return fmt.Errorf("taxCap Denom must be valid")
 		}
 
 		if taxcap.Cap.IsNegative() || taxcap.Cap.IsZero() || taxcap.Cap.IsNil() {
 			return fmt.Errorf("taxCap Cap is invalid: Must not be negative, 0, nor nil")
 		}
+	}
+	return nil
+}
+
+func validateCharity(i interface{}) error {
+	_, ok := i.(Charity)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T. Expected Charity", i)
 	}
 	return nil
 }

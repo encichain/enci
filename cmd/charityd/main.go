@@ -10,10 +10,10 @@ import (
 
 func main() {
 	rootCmd, _ := cosmoscmd.NewRootCmd(
-		app.AppName,
+		app.Name,
 		app.AccountAddressPrefix,
 		app.DefaultNodeHome,
-		app.AppName,
+		app.Name,
 		app.ModuleBasics,
 		app.NewEnciApp,
 		// this line is used by starport scaffolding # root/arguments

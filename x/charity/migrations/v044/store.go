@@ -5,7 +5,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	v042charity "github.com/user/encichain/x/charity/migrations/v042"
-	"github.com/user/encichain/x/charity/types"
 )
 
 func migrateTaxRate(store sdk.KVStore) {
@@ -18,7 +17,6 @@ func migrateTaxRate(store sdk.KVStore) {
 
 	for ; oldstoreIter.Valid(); oldstoreIter.Next() {
 
-		store.Set(types.TaxRateKey, oldstoreIter.Value())
 		oldstore.Delete(oldstoreIter.Key())
 	}
 

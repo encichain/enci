@@ -4,21 +4,13 @@
     "changes": [
       {
         "subspace": "charity",
-        "key": "charityOne",
-        "value": {
-          "charity_name" : "FOUNDATION OF THE NEEDY CHILDREN TEST",
-          "accAddress" : "charity1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6",
-          "checksum" : "8FF7B399E22B0C99B5FF1B8F0859858797ECB81609BD0088F14A53CC9B417185"
-        }
-      },
-      {
-        "subspace": "charity",
-        "key": "charityTwo",
-        "value": {
-          "charity_name" : "FOUNDATION OF THE NEEDY CHILDREN TEST2",
-          "accAddress" : "charity1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6",
-          "checksum" : "9F03405D2EAF82BD86B252E11679ABBA491ECB420A1A68FE454706D834851370"
-        }
+        "key": "charity",
+        "value":
+          {
+            "charity_name" : "FOUNDATION OF THE NEEDY CHILDREN TEST",
+            "accAddress" : "enci1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6",
+            "checksum" : "8FF7B399E22B0C99B5FF1B8F0859858797ECB81609BD0088F14A53CC9B417185"
+          }
       }
     ],
     "deposit": "10000000stake"
