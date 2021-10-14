@@ -14,6 +14,8 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmdb "github.com/tendermint/tm-db"
 	"github.com/user/encichain/x/charity/types"
+
+	coretypes "github.com/user/encichain/types"
 )
 
 func setupKeeper(t testing.TB) (*Keeper, sdk.Context) {
@@ -38,4 +40,36 @@ func setupKeeper(t testing.TB) (*Keeper, sdk.Context) {
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
 	return keeper, ctx
+}
+
+func TestTaxRateLimits(t *testing.T) {
+	input := CreateTestApp(t)
+
+	// See that we can get and set tax rate
+	for i := int64(0); i < 10; i++ {
+		input.CharityKeeper.SetTaxRateLimits(input.Ctx, types.TaxRateLimits{
+			RateMin: sdk.NewDecWithPrec(i, 3),
+			RateMax: sdk.NewDecWithPrec(i, 2),
+		},
+		)
+		require.Equal(t, types.TaxRateLimits{
+			RateMin: sdk.NewDecWithPrec(i, 3),
+			RateMax: sdk.NewDecWithPrec(i, 2),
+		}, input.CharityKeeper.GetTaxRateLimits(input.Ctx))
+	}
+}
+
+func TestIterateTaxCap(t *testing.T) {
+	input := CreateTestApp(t)
+
+	uenciCap := sdk.NewInt(1000000)
+	input.CharityKeeper.SetTaxCap(input.Ctx, coretypes.MicroTokenDenom, uenciCap)
+
+	input.CharityKeeper.IterateTaxCaps(input.Ctx, func(denom string, taxCap sdk.Int) bool {
+		if denom == coretypes.MicroTokenDenom {
+			require.Equal(t, uenciCap, taxCap)
+		}
+		return true
+	})
+
 }
