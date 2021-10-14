@@ -157,20 +157,19 @@ func (k Keeper) AddTaxProceeds(ctx sdk.Context, proceeds sdk.Coins) {
 		return
 	}
 	taxproceeds := k.GetTaxProceeds(ctx)
-	taxproceeds.Add(proceeds...)
-	k.SetTaxProceeds(ctx, taxproceeds)
+	k.SetTaxProceeds(ctx, taxproceeds.Add(proceeds...))
 }
 
 // GetTaxProceeds fetches the current tax proceeds collected in the current *Period* before the end of said *Period*
 func (k Keeper) GetTaxProceeds(ctx sdk.Context) sdk.Coins {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.TaxProceedsKey)
-
-	if bz == nil {
-		return sdk.Coins{}
-	}
 	csp := types.TaxProceeds{}
-	k.cdc.MustUnmarshal(bz, &csp)
+	if bz == nil {
+		csp.TaxProceeds = sdk.Coins{}
+	} else {
+		k.cdc.MustUnmarshal(bz, &csp)
+	}
 	return csp.TaxProceeds
 }
 

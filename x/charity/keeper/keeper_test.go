@@ -73,3 +73,38 @@ func TestIterateTaxCap(t *testing.T) {
 	})
 
 }
+
+func TestParams(t *testing.T) {
+	input := CreateTestApp(t)
+
+	defaultParams := types.DefaultParams()
+	input.CharityKeeper.SetParams(input.Ctx, defaultParams)
+
+	getParams := input.CharityKeeper.GetAllParams(input.Ctx)
+	require.Equal(t, defaultParams, getParams)
+}
+
+func TestTaxProceeds(t *testing.T) {
+	input := CreateTestApp(t)
+
+	for i := int64(0); i < 10; i++ {
+		proceeds := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(100+i)))
+		input.CharityKeeper.AddTaxProceeds(input.Ctx, proceeds)
+		input.CharityKeeper.AddTaxProceeds(input.Ctx, proceeds)
+		input.CharityKeeper.AddTaxProceeds(input.Ctx, proceeds)
+
+		require.Equal(t, proceeds.Add(proceeds...).Add(proceeds...), input.CharityKeeper.GetTaxProceeds(input.Ctx))
+
+		input.CharityKeeper.SetTaxProceeds(input.Ctx, sdk.Coins{})
+		require.True(t, input.CharityKeeper.GetTaxProceeds(input.Ctx).IsZero())
+	}
+
+	proceeds := sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(100)}}
+	input.CharityKeeper.SetTaxProceeds(input.Ctx, proceeds)
+	require.Equal(t, proceeds, input.CharityKeeper.GetTaxProceeds(input.Ctx))
+
+	// Test AddTaxProceed single case
+	input.CharityKeeper.SetTaxProceeds(input.Ctx, proceeds)
+	input.CharityKeeper.AddTaxProceeds(input.Ctx, proceeds)
+	require.Equal(t, proceeds.Add(proceeds...), input.CharityKeeper.GetTaxProceeds(input.Ctx))
+}

@@ -32,7 +32,8 @@ var (
 	DefaultRateMin       = sdk.NewDecWithPrec(1, 3) // 0.001 || 0.1%
 	DefaultRateMax       = sdk.NewDecWithPrec(1, 2) // 0.01 || 1%
 	DefaultTaxRateLimits = TaxRateLimits{RateMin: DefaultRateMin, RateMax: DefaultRateMax}
-	DefaultTaxProceeds   = sdk.Coins{}
+	DefaultCoinProceed   = sdk.Coin{Denom: "uenci", Amount: sdk.NewInt(100)}
+	DefaultTaxProceeds   = sdk.Coins{DefaultCoinProceed}
 	DefaultParamsSet     = Params{
 		Charities: DefaultCharities,
 		TaxCaps:   DefaultTaxCaps,
