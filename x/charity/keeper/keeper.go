@@ -99,11 +99,11 @@ func (k Keeper) SetTaxRateLimits(ctx sdk.Context, taxratelimits types.TaxRateLim
 // Stops iteration when callback returns true.
 func (k Keeper) IterateTaxCaps(ctx sdk.Context, cb func(denom string, taxcap sdk.Int) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.TaxCapSubKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.TaxCapKey)
 
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
-		denom := string(iterator.Key()[len(types.TaxCapSubKey):])
+		denom := string(iterator.Key()[len(types.TaxCapKey):])
 		ip := sdk.IntProto{}
 		k.cdc.MustUnmarshal(iterator.Value(), &ip)
 
@@ -116,7 +116,7 @@ func (k Keeper) IterateTaxCaps(ctx sdk.Context, cb func(denom string, taxcap sdk
 // GetTaxCap fetches a TaxCap Cap from the store stored by *denom*
 func (k Keeper) GetTaxCap(ctx sdk.Context, denom string) sdk.Int {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.GetTaxCapSubKey(denom))
+	bz := store.Get(types.GetTaxCapKey(denom))
 
 	// Return default cap is no tax cap has been set
 	if bz == nil {
@@ -133,7 +133,7 @@ func (k Keeper) SetTaxCap(ctx sdk.Context, denom string, taxcap sdk.Int) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(&sdk.IntProto{Int: taxcap})
 
-	store.Set(types.GetTaxCapSubKey(denom), bz)
+	store.Set(types.GetTaxCapKey(denom), bz)
 }
 
 // GetTaxCaps returns all TaxCap
@@ -240,4 +240,30 @@ func (k Keeper) GetCollectionPeriods(ctx sdk.Context) []types.CollectionPeriod {
 	}
 
 	return collectionPeriods
+}
+
+// ClearPeriodTaxProceeds deletes all Tax Proceeds stored by *period* from the store
+// NOTE: For testing purposes only
+func (k Keeper) ClearPeriodTaxProceeds(ctx sdk.Context) {
+	store := ctx.KVStore(k.storeKey)
+
+	iter := sdk.KVStorePrefixIterator(store, types.PeriodTaxProceedsKey)
+	defer iter.Close()
+
+	for ; iter.Valid(); iter.Next() {
+		store.Delete(iter.Key())
+	}
+}
+
+// ClearPayouts deletes all []Payout stored by *period* from the store
+// NOTE: For testing purposes only
+func (k Keeper) ClearPayouts(ctx sdk.Context) {
+	store := ctx.KVStore(k.storeKey)
+
+	iter := sdk.KVStorePrefixIterator(store, types.PayoutsKey)
+	defer iter.Close()
+
+	for ; iter.Valid(); iter.Next() {
+		store.Delete(iter.Key())
+	}
 }

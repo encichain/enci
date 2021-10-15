@@ -121,7 +121,7 @@ func CreateTestApp(t *testing.T) TestApp {
 	tKeyParams := sdk.NewTransientStoreKey(paramstypes.TStoreKey)
 	keyStaking := sdk.NewKVStoreKey(stakingtypes.StoreKey)
 	keyDistr := sdk.NewKVStoreKey(distrtypes.StoreKey)
-	keyCharity := sdk.NewKVStoreKey(charitytypes.StoreKey)
+	ParamKeyCharity := sdk.NewKVStoreKey(charitytypes.StoreKey)
 	memkeyCharity := sdk.NewKVStoreKey(charitytypes.MemStoreKey)
 
 	db := dbm.NewMemDB()
@@ -134,7 +134,7 @@ func CreateTestApp(t *testing.T) TestApp {
 	ms.MountStoreWithDB(keyBank, sdk.StoreTypeIAVL, db)
 	ms.MountStoreWithDB(tKeyParams, sdk.StoreTypeTransient, db)
 	ms.MountStoreWithDB(keyParams, sdk.StoreTypeIAVL, db)
-	ms.MountStoreWithDB(keyCharity, sdk.StoreTypeIAVL, db)
+	ms.MountStoreWithDB(ParamKeyCharity, sdk.StoreTypeIAVL, db)
 	ms.MountStoreWithDB(keyStaking, sdk.StoreTypeIAVL, db)
 	ms.MountStoreWithDB(keyDistr, sdk.StoreTypeIAVL, db)
 
@@ -218,7 +218,7 @@ func CreateTestApp(t *testing.T) TestApp {
 
 	charityKeeper := NewKeeper(
 		appCodec,
-		keyCharity,
+		ParamKeyCharity,
 		memkeyCharity,
 		bankKeeper,
 		accountKeeper,

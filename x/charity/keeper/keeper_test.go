@@ -43,11 +43,11 @@ func setupKeeper(t testing.TB) (*Keeper, sdk.Context) {
 }
 
 func TestTaxRateLimits(t *testing.T) {
-	input := CreateTestApp(t)
+	app := CreateTestApp(t)
 
 	// See that we can get and set tax rate
 	for i := int64(0); i < 10; i++ {
-		input.CharityKeeper.SetTaxRateLimits(input.Ctx, types.TaxRateLimits{
+		app.CharityKeeper.SetTaxRateLimits(app.Ctx, types.TaxRateLimits{
 			RateMin: sdk.NewDecWithPrec(i, 3),
 			RateMax: sdk.NewDecWithPrec(i, 2),
 		},
@@ -55,8 +55,18 @@ func TestTaxRateLimits(t *testing.T) {
 		require.Equal(t, types.TaxRateLimits{
 			RateMin: sdk.NewDecWithPrec(i, 3),
 			RateMax: sdk.NewDecWithPrec(i, 2),
-		}, input.CharityKeeper.GetTaxRateLimits(input.Ctx))
+		}, app.CharityKeeper.GetTaxRateLimits(app.Ctx))
 	}
+}
+
+func TestTaxCap(t *testing.T) {
+	app := CreateTestApp(t)
+
+	for i := int64(0); i < 10; i++ {
+		app.CharityKeeper.SetTaxCap(app.Ctx, coretypes.MicroTokenDenom, sdk.NewInt(i))
+		require.Equal(t, sdk.NewInt(i), app.CharityKeeper.GetTaxCap(app.Ctx, coretypes.MicroTokenDenom))
+	}
+
 }
 
 func TestIterateTaxCap(t *testing.T) {

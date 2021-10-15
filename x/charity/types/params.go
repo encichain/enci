@@ -9,10 +9,10 @@ import (
 
 //Parameter keys
 var (
-	KeyCharities = []byte("Charities")
-	KeyTaxCaps   = []byte("Taxcaps")
-	KeyTaxRate   = []byte("TaxRate")
-	KeyCharity   = []byte("Charity")
+	ParamKeyCharities = []byte("Charities")
+	ParamKeyTaxCaps   = []byte("Taxcaps")
+	ParamKeyTaxRate   = []byte("TaxRate")
+	ParamKeyCharity   = []byte("Charity")
 )
 
 // Default values
@@ -57,10 +57,10 @@ func ParamKeyTable() paramstypes.KeyTable {
 // ParamSetPairs implements paramstypes.ParamSet interface. Returns ParamSetPairs (key/value pairs)
 func (p *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 	return paramstypes.ParamSetPairs{
-		paramstypes.NewParamSetPair(KeyCharities, &p.Charities, validateCharities),
-		paramstypes.NewParamSetPair(KeyTaxRate, &p.TaxRate, validateTaxRate),
-		paramstypes.NewParamSetPair(KeyTaxCaps, &p.TaxCaps, validateTaxCaps),
-		paramstypes.NewParamSetPair(KeyCharity, &p.Charity, validateCharity),
+		paramstypes.NewParamSetPair(ParamKeyCharities, &p.Charities, validateCharities),
+		paramstypes.NewParamSetPair(ParamKeyTaxRate, &p.TaxRate, validateTaxRate),
+		paramstypes.NewParamSetPair(ParamKeyTaxCaps, &p.TaxCaps, validateTaxCaps),
+		paramstypes.NewParamSetPair(ParamKeyCharity, &p.Charity, validateCharity),
 	}
 }
 
