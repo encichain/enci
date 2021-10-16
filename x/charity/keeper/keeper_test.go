@@ -132,8 +132,8 @@ func TestPeriodTaxProceeds(t *testing.T) {
 
 		// Try to get unset TaxProceed, should return sdk.Coins{}
 		require.Equal(t, sdk.Coins{}, testApp.CharityKeeper.GetPeriodTaxProceeds(testApp.Ctx, i+1))
-
 		require.NoError(t, testApp.CharityKeeper.GetPeriodTaxProceeds(testApp.Ctx, i).Validate())
+
 		// Check if Get method retrieves valid set TaxProceed
 		require.Equal(t, sdk.Coins{
 			{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(i*20000 + 100)},

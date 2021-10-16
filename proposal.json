@@ -1,16 +1,16 @@
 {
     "title": "Charity Param Change",
-    "description": "Update charityOne and charityTwo",
+    "description": "Update charities",
     "changes": [
       {
         "subspace": "charity",
-        "key": "charity",
+        "key": "charities",
         "value":
-          {
+          [{
             "charity_name" : "FOUNDATION OF THE NEEDY CHILDREN TEST",
             "accAddress" : "enci1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6",
             "checksum" : "8FF7B399E22B0C99B5FF1B8F0859858797ECB81609BD0088F14A53CC9B417185"
-          }
+          }]
       }
     ],
     "deposit": "10000000stake"
