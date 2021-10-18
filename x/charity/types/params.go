@@ -12,7 +12,6 @@ var (
 	ParamKeyCharities = []byte("Charities")
 	ParamKeyTaxCaps   = []byte("Taxcaps")
 	ParamKeyTaxRate   = []byte("TaxRate")
-	ParamKeyCharity   = []byte("Charity")
 )
 
 // Default values
@@ -38,7 +37,6 @@ var (
 		Charities: DefaultCharities,
 		TaxCaps:   DefaultTaxCaps,
 		TaxRate:   DefaultTaxRate,
-		Charity:   DefaultCharity,
 	}
 )
 
@@ -60,7 +58,6 @@ func (p *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 		paramstypes.NewParamSetPair(ParamKeyCharities, &p.Charities, validateCharities),
 		paramstypes.NewParamSetPair(ParamKeyTaxRate, &p.TaxRate, validateTaxRate),
 		paramstypes.NewParamSetPair(ParamKeyTaxCaps, &p.TaxCaps, validateTaxCaps),
-		paramstypes.NewParamSetPair(ParamKeyCharity, &p.Charity, validateCharity),
 	}
 }
 
@@ -163,14 +160,6 @@ func validateTaxCaps(i interface{}) error {
 		if taxcap.Cap.IsNegative() || taxcap.Cap.IsZero() || taxcap.Cap.IsNil() {
 			return fmt.Errorf("taxCap Cap is invalid: Must not be negative, 0, nor nil")
 		}
-	}
-	return nil
-}
-
-func validateCharity(i interface{}) error {
-	_, ok := i.(Charity)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T. Expected Charity", i)
 	}
 	return nil
 }

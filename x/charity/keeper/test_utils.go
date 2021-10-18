@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -42,6 +43,8 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	//charitykeeper "github.com/user/encichain/x/charity/keeper"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	charitytypes "github.com/user/encichain/x/charity/types"
 )
 
@@ -112,6 +115,7 @@ type TestApp struct {
 	CharityKeeper Keeper
 	DistrKeeper   distrkeeper.Keeper
 	StakingKeeper stakingkeeper.Keeper
+	ParamsKeeper  paramskeeper.Keeper
 }
 
 func CreateTestApp(t *testing.T) TestApp {
@@ -227,5 +231,25 @@ func CreateTestApp(t *testing.T) TestApp {
 
 	charityKeeper.SetParams(ctx, charitytypes.DefaultParams())
 
-	return TestApp{ctx, legacyAmino, accountKeeper, bankKeeper, *charityKeeper, distrKeeper, stakingKeeper}
+	return TestApp{ctx, legacyAmino, accountKeeper, bankKeeper, *charityKeeper, distrKeeper, stakingKeeper, paramsKeeper}
+}
+
+//Taken from params proposal_handler.go. Attempts to update the params with the values in ParameterChangeProposal{}
+func handleParameterChangeProposal(ctx sdk.Context, k paramskeeper.Keeper, p *proposal.ParameterChangeProposal) error {
+	for _, c := range p.Changes {
+		ss, ok := k.GetSubspace(c.Subspace)
+		if !ok {
+			return sdkerrors.Wrap(proposal.ErrUnknownSubspace, c.Subspace)
+		}
+
+		k.Logger(ctx).Info(
+			fmt.Sprintf("attempt to set new parameter value; key: %s, value: %s", c.Key, c.Value),
+		)
+
+		if err := ss.Update(ctx, []byte(c.Key), []byte(c.Value)); err != nil {
+			return sdkerrors.Wrapf(proposal.ErrSettingParameter, "key: %s, value: %s, err: %s", c.Key, c.Value, err.Error())
+		}
+	}
+
+	return nil
 }

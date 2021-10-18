@@ -4,7 +4,7 @@
     "changes": [
       {
         "subspace": "charity",
-        "key": "charities",
+        "key": "Charities",
         "value":
           [{
             "charity_name" : "FOUNDATION OF THE NEEDY CHILDREN TEST",
