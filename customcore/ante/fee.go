@@ -66,10 +66,11 @@ type DeductFeeDecorator struct {
 	feegrantKeeper FeegrantKeeper
 }
 
-func NewDeductFeeDecorator(ak AccountKeeper, bk types.BankKeeper, fk FeegrantKeeper) DeductFeeDecorator {
+func NewDeductFeeDecorator(ak AccountKeeper, bk types.BankKeeper, ck CharityKeeper, fk FeegrantKeeper) DeductFeeDecorator {
 	return DeductFeeDecorator{
 		ak:             ak,
 		bankKeeper:     bk,
+		CharityKeeper:  ck,
 		feegrantKeeper: fk,
 	}
 }
@@ -116,12 +117,19 @@ func (dfd DeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 		return ctx, sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "fee payer address: %s does not exist", deductFeesFrom)
 	}
 
+	taxcap := dfd.CharityKeeper.GetTaxCap(ctx, "uenci")
+
 	// deduct the fees
 	if !(fee.IsZero() && tax.IsZero()) {
-		err = DeductFees(dfd.bankKeeper, ctx, deductFeesFromAcc, fee, tax)
+		err = DeductFees(dfd.bankKeeper, ctx, deductFeesFromAcc, fee, tax, taxcap)
 		if err != nil {
 			return ctx, err
 		}
+	}
+
+	// Record the tax proceeds to store
+	if !tax.IsZero() {
+		dfd.CharityKeeper.AddTaxProceeds(ctx, tax)
 	}
 
 	// Send token to destination account
@@ -132,7 +140,7 @@ func (dfd DeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 }
 
 // DeductFees deducts fees and taxes from the given account. sending the fees and taxes to the specified collector accounts
-func DeductFees(bankKeeper types.BankKeeper, ctx sdk.Context, acc types.AccountI, fees sdk.Coins, tax sdk.Coins) error {
+func DeductFees(bankKeeper types.BankKeeper, ctx sdk.Context, acc types.AccountI, fees sdk.Coins, tax sdk.Coins, taxcap sdk.Int) error {
 	if !fees.IsValid() || !tax.IsValid() {
 		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFee, "invalid fee amount: %s | %s", fees, tax)
 	}
