@@ -9,26 +9,44 @@ import (
 	"github.com/user/encichain/x/charity/types"
 )
 
-// IsValidCharity performs checks on Charity object
-func (k Keeper) IsValidCharity(ctx sdk.Context, charity types.Charity) (bool, error) {
+// DonateCharity sends proceeds to the specified charity
+func (k Keeper) DonateCharity(ctx sdk.Context, proceeds sdk.Coins, charity types.Charity) error {
+	err := k.IsValidCharity(ctx, charity)
+	if err != nil {
+		return err
+	}
+	addr, err := sdk.AccAddressFromBech32(charity.AccAddress)
+	if err != nil {
+		return err
+	}
+	// Try to send coins from tax collector
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.CharityCollectorName, addr, proceeds)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// IsValidCharity performs Validation on Charity object
+func (k Keeper) IsValidCharity(ctx sdk.Context, charity types.Charity) error {
 	// Check if Checksum is valid
 	csb := sha256.Sum256([]byte(charity.CharityName + charity.AccAddress))
 	checksum := hex.EncodeToString(csb[:])
 
 	if checksum != charity.Checksum {
-		return false, fmt.Errorf("checksum is invalid")
+		return fmt.Errorf("checksum is invalid")
 	}
 
 	// Check account address
 	// TODO: Use accountKeeper.HasAccount method when implemented in cosmos-sdk.
 	addr, err := sdk.AccAddressFromBech32(charity.AccAddress)
 	if err != nil {
-		return false, fmt.Errorf("invalid address")
+		return fmt.Errorf("invalid address")
 	}
 	acc := k.accountKeeper.GetAccount(ctx, addr)
 	if acc == nil {
-		return false, fmt.Errorf("Aacount does not exist for the provided address")
+		return fmt.Errorf("account does not exist for the provided address")
 	}
 
-	return true, nil
+	return nil
 }
