@@ -19,7 +19,7 @@ func (k Keeper) DonateCharity(ctx sdk.Context, proceeds sdk.Coins, charity types
 	if err != nil {
 		return err
 	}
-	// Try to send coins from tax collector
+	// Try to send coins from tax collector module account to charity address
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.CharityCollectorName, addr, proceeds)
 	if err != nil {
 		return err
