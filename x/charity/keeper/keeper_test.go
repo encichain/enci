@@ -156,8 +156,8 @@ func TestPayouts(t *testing.T) {
 
 	for i := int64(0); i < 10; i++ {
 		payouts := []types.Payout{
-			{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(i*sdk.DefaultPowerReduction.Int64() + 1), Recipientaddr: "enci1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6test"},
-			{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(i*sdk.DefaultPowerReduction.Int64() + 1000), Recipientaddr: "enci1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6test2"},
+			{Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(i*sdk.DefaultPowerReduction.Int64() + 1)}}, Recipientaddr: "enci1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6test"},
+			{Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(i*sdk.DefaultPowerReduction.Int64() + 1000)}}, Recipientaddr: "enci1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6test2"},
 		}
 
 		app.CharityKeeper.SetPayouts(app.Ctx, i, payouts)

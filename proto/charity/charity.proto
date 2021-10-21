@@ -63,12 +63,10 @@ message CollectionPeriod {
 
 // Payout defines a payment to a charity
 message Payout {
-    string denom = 1;
-    string amount = 2 [
-        (gogoproto.nullable) = false, 
-        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
-    ];
-    string recipientaddr = 3;
+    string recipientaddr = 1;
+    repeated cosmos.base.v1beta1.Coin coins = 2 [
+        (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+        (gogoproto.nullable) = false];
 }
 
 // TaxProceeds defines a TaxProceed object containing sdk.Coins field
