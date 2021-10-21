@@ -21,9 +21,8 @@ type (
 		storeKey sdk.StoreKey
 		memKey   sdk.StoreKey
 		// this line is used by starport scaffolding # ibc/keeper/attribute
-
-		bankKeeper    types.BankKeeper
-		accountKeeper types.AccountKeeper
+		BankKeeper    types.BankKeeper
+		AccountKeeper types.AccountKeeper
 		paramStore    paramstypes.Subspace
 	}
 )
@@ -33,8 +32,8 @@ func NewKeeper(
 	storeKey,
 	memKey sdk.StoreKey,
 	// this line is used by starport scaffolding # ibc/keeper/parameter
-	bankKeeper types.BankKeeper,
-	accountKeeper types.AccountKeeper,
+	BankKeeper types.BankKeeper,
+	AccountKeeper types.AccountKeeper,
 	paramStore paramstypes.Subspace,
 ) *Keeper {
 
@@ -44,7 +43,7 @@ func NewKeeper(
 	}
 
 	// Check if charity tax collector address is set. Panic if nil
-	if collectaddr := accountKeeper.GetModuleAddress(types.CharityCollectorName); collectaddr == nil {
+	if collectaddr := AccountKeeper.GetModuleAddress(types.CharityCollectorName); collectaddr == nil {
 		panic(fmt.Sprintf("%s module account not set", types.CharityCollectorName))
 	}
 
@@ -53,8 +52,8 @@ func NewKeeper(
 		storeKey: storeKey,
 		memKey:   memKey,
 		// this line is used by starport scaffolding # ibc/keeper/return
-		bankKeeper:    bankKeeper,
-		accountKeeper: accountKeeper,
+		BankKeeper:    BankKeeper,
+		AccountKeeper: AccountKeeper,
 		paramStore:    paramStore,
 	}
 }

@@ -20,7 +20,7 @@ func (k Keeper) DonateCharity(ctx sdk.Context, proceeds sdk.Coins, charity types
 		return err
 	}
 	// Try to send coins from tax collector module account to charity address
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.CharityCollectorName, addr, proceeds)
+	err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.CharityCollectorName, addr, proceeds)
 	if err != nil {
 		return err
 	}
@@ -43,7 +43,7 @@ func (k Keeper) IsValidCharity(ctx sdk.Context, charity types.Charity) error {
 	if err != nil {
 		return fmt.Errorf("invalid address")
 	}
-	acc := k.accountKeeper.GetAccount(ctx, addr)
+	acc := k.AccountKeeper.GetAccount(ctx, addr)
 	if acc == nil {
 		return fmt.Errorf("account does not exist for the provided address")
 	}

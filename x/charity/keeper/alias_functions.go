@@ -9,13 +9,13 @@ import (
 )
 
 func (k Keeper) GetDenomMetaData(ctx sdk.Context, denom string) (banktypes.Metadata, bool) {
-	return k.bankKeeper.GetDenomMetaData(ctx, denom)
+	return k.BankKeeper.GetDenomMetaData(ctx, denom)
 }
 
 func (k Keeper) SetDenomMetaData(ctx sdk.Context, denomMetaData banktypes.Metadata) {
-	k.bankKeeper.SetDenomMetaData(ctx, denomMetaData)
+	k.BankKeeper.SetDenomMetaData(ctx, denomMetaData)
 }
 
 func (k Keeper) GetCharityCollectorAcc(ctx sdk.Context) authtypes.ModuleAccountI {
-	return k.accountKeeper.GetModuleAccount(ctx, types.CharityCollectorName)
+	return k.AccountKeeper.GetModuleAccount(ctx, types.CharityCollectorName)
 }

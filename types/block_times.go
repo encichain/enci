@@ -15,7 +15,7 @@ const (
 	BlocksPerPeriod = BlocksPerWeek
 )
 
-// IsLastBlockPeriod turns bool representing if current block is the last block of a CollectionPeriod
+// IsLastBlockPeriod returns bool representing if current block is the last block of a CollectionPeriod
 func IsLastBlockPeriod(ctx sdk.Context) bool {
 	return (ctx.BlockHeight()+1)%int64(BlocksPerPeriod) == 0
 }
