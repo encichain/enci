@@ -50,3 +50,27 @@ func (k Keeper) IsValidCharity(ctx sdk.Context, charity types.Charity) error {
 
 	return nil
 }
+
+// CalculateSplit returns the sdk.Coins proceed donation split based on spendable balance of Charity Tax Collector account and number of charities
+func (k Keeper) CalculateSplit(ctx sdk.Context, charities []types.Charity) sdk.Coins {
+	taxaddr := k.AccountKeeper.GetModuleAddress(types.CharityCollectorName)
+	if taxaddr == nil {
+		return sdk.Coins{}
+	}
+	balance := k.BankKeeper.SpendableCoins(ctx, taxaddr)
+	if balance.IsZero() {
+		return sdk.Coins{}
+	}
+	coins := []sdk.Coin{}
+
+	// Calculate donation split
+	for _, coin := range balance {
+		split := sdk.NewInt(int64(len(charities)))
+		sc := sdk.Coin{
+			Denom:  coin.Denom,
+			Amount: coin.Amount.Quo(split),
+		}
+		coins = append(coins, sc)
+	}
+	return sdk.NewCoins(coins...)
+}

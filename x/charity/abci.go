@@ -1,8 +1,10 @@
 package charity
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"time"
 
+	"github.com/cosmos/cosmos-sdk/telemetry"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	coretypes "github.com/user/encichain/types"
 	"github.com/user/encichain/x/charity/keeper"
 	"github.com/user/encichain/x/charity/types"
@@ -10,29 +12,15 @@ import (
 
 // EndBlocker is called at the end of every block
 func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
+	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyEndBlocker)
 
 	if coretypes.IsLastBlockPeriod(ctx) {
 		period := k.GetCurrentPeriod(ctx)
 		payouts := []types.Payout{}
 		charities := k.GetCharity(ctx)
-		taxaddr := k.AccountKeeper.GetModuleAddress(types.CharityCollectorName)
-		// Get balance of tax collector
-		balance := k.BankKeeper.SpendableCoins(ctx, taxaddr)
-		coins := []sdk.Coin{}
 
-		if balance.IsZero() {
-			return
-		}
-
-		for _, coin := range balance {
-			split := sdk.NewInt(int64(len(charities)))
-			sc := sdk.Coin{
-				Denom:  coin.Denom,
-				Amount: coin.Amount.Quo(split),
-			}
-			coins = append(coins, sc)
-		}
-		finalsplit := sdk.NewCoins(coins...)
+		// Get the donation split
+		finalsplit := k.CalculateSplit(ctx, charities)
 
 		// Perform charity payouts
 		for _, charity := range charities {
@@ -40,8 +28,14 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 			if err != nil {
 				continue
 			}
-			payout := types.Payout{}
+			payout := types.Payout{Recipientaddr: charity.AccAddress, Coins: finalsplit}
+			payouts = append(payouts, payout)
 		}
+		// Set payouts to store under current *period*
+		k.SetPayouts(ctx, period, payouts)
+		// Set period tax proceeds to store
+		k.SetPeriodTaxProceeds(ctx, period, k.GetTaxProceeds(ctx))
+		// Reset tax proceeds
+		k.SetTaxProceeds(ctx, sdk.Coins{})
 	}
-	return
 }
