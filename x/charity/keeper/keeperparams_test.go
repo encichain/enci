@@ -9,6 +9,7 @@ import (
 	paramsutils "github.com/cosmos/cosmos-sdk/x/params/client/utils"
 	paramproposal "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	"github.com/stretchr/testify/require"
+	coretypes "github.com/user/encichain/types"
 
 	"github.com/user/encichain/x/charity/types"
 )
@@ -39,6 +40,37 @@ func TestParamsFuncs(t *testing.T) {
 	require.Equal(t, testParams.TaxRate, app.CharityKeeper.GetTaxRate(app.Ctx))
 	require.Equal(t, testParams.TaxCaps, app.CharityKeeper.GetParamTaxCaps(app.Ctx))
 
+}
+
+func TestSyncParams(t *testing.T) {
+	app := CreateTestApp(t)
+
+	defaultCap := sdk.NewInt(int64(2000000))
+	paramsDefaultCap := sdk.NewInt(int64(3000000))
+	menci := "menci"
+	enci := "enci"
+	testTaxCaps := []types.TaxCap{{Denom: coretypes.MicroTokenDenom, Cap: defaultCap}, {Denom: menci, Cap: defaultCap}, {Denom: enci, Cap: defaultCap}}
+	// Set taxcaps to store
+	for _, taxcap := range testTaxCaps {
+		app.CharityKeeper.SetTaxCap(app.Ctx, taxcap.Denom, taxcap.Cap)
+		require.Equal(t, defaultCap, app.CharityKeeper.GetTaxCap(app.Ctx, taxcap.Denom))
+	}
+	paramsTaxCaps := []types.TaxCap{{Denom: coretypes.MicroTokenDenom, Cap: paramsDefaultCap}, {Denom: menci, Cap: paramsDefaultCap}, {Denom: enci, Cap: paramsDefaultCap}}
+	defaultParams := types.Params{
+		Charities: types.DefaultCharities,
+		TaxCaps:   paramsTaxCaps,
+		TaxRate:   types.DefaultTaxRate,
+	}
+	// Set params to store
+	app.CharityKeeper.SetParams(app.Ctx, defaultParams)
+	require.Equal(t, defaultParams, app.CharityKeeper.GetAllParams(app.Ctx))
+
+	// Attempt to sync taxcaps
+	app.CharityKeeper.SyncTaxCaps(app.Ctx)
+
+	for _, taxcap := range testTaxCaps {
+		require.Equal(t, paramsDefaultCap, app.CharityKeeper.GetTaxCap(app.Ctx, taxcap.Denom))
+	}
 }
 
 func TestCharityParamChangeProposal(t *testing.T) {

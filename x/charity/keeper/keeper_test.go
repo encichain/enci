@@ -85,6 +85,27 @@ func TestIterateTaxCap(t *testing.T) {
 
 }
 
+func TestClearTaxCaps(t *testing.T) {
+	app := CreateTestApp(t)
+	defaultCap := sdk.NewInt(int64(2000000))
+	testTaxCaps := []types.TaxCap{{Denom: "uenci", Cap: defaultCap}, {Denom: "menci", Cap: defaultCap}, {Denom: "enci", Cap: defaultCap}}
+	// Set taxcaps to store
+	for _, taxcap := range testTaxCaps {
+		app.CharityKeeper.SetTaxCap(app.Ctx, taxcap.Denom, taxcap.Cap)
+	}
+
+	require.Equal(t, defaultCap, app.CharityKeeper.GetTaxCap(app.Ctx, "uenci"))
+	require.Equal(t, defaultCap, app.CharityKeeper.GetTaxCap(app.Ctx, "menci"))
+	require.Equal(t, defaultCap, app.CharityKeeper.GetTaxCap(app.Ctx, "enci"))
+	require.Equal(t, types.DefaultCap, app.CharityKeeper.GetTaxCap(app.Ctx, "Nonexistentdenom"))
+
+	//Clear taxcaps from store
+	app.CharityKeeper.ClearTaxCaps(app.Ctx)
+	require.Equal(t, types.DefaultCap, app.CharityKeeper.GetTaxCap(app.Ctx, "uenci"))
+	require.Equal(t, types.DefaultCap, app.CharityKeeper.GetTaxCap(app.Ctx, "menci"))
+	require.Equal(t, types.DefaultCap, app.CharityKeeper.GetTaxCap(app.Ctx, "enci"))
+}
+
 func TestParams(t *testing.T) {
 	input := CreateTestApp(t)
 
