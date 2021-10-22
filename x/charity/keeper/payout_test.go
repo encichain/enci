@@ -104,7 +104,7 @@ func TestDonateCharityInvalidChecksum(t *testing.T) {
 	}
 }
 
-func TestCalculateSplit(t *testing.T) {
+func TestCalculateSplitandDisburseDonations(t *testing.T) {
 	app := CreateTestApp(t)
 	sdk.GetConfig().SetBech32PrefixForAccount("enci", "encipub")
 	// Configure test charity accounts
@@ -118,6 +118,10 @@ func TestCalculateSplit(t *testing.T) {
 	require.NotNil(t, acc1)
 	acc2 := app.AccountKeeper.NewAccountWithAddress(app.Ctx, addr2)
 	require.NotNil(t, acc2)
+
+	// Set accounts to store
+	app.AccountKeeper.SetAccount(app.Ctx, acc1)
+	app.AccountKeeper.SetAccount(app.Ctx, acc2)
 
 	// Create checksums and encode to strings
 	csb1 := sha256.Sum256([]byte("Test Charity" + bech32addr1))
@@ -136,18 +140,21 @@ func TestCalculateSplit(t *testing.T) {
 		{CharityName: "Test Charity 2",
 			AccAddress: bech32addr2,
 			Checksum:   checksum2},
-		{CharityName: "Test Charity 2",
-			AccAddress: bech32addr2,
-			Checksum:   checksum2},
 	}
 	app.CharityKeeper.SetParams(app.Ctx, params)
 	require.Equal(t, app.CharityKeeper.GetAllParams(app.Ctx), params)
+	charities := app.CharityKeeper.GetCharity(app.Ctx)
+	require.Equal(t, params.Charities, charities)
 
 	taxaddr := app.AccountKeeper.GetModuleAddress(types.CharityCollectorName)
 	balance := app.BankKeeper.SpendableCoins(app.Ctx, taxaddr)
 	baseamt := sdk.TokensFromConsensusPower(200, sdk.DefaultPowerReduction)
 	require.Equal(t, sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: baseamt}}, balance)
-
+	//Test calculate split
 	split := app.CharityKeeper.CalculateSplit(app.Ctx, app.CharityKeeper.GetCharity(app.Ctx))
-	require.Equal(t, baseamt.Quo(sdk.NewInt(int64(3))), split[0].Amount)
+	require.Equal(t, baseamt.Quo(sdk.NewInt(int64(2))), split[0].Amount)
+
+	//Test DisburseDonations
+	payouts := app.CharityKeeper.DisburseDonations(app.Ctx, charities)
+	require.Equal(t, []types.Payout{{Recipientaddr: bech32addr1, Coins: split}, {Recipientaddr: bech32addr2, Coins: split}}, payouts)
 }

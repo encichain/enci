@@ -9,6 +9,26 @@ import (
 	"github.com/user/encichain/x/charity/types"
 )
 
+// DisburseDonations sends funds from CharityTaxCollector to all specified charities and returns a []Payout
+// Should not be called except during end of period.
+func (k Keeper) DisburseDonations(ctx sdk.Context, charities []types.Charity) []types.Payout {
+	payouts := []types.Payout{}
+
+	// Get the donation split
+	finalsplit := k.CalculateSplit(ctx, charities)
+
+	// Perform charity payouts
+	for _, charity := range charities {
+		err := k.DonateCharity(ctx, finalsplit, charity)
+		if err != nil {
+			continue
+		}
+		payout := types.Payout{Recipientaddr: charity.AccAddress, Coins: finalsplit}
+		payouts = append(payouts, payout)
+	}
+	return payouts
+}
+
 // DonateCharity sends proceeds to the specified charity
 func (k Keeper) DonateCharity(ctx sdk.Context, proceeds sdk.Coins, charity types.Charity) error {
 	err := k.IsValidCharity(ctx, charity)
@@ -36,9 +56,8 @@ func (k Keeper) IsValidCharity(ctx sdk.Context, charity types.Charity) error {
 	if checksum != charity.Checksum {
 		return fmt.Errorf("checksum is invalid")
 	}
-
 	// Check account address
-	// TODO: Use accountKeeper.HasAccount method when implemented in cosmos-sdk.
+	// TODO: Use AccountKeeper.HasAccount method when implemented in cosmos-sdk.
 	addr, err := sdk.AccAddressFromBech32(charity.AccAddress)
 	if err != nil {
 		return fmt.Errorf("invalid address")
@@ -62,10 +81,9 @@ func (k Keeper) CalculateSplit(ctx sdk.Context, charities []types.Charity) sdk.C
 		return sdk.Coins{}
 	}
 	coins := []sdk.Coin{}
-
+	split := sdk.NewInt(int64(len(charities)))
 	// Calculate donation split
 	for _, coin := range balance {
-		split := sdk.NewInt(int64(len(charities)))
 		sc := sdk.Coin{
 			Denom:  coin.Denom,
 			Amount: coin.Amount.Quo(split),

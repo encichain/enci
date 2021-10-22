@@ -27,12 +27,12 @@ const (
 )
 
 // Keys for store
-// stored as format - key: value
-// 0x01: TaxRateLimits
-// 0x02 | denom bytes: sdk.Int
-// 0x03: TaxProceeds{TaxProceeds: sdk.Coins}
-// 0x04 | period bytes : sdk.Coins
-// 0x05 | period bytes: []Payout
+// stored as format - key -> value
+// 0x01 				-> ProtocolBuffer(TaxRateLimits)
+// 0x02 | denom bytes	-> ProtocolBuffer(sdk.Int)
+// 0x03 				-> ProtocolBuffer(TaxProceeds{TaxProceeds: sdk.Coins})
+// 0x04 | period bytes  -> ProtocolBuffer(sdk.Coins)
+// 0x05 | period bytes  -> ProtocolBuffer([]Payout)
 var (
 	TaxRateLimitsKey     = []byte{0x01} // Key for tax rate limits
 	TaxCapKey            = []byte{0x02} // Prefix to taxcaps key
