@@ -16,26 +16,16 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 
 	if coretypes.IsLastBlockPeriod(ctx) {
 		period := k.GetCurrentPeriod(ctx)
-		payouts := []types.Payout{}
 		charities := k.GetCharity(ctx)
+		// Reset tax proceeds
+		defer k.SetTaxProceeds(ctx, sdk.Coins{})
 
-		// Get the donation split
-		finalsplit := k.CalculateSplit(ctx, charities)
-
-		// Perform charity payouts
-		for _, charity := range charities {
-			err := k.DonateCharity(ctx, finalsplit, charity)
-			if err != nil {
-				continue
-			}
-			payout := types.Payout{Recipientaddr: charity.AccAddress, Coins: finalsplit}
-			payouts = append(payouts, payout)
-		}
+		// Disburse donations according to CharityTaxCollector balance
+		payouts := k.DisburseDonations(ctx, charities)
 		// Set payouts to store under current *period*
 		k.SetPayouts(ctx, period, payouts)
 		// Set period tax proceeds to store
 		k.SetPeriodTaxProceeds(ctx, period, k.GetTaxProceeds(ctx))
-		// Reset tax proceeds
-		k.SetTaxProceeds(ctx, sdk.Coins{})
+
 	}
 }
