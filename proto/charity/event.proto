@@ -1,0 +1,13 @@
+syntax = "proto3";
+package user.encichain.charity;
+
+import "charity/charity.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/user/encichain/x/charity/types";
+
+// EventPayout defines the Payout Event
+message EventPayout {
+    uint64 period = 1;
+    repeated Payout payouts = 2 [(gogoproto.nullable) = false];
+}

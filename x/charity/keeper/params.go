@@ -33,3 +33,16 @@ func (k Keeper) GetParamTaxCaps(ctx sdk.Context) (taxcaps []types.TaxCap) {
 func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	k.paramStore.SetParamSet(ctx, &params)
 }
+
+// SyncTaxCaps syncs the store []Taxcap with the paramstore []Taxcap.
+// To be called at end of period
+func (k Keeper) SyncTaxCaps(ctx sdk.Context) {
+	// Clear store Taxcaps
+	k.ClearTaxCaps(ctx)
+	taxcaps := k.GetParamTaxCaps(ctx)
+
+	// Set taxcaps to store
+	for _, taxcap := range taxcaps {
+		k.SetTaxCap(ctx, taxcap.Denom, taxcap.Cap)
+	}
+}

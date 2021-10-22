@@ -112,6 +112,17 @@ func (k Keeper) IterateTaxCaps(ctx sdk.Context, cb func(denom string, taxcap sdk
 	}
 }
 
+// ClearTaxCaps iterates over all stored TaxCap and deletes the key from store
+func (k Keeper) ClearTaxCaps(ctx sdk.Context) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.TaxCapKey)
+
+	defer iterator.Close()
+	for ; iterator.Valid(); iterator.Next() {
+		store.Delete(iterator.Key())
+	}
+}
+
 // GetTaxCap fetches a TaxCap Cap from the store stored by *denom*
 func (k Keeper) GetTaxCap(ctx sdk.Context, denom string) sdk.Int {
 	store := ctx.KVStore(k.storeKey)
