@@ -103,3 +103,51 @@ func TestDonateCharityInvalidChecksum(t *testing.T) {
 		require.Errorf(t, err, "checksum is invalid")
 	}
 }
+
+func TestCalculateSplit(t *testing.T) {
+	app := CreateTestApp(t)
+	sdk.GetConfig().SetBech32PrefixForAccount("enci", "encipub")
+	// Configure test charity accounts
+	bech32addr1 := "enci1aag23fr2qjxan9aktyfsywp3udxg036c9zxv55"
+	bech32addr2 := "enci1vvcw744ck9kzczrhf282lqmset47jnxe9090qt"
+	addr1, err := sdk.AccAddressFromBech32(bech32addr1)
+	require.NoError(t, err)
+	addr2, err := sdk.AccAddressFromBech32(bech32addr2)
+	require.NoError(t, err)
+	acc1 := app.AccountKeeper.NewAccountWithAddress(app.Ctx, addr1)
+	require.NotNil(t, acc1)
+	acc2 := app.AccountKeeper.NewAccountWithAddress(app.Ctx, addr2)
+	require.NotNil(t, acc2)
+
+	// Create checksums and encode to strings
+	csb1 := sha256.Sum256([]byte("Test Charity" + bech32addr1))
+	checksum1 := hex.EncodeToString(csb1[:])
+	require.NotEqual(t, "", checksum1)
+
+	csb2 := sha256.Sum256([]byte("Test Charity 2" + bech32addr2))
+	checksum2 := hex.EncodeToString(csb2[:])
+
+	params := types.DefaultParamsSet
+	params.Charities = []types.Charity{
+		{CharityName: "Test Charity",
+			AccAddress: bech32addr1,
+			Checksum:   checksum1,
+		},
+		{CharityName: "Test Charity 2",
+			AccAddress: bech32addr2,
+			Checksum:   checksum2},
+		{CharityName: "Test Charity 2",
+			AccAddress: bech32addr2,
+			Checksum:   checksum2},
+	}
+	app.CharityKeeper.SetParams(app.Ctx, params)
+	require.Equal(t, app.CharityKeeper.GetAllParams(app.Ctx), params)
+
+	taxaddr := app.AccountKeeper.GetModuleAddress(types.CharityCollectorName)
+	balance := app.BankKeeper.SpendableCoins(app.Ctx, taxaddr)
+	baseamt := sdk.TokensFromConsensusPower(200, sdk.DefaultPowerReduction)
+	require.Equal(t, sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: baseamt}}, balance)
+
+	split := app.CharityKeeper.CalculateSplit(app.Ctx, app.CharityKeeper.GetCharity(app.Ctx))
+	require.Equal(t, baseamt.Quo(sdk.NewInt(int64(3))), split[0].Amount)
+}
