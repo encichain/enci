@@ -166,8 +166,9 @@ func CreateTestApp(t *testing.T) TestApp {
 	accountKeeper := authkeeper.NewAccountKeeper(appCodec, keyAcc, paramsKeeper.Subspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms)
 	bankKeeper := bankkeeper.NewBaseKeeper(appCodec, keyBank, accountKeeper, paramsKeeper.Subspace(banktypes.ModuleName), blackListAddrs)
 
-	totalSupply := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, InitTokens.MulRaw(int64(len(Addrs)*10))))
-	bankKeeper.MintCoins(ctx, faucetAccount, totalSupply)
+	totalSupply := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, InitTokens.MulRaw(int64(len(Addrs)*11))))
+	err := bankKeeper.MintCoins(ctx, faucetAccount, totalSupply)
+	require.NoError(t, err)
 
 	stakingKeeper := stakingkeeper.NewKeeper(
 		appCodec,
@@ -202,8 +203,6 @@ func CreateTestApp(t *testing.T) TestApp {
 	charityAcc := authtypes.NewEmptyModuleAccount(charitytypes.ModuleName, authtypes.Burner, authtypes.Minter)
 	charityCollectorAcc := authtypes.NewEmptyModuleAccount(charitytypes.CharityCollectorName)
 
-	bankKeeper.SendCoinsFromModuleToModule(ctx, faucetAccount, stakingtypes.NotBondedPoolName, sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, InitTokens.MulRaw(int64(len(Addrs)+1)))))
-
 	accountKeeper.SetModuleAccount(ctx, feeCollectorAcc)
 	accountKeeper.SetModuleAccount(ctx, bondPool)
 	accountKeeper.SetModuleAccount(ctx, notBondedPool)
@@ -211,14 +210,28 @@ func CreateTestApp(t *testing.T) TestApp {
 	accountKeeper.SetModuleAccount(ctx, charityAcc)
 	accountKeeper.SetModuleAccount(ctx, charityCollectorAcc)
 
+	faucetaddr := accountKeeper.GetModuleAccount(ctx, faucetAccount)
+
+	bal := bankKeeper.HasBalance(ctx, faucetaddr.GetAddress(), sdk.Coin{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(int64(1))})
+	if bal {
+		err := bankKeeper.MintCoins(ctx, faucetAccount, InitCoins)
+		require.NoError(t, err)
+	}
+
+	//balance := bankKeeper.GetAllBalances(ctx, faucetaddr.GetAddress())
+	//require.Equal(t, 1, balance[0].Amount.Int64())
+	// Test charity collector
+	err = bankKeeper.SendCoinsFromModuleToModule(ctx, faucetAccount, charitytypes.CharityCollectorName, InitCoins)
+	require.NoError(t, err)
+
+	err = bankKeeper.SendCoinsFromModuleToModule(ctx, faucetAccount, stakingtypes.NotBondedPoolName, sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, InitTokens.MulRaw(int64(len(Addrs)+1)))))
+	require.NoError(t, err)
+
 	for _, addr := range Addrs {
 		accountKeeper.SetAccount(ctx, authtypes.NewBaseAccountWithAddress(addr))
 		err := bankKeeper.SendCoinsFromModuleToAccount(ctx, faucetAccount, addr, InitCoins)
 		require.NoError(t, err)
 	}
-	// Test charity collector
-	err := bankKeeper.SendCoinsFromModuleToModule(ctx, faucetAccount, charitytypes.CharityCollectorName, InitCoins)
-	require.NoError(t, err)
 
 	charityKeeper := NewKeeper(
 		appCodec,
@@ -252,4 +265,28 @@ func handleParameterChangeProposal(ctx sdk.Context, k paramskeeper.Keeper, p *pr
 	}
 
 	return nil
+}
+
+// FundAccount is a utility function that funds an account by minting and
+// sending the coins to the address. This should be used for testing purposes
+// only!
+//
+
+func FundAccount(bankKeeper bankkeeper.Keeper, ctx sdk.Context, addr sdk.AccAddress, amounts sdk.Coins) error {
+	if err := bankKeeper.MintCoins(ctx, faucetAccount, amounts); err != nil {
+		return err
+	}
+
+	return bankKeeper.SendCoinsFromModuleToAccount(ctx, faucetAccount, addr, amounts)
+}
+
+// FundModuleAccount is a utility function that funds a module account by
+// minting and sending the coins to the address. This should be used for testing
+// purposes only!
+func FundModuleAccount(bankKeeper bankkeeper.Keeper, ctx sdk.Context, recipientMod string, amounts sdk.Coins) error {
+	if err := bankKeeper.MintCoins(ctx, faucetAccount, amounts); err != nil {
+		return err
+	}
+
+	return bankKeeper.SendCoinsFromModuleToModule(ctx, faucetAccount, recipientMod, amounts)
 }

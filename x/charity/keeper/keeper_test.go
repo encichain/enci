@@ -66,7 +66,6 @@ func TestTaxCap(t *testing.T) {
 		app.CharityKeeper.SetTaxCap(app.Ctx, coretypes.MicroTokenDenom, sdk.NewInt(i))
 		require.Equal(t, sdk.NewInt(i), app.CharityKeeper.GetTaxCap(app.Ctx, coretypes.MicroTokenDenom))
 	}
-
 }
 
 func TestIterateTaxCap(t *testing.T) {
@@ -82,7 +81,6 @@ func TestIterateTaxCap(t *testing.T) {
 		}
 		return true
 	})
-
 }
 
 func TestClearTaxCaps(t *testing.T) {
@@ -169,16 +167,16 @@ func TestPeriodTaxProceeds(t *testing.T) {
 	for i := int64(0); i < 10; i++ {
 		require.Equal(t, sdk.Coins{}, testApp.CharityKeeper.GetPeriodTaxProceeds(testApp.Ctx, i))
 	}
-
 }
 
 func TestPayouts(t *testing.T) {
 	app := CreateTestApp(t)
-
+	addr1 := "enci1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6test"
+	addr2 := "enci1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6test2"
 	for i := int64(0); i < 10; i++ {
 		payouts := []types.Payout{
-			{Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(i*sdk.DefaultPowerReduction.Int64() + 1)}}, Recipientaddr: "enci1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6test"},
-			{Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(i*sdk.DefaultPowerReduction.Int64() + 1000)}}, Recipientaddr: "enci1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6test2"},
+			{Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(i*sdk.DefaultPowerReduction.Int64() + 1)}}, Recipientaddr: addr1},
+			{Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(i*sdk.DefaultPowerReduction.Int64() + 1000)}}, Recipientaddr: addr2},
 		}
 
 		app.CharityKeeper.SetPayouts(app.Ctx, i, payouts)
@@ -192,5 +190,4 @@ func TestPayouts(t *testing.T) {
 	for i := int64(0); i < 10; i++ {
 		require.Equal(t, []types.Payout{}, app.CharityKeeper.GetPayouts(app.Ctx, i))
 	}
-
 }
