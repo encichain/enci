@@ -26,6 +26,7 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 		k.SetPayouts(ctx, period, payouts)
 		// Set period tax proceeds to store
 		k.SetPeriodTaxProceeds(ctx, period, k.GetTaxProceeds(ctx))
-
+		// Sync taxcaps
+		k.SyncTaxCaps(ctx)
 	}
 }

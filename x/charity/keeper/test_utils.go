@@ -217,9 +217,6 @@ func CreateTestApp(t *testing.T) TestApp {
 		err := bankKeeper.MintCoins(ctx, faucetAccount, InitCoins)
 		require.NoError(t, err)
 	}
-
-	//balance := bankKeeper.GetAllBalances(ctx, faucetaddr.GetAddress())
-	//require.Equal(t, 1, balance[0].Amount.Int64())
 	// Test charity collector
 	err = bankKeeper.SendCoinsFromModuleToModule(ctx, faucetAccount, charitytypes.CharityCollectorName, InitCoins)
 	require.NoError(t, err)
