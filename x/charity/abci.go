@@ -28,5 +28,11 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 		k.SetPeriodTaxProceeds(ctx, period, k.GetTaxProceeds(ctx))
 		// Sync taxcaps
 		k.SyncTaxCaps(ctx)
+
+		ctx.EventManager().EmitTypedEvent(
+			&types.EventPayout{
+				Period:  uint64(period),
+				Payouts: payouts,
+			})
 	}
 }

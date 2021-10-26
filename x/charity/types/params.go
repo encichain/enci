@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	coretypes "github.com/user/encichain/types"
 )
 
 //Parameter keys
@@ -19,7 +20,7 @@ var (
 	DefaultTaxRate = sdk.NewDecWithPrec(1, 1)   // 0.1 || 10%
 	DefaultCap     = sdk.NewInt(int64(1000000)) // 1000000 utoken or 1 token
 	DefaultTaxCaps = []TaxCap{{
-		Denom: "uenci",
+		Denom: coretypes.MicroTokenDenom,
 		Cap:   DefaultCap,
 	}}
 	DefaultCharity = Charity{
@@ -27,11 +28,11 @@ var (
 		AccAddress:  "",
 		Checksum:    "",
 	}
-	DefaultCharities     = []Charity{}
+	DefaultCharities     = []Charity{DefaultCharity}
 	DefaultRateMin       = sdk.NewDecWithPrec(1, 3) // 0.001 || 0.1%
 	DefaultRateMax       = sdk.NewDecWithPrec(1, 2) // 0.01 || 1%
 	DefaultTaxRateLimits = TaxRateLimits{RateMin: DefaultRateMin, RateMax: DefaultRateMax}
-	DefaultCoinProceed   = sdk.Coin{Denom: "uenci", Amount: sdk.NewInt(100)}
+	DefaultCoinProceed   = sdk.Coin{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(100)}
 	DefaultTaxProceeds   = sdk.Coins{}
 	DefaultParamsSet     = Params{
 		Charities: DefaultCharities,

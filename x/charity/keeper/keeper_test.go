@@ -43,6 +43,15 @@ func setupKeeper(t testing.TB) (*Keeper, sdk.Context) {
 	return keeper, ctx
 }
 
+func TestGetCurrentPeriod(t *testing.T) {
+	app := CreateTestApp(t)
+	for i := int64(0); i < 10; i++ {
+		ctx := app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerPeriod) * i)
+		period := app.CharityKeeper.GetCurrentPeriod(ctx)
+		require.Equal(t, (ctx.BlockHeight() / int64(coretypes.BlocksPerPeriod)), period)
+	}
+}
+
 func TestTaxRateLimits(t *testing.T) {
 	app := CreateTestApp(t)
 
@@ -81,6 +90,14 @@ func TestIterateTaxCap(t *testing.T) {
 		}
 		return true
 	})
+}
+
+func TestGetTaxCaps(t *testing.T) {
+	app := CreateTestApp(t)
+	app.CharityKeeper.SetTaxCap(app.Ctx, coretypes.MicroTokenDenom, types.DefaultCap)
+	taxcaps := app.CharityKeeper.GetTaxCaps(app.Ctx)
+
+	require.Equal(t, []types.TaxCap{{Denom: coretypes.MicroTokenDenom, Cap: types.DefaultCap}}, taxcaps)
 }
 
 func TestClearTaxCaps(t *testing.T) {
@@ -190,4 +207,32 @@ func TestPayouts(t *testing.T) {
 	for i := int64(0); i < 10; i++ {
 		require.Equal(t, []types.Payout{}, app.CharityKeeper.GetPayouts(app.Ctx, i))
 	}
+}
+
+func TestGetCollectionPeriods(t *testing.T) {
+	app := CreateTestApp(t)
+	addr1 := "enci1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6test"
+	addr2 := "enci1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6test2"
+	for i := int64(0); i < 10; i++ {
+		payouts := []types.Payout{
+			{Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(i*sdk.DefaultPowerReduction.Int64() + 1)}}, Recipientaddr: addr1},
+			{Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(i*sdk.DefaultPowerReduction.Int64() + 1000)}}, Recipientaddr: addr2},
+		}
+		app.CharityKeeper.SetPayouts(app.Ctx, i, payouts)
+
+		taxproceeds := sdk.Coins{sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(int64((i+1)*1000)))}
+		app.CharityKeeper.SetPeriodTaxProceeds(app.Ctx, i, taxproceeds)
+	}
+	// Create expected []types.CollectionPeriod{} value
+	expectedval := []types.CollectionPeriod{}
+	for i := int64(0); i < 10; i++ {
+		payouts := []types.Payout{
+			{Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(i*sdk.DefaultPowerReduction.Int64() + 1)}}, Recipientaddr: addr1},
+			{Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(i*sdk.DefaultPowerReduction.Int64() + 1000)}}, Recipientaddr: addr2},
+		}
+		taxproceeds := sdk.Coins{sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(int64((i+1)*1000)))}
+		expectedval = append(expectedval, types.CollectionPeriod{Period: uint64(i), TaxCollected: taxproceeds, Payouts: payouts})
+	}
+	ctx := app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerPeriod * 10))
+	require.Equal(t, expectedval, app.CharityKeeper.GetCollectionPeriods(ctx))
 }

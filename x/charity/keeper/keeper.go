@@ -65,7 +65,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 
 // GetCurrentPeriod calculates the current CollectionPeriod period by dividing current Block height by a Block week.
 func (k Keeper) GetCurrentPeriod(ctx sdk.Context) int64 {
-	return (ctx.BlockHeight() / int64(coretypes.BlocksPerWeek))
+	return (ctx.BlockHeight() / int64(coretypes.BlocksPerPeriod))
 }
 
 // GetTaxRateLimits gets the tax rate limits
