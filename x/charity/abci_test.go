@@ -81,7 +81,7 @@ func TestEndBlocker(t *testing.T) {
 
 	// Check if target charity accounts have received donation
 	hasbal = app.BankKeeper.HasBalance(app.Ctx, addr1, sdk.NewCoin(coretypes.MicroTokenDenom, keeper.InitTokens.Quo(sdk.NewInt(int64(2)))))
-	hasbal2 = app.BankKeeper.HasBalance(app.Ctx, addr1, sdk.NewCoin(coretypes.MicroTokenDenom, keeper.InitTokens.Quo(sdk.NewInt(int64(2)))))
+	hasbal2 = app.BankKeeper.HasBalance(app.Ctx, addr2, sdk.NewCoin(coretypes.MicroTokenDenom, keeper.InitTokens.Quo(sdk.NewInt(int64(2)))))
 	require.True(t, hasbal)
 	require.True(t, hasbal2)
 

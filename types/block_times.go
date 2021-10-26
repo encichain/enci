@@ -12,7 +12,7 @@ const (
 	BlocksPerWeek   = BlocksPerDay * 7
 	BlocksPerMonth  = BlocksPerDay * 30
 	BlocksPerYear   = BlocksPerDay * 365
-	BlocksPerPeriod = BlocksPerWeek
+	BlocksPerPeriod = uint64(100)
 )
 
 // IsLastBlockPeriod returns bool representing if current block is the last block of a CollectionPeriod

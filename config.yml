@@ -3,6 +3,8 @@ accounts:
     coins: ["20000000000uenci", "200000000stake"]
   - name: bob
     coins: ["10000000000uenci", "100000000stake"]
+  - name: foundation
+    address: enci1fl48vsnmsdzcv85q5d2q4z5ajdha8yu33cl8y5
 validator:
   name: alice
   staked: "100000000stake"

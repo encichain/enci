@@ -100,8 +100,8 @@ import (
 	customgov "github.com/user/encichain/customcore/gov"
 
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
-	charitymodulekeeper "github.com/user/encichain/x/charity/keeper"
-	charitymoduletypes "github.com/user/encichain/x/charity/types"
+	charitykeeper "github.com/user/encichain/x/charity/keeper"
+	charitytypes "github.com/user/encichain/x/charity/types"
 )
 
 const (
@@ -168,8 +168,8 @@ var (
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
-		charitymoduletypes.ModuleName:           {authtypes.Minter, authtypes.Burner, authtypes.Staking},
-		charitymoduletypes.CharityCollectorName: nil,
+		charitytypes.ModuleName:           {authtypes.Minter, authtypes.Burner, authtypes.Staking},
+		charitytypes.CharityCollectorName: nil,
 	}
 )
 
@@ -228,7 +228,7 @@ type EnciApp struct {
 
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
-	CharityKeeper charitymodulekeeper.Keeper
+	CharityKeeper charitykeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -271,7 +271,7 @@ func NewEnciApp(
 		feegrant.StoreKey, authzkeeper.StoreKey,
 
 		// this line is used by starport scaffolding # stargate/app/storeKey
-		charitymoduletypes.StoreKey,
+		charitytypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -385,14 +385,14 @@ func NewEnciApp(
 		),
 	)
 
-	app.CharityKeeper = *charitymodulekeeper.NewKeeper(
+	app.CharityKeeper = *charitykeeper.NewKeeper(
 		appCodec,
-		keys[charitymoduletypes.StoreKey],
-		keys[charitymoduletypes.MemStoreKey],
+		keys[charitytypes.StoreKey],
+		keys[charitytypes.MemStoreKey],
 
 		app.BankKeeper,
 		app.AccountKeeper,
-		app.GetSubspace(charitymoduletypes.ModuleName),
+		app.GetSubspace(charitytypes.ModuleName),
 	)
 	charityModule := charitymodule.NewAppModule(appCodec, app.CharityKeeper)
 
@@ -450,7 +450,7 @@ func NewEnciApp(
 		evidencetypes.ModuleName, stakingtypes.ModuleName, ibchost.ModuleName,
 	)
 
-	app.mm.SetOrderEndBlockers(crisistypes.ModuleName, govtypes.ModuleName, stakingtypes.ModuleName)
+	app.mm.SetOrderEndBlockers(crisistypes.ModuleName, govtypes.ModuleName, stakingtypes.ModuleName, charitytypes.ModuleName)
 
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
@@ -472,7 +472,7 @@ func NewEnciApp(
 		evidencetypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
-		charitymoduletypes.ModuleName,
+		charitytypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
 	)
@@ -707,7 +707,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
-	paramsKeeper.Subspace(charitymoduletypes.ModuleName)
+	paramsKeeper.Subspace(charitytypes.ModuleName)
 
 	return paramsKeeper
 }
