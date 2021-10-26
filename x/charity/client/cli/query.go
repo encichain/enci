@@ -39,6 +39,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdQueryTaxRateLimits(),
 		CmdQueryTaxProceeds(),
 		CmdQueryCollectionPeriods(),
+		CmdQueryCollectionPeriod(),
 	)
 
 	return cmd
@@ -244,7 +245,7 @@ func CmdQueryCollectionPeriods() *cobra.Command {
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.TaxProceeds(context.Background(), &types.QueryTaxProceedsRequest{})
+			res, err := queryClient.CollectionPeriods(context.Background(), &types.QueryAllCollectionPeriodsRequest{})
 			if err != nil {
 				return err
 			}

@@ -4,7 +4,8 @@ accounts:
   - name: bob
     coins: ["10000000000uenci", "100000000stake"]
   - name: foundation
-    address: enci1fl48vsnmsdzcv85q5d2q4z5ajdha8yu33cl8y5
+    coins: ["1uenci"]
+    address: enci1a5jqux9wu4e8zfxxlv4fxh8t697rdc636n3pyk
 validator:
   name: alice
   staked: "100000000stake"
