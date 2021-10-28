@@ -8,7 +8,7 @@ accounts:
     address: enci1a5jqux9wu4e8zfxxlv4fxh8t697rdc636n3pyk
 validator:
   name: alice
-  staked: "100000000stake"
+  staked: "1000000uenci"
 client:
   vuex:
     path: "vue/src/store"

@@ -96,10 +96,10 @@ import (
 	"github.com/tendermint/spm/cosmoscmd"
 	charitymodule "github.com/user/encichain/x/charity"
 
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	customante "github.com/user/encichain/customcore/ante"
 	customgov "github.com/user/encichain/customcore/gov"
-
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+	customstaking "github.com/user/encichain/customcore/staking"
 	charitykeeper "github.com/user/encichain/x/charity/keeper"
 	charitytypes "github.com/user/encichain/x/charity/types"
 )
@@ -140,7 +140,7 @@ var (
 		genutil.AppModuleBasic{},
 		bank.AppModuleBasic{},
 		capability.AppModuleBasic{},
-		staking.AppModuleBasic{},
+		customstaking.AppModuleBasic{},
 		mint.AppModuleBasic{},
 		distr.AppModuleBasic{},
 		customgov.NewAppModuleBasic(getGovProposalHandlers()...),

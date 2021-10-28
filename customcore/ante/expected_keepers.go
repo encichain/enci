@@ -19,7 +19,9 @@ type FeegrantKeeper interface {
 	UseGrantedFees(ctx sdk.Context, granter, grantee sdk.AccAddress, fee sdk.Coins, msgs []sdk.Msg) error
 }
 
+// CharityKeeper defines the expected charity keeper
 type CharityKeeper interface {
 	AddTaxProceeds(ctx sdk.Context, proceeds sdk.Coins)
 	GetTaxCap(ctx sdk.Context, denom string) sdk.Int
+	GetTaxRate(ctx sdk.Context) sdk.Dec
 }
