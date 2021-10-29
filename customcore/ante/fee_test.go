@@ -6,6 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
+	coretypes "github.com/user/encichain/types"
 )
 
 func (suite *AnteTestSuite) TestEnsureMempoolFees() {
@@ -20,7 +21,7 @@ func (suite *AnteTestSuite) TestEnsureMempoolFees() {
 
 	// msg and signatures
 	msg := testdata.NewTestMsg(addr1)
-	feeAmount := testdata.NewTestFeeAmount()
+	feeAmount := NewTestFeeAmount()
 	gasLimit := testdata.NewTestGasLimit()
 	suite.Require().NoError(suite.txBuilder.SetMsgs(msg))
 	suite.txBuilder.SetFeeAmount(feeAmount)
@@ -31,8 +32,8 @@ func (suite *AnteTestSuite) TestEnsureMempoolFees() {
 	suite.Require().NoError(err)
 
 	// Set high gas price so standard test fee fails
-	atomPrice := sdk.NewDecCoinFromDec("atom", sdk.NewDec(200).Quo(sdk.NewDec(100000)))
-	highGasPrice := []sdk.DecCoin{atomPrice}
+	uenciPrice := sdk.NewDecCoinFromDec(coretypes.MicroTokenDenom, sdk.NewDec(200).Quo(sdk.NewDec(100000)))
+	highGasPrice := []sdk.DecCoin{uenciPrice}
 	suite.ctx = suite.ctx.WithMinGasPrices(highGasPrice)
 
 	// Set IsCheckTx to true
@@ -52,8 +53,8 @@ func (suite *AnteTestSuite) TestEnsureMempoolFees() {
 	// Set IsCheckTx back to true for testing sufficient mempool fee
 	suite.ctx = suite.ctx.WithIsCheckTx(true)
 
-	atomPrice = sdk.NewDecCoinFromDec("atom", sdk.NewDec(0).Quo(sdk.NewDec(100000)))
-	lowGasPrice := []sdk.DecCoin{atomPrice}
+	uenciPrice = sdk.NewDecCoinFromDec(coretypes.MicroTokenDenom, sdk.NewDec(0).Quo(sdk.NewDec(100000)))
+	lowGasPrice := []sdk.DecCoin{uenciPrice}
 	suite.ctx = suite.ctx.WithMinGasPrices(lowGasPrice)
 
 	_, err = antehandler(suite.ctx, tx, false)
@@ -69,7 +70,7 @@ func (suite *AnteTestSuite) TestDeductFees() {
 
 	// msg and signatures
 	msg := testdata.NewTestMsg(addr1)
-	feeAmount := testdata.NewTestFeeAmount()
+	feeAmount := NewTestFeeAmount()
 	gasLimit := testdata.NewTestGasLimit()
 	suite.Require().NoError(suite.txBuilder.SetMsgs(msg))
 	suite.txBuilder.SetFeeAmount(feeAmount)
@@ -82,7 +83,7 @@ func (suite *AnteTestSuite) TestDeductFees() {
 	// Set account with insufficient funds
 	acc := suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, addr1)
 	suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
-	coins := sdk.NewCoins(sdk.NewCoin("atom", sdk.NewInt(10)))
+	coins := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(10)))
 	err = simapp.FundAccount(suite.app.BankKeeper, suite.ctx, addr1, coins)
 	suite.Require().NoError(err)
 
@@ -95,7 +96,7 @@ func (suite *AnteTestSuite) TestDeductFees() {
 
 	// Set account with sufficient funds
 	suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
-	err = simapp.FundAccount(suite.app.BankKeeper, suite.ctx, addr1, sdk.NewCoins(sdk.NewCoin("atom", sdk.NewInt(200))))
+	err = simapp.FundAccount(suite.app.BankKeeper, suite.ctx, addr1, sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(200))))
 	suite.Require().NoError(err)
 
 	_, err = antehandler(suite.ctx, tx, false)

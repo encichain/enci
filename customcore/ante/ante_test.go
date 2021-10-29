@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/cosmos/cosmos-sdk/simapp"
+	coretypes "github.com/user/encichain/types"
 
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
@@ -36,7 +37,7 @@ func (suite *AnteTestSuite) TestSimulateGasCost() {
 		testdata.NewTestMsg(accounts[2].acc.GetAddress(), accounts[0].acc.GetAddress()),
 		testdata.NewTestMsg(accounts[1].acc.GetAddress(), accounts[2].acc.GetAddress()),
 	}
-	feeAmount := testdata.NewTestFeeAmount()
+	feeAmount := NewTestFeeAmount()
 	gasLimit := testdata.NewTestGasLimit()
 	accSeqs := []uint64{0, 0, 0}
 	privs := []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv, accounts[2].priv}
@@ -90,7 +91,7 @@ func (suite *AnteTestSuite) TestAnteHandlerSigErrors() {
 		testdata.NewTestMsg(addr0, addr1),
 		testdata.NewTestMsg(addr0, addr2),
 	}
-	feeAmount := testdata.NewTestFeeAmount()
+	feeAmount := NewTestFeeAmount()
 	gasLimit := testdata.NewTestGasLimit()
 
 	// Variable data per test case
@@ -168,7 +169,7 @@ func (suite *AnteTestSuite) TestAnteHandlerAccountNumbers() {
 
 	// Same data for every test cases
 	accounts := suite.CreateTestAccounts(2)
-	feeAmount := testdata.NewTestFeeAmount()
+	feeAmount := NewTestFeeAmount()
 	gasLimit := testdata.NewTestGasLimit()
 
 	// Variable data per test case
@@ -250,7 +251,7 @@ func (suite *AnteTestSuite) TestAnteHandlerAccountNumbersAtBlockHeightZero() {
 
 	// Same data for every test cases
 	accounts := suite.CreateTestAccounts(2)
-	feeAmount := testdata.NewTestFeeAmount()
+	feeAmount := NewTestFeeAmount()
 	gasLimit := testdata.NewTestGasLimit()
 
 	// Variable data per test case
@@ -333,7 +334,7 @@ func (suite *AnteTestSuite) TestAnteHandlerSequences() {
 
 	// Same data for every test cases
 	accounts := suite.CreateTestAccounts(3)
-	feeAmount := testdata.NewTestFeeAmount()
+	feeAmount := NewTestFeeAmount()
 	gasLimit := testdata.NewTestGasLimit()
 
 	// Variable data per test case
@@ -449,7 +450,7 @@ func (suite *AnteTestSuite) TestAnteHandlerFees() {
 	acc1 := suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, addr0)
 	suite.app.AccountKeeper.SetAccount(suite.ctx, acc1)
 	msgs := []sdk.Msg{testdata.NewTestMsg(addr0)}
-	feeAmount := testdata.NewTestFeeAmount()
+	feeAmount := NewTestFeeAmount()
 	gasLimit := testdata.NewTestGasLimit()
 	privs, accNums, accSeqs := []cryptotypes.PrivKey{priv0}, []uint64{0}, []uint64{0}
 
@@ -472,7 +473,7 @@ func (suite *AnteTestSuite) TestAnteHandlerFees() {
 		{
 			"signer does not have enough funds to pay the fee",
 			func() {
-				err := simapp.FundAccount(suite.app.BankKeeper, suite.ctx, addr0, sdk.NewCoins(sdk.NewInt64Coin("atom", 149)))
+				err := simapp.FundAccount(suite.app.BankKeeper, suite.ctx, addr0, sdk.NewCoins(sdk.NewInt64Coin(coretypes.MicroTokenDenom, 149)))
 				suite.Require().NoError(err)
 			},
 			false,
@@ -487,9 +488,9 @@ func (suite *AnteTestSuite) TestAnteHandlerFees() {
 				modAcc := suite.app.AccountKeeper.GetModuleAccount(suite.ctx, types.FeeCollectorName)
 
 				suite.Require().True(suite.app.BankKeeper.GetAllBalances(suite.ctx, modAcc.GetAddress()).Empty())
-				require.True(sdk.IntEq(suite.T(), suite.app.BankKeeper.GetAllBalances(suite.ctx, addr0).AmountOf("atom"), sdk.NewInt(149)))
+				require.True(sdk.IntEq(suite.T(), suite.app.BankKeeper.GetAllBalances(suite.ctx, addr0).AmountOf(coretypes.MicroTokenDenom), sdk.NewInt(149)))
 
-				err := simapp.FundAccount(suite.app.BankKeeper, suite.ctx, addr0, sdk.NewCoins(sdk.NewInt64Coin("atom", 1)))
+				err := simapp.FundAccount(suite.app.BankKeeper, suite.ctx, addr0, sdk.NewCoins(sdk.NewInt64Coin(coretypes.MicroTokenDenom, 1)))
 				suite.Require().NoError(err)
 			},
 			false,
@@ -501,8 +502,8 @@ func (suite *AnteTestSuite) TestAnteHandlerFees() {
 			func() {
 				modAcc := suite.app.AccountKeeper.GetModuleAccount(suite.ctx, types.FeeCollectorName)
 
-				require.True(sdk.IntEq(suite.T(), suite.app.BankKeeper.GetAllBalances(suite.ctx, modAcc.GetAddress()).AmountOf("atom"), sdk.NewInt(150)))
-				require.True(sdk.IntEq(suite.T(), suite.app.BankKeeper.GetAllBalances(suite.ctx, addr0).AmountOf("atom"), sdk.NewInt(0)))
+				require.True(sdk.IntEq(suite.T(), suite.app.BankKeeper.GetAllBalances(suite.ctx, modAcc.GetAddress()).AmountOf(coretypes.MicroTokenDenom), sdk.NewInt(150)))
+				require.True(sdk.IntEq(suite.T(), suite.app.BankKeeper.GetAllBalances(suite.ctx, addr0).AmountOf(coretypes.MicroTokenDenom), sdk.NewInt(0)))
 			},
 			false,
 			false,
@@ -540,7 +541,7 @@ func (suite *AnteTestSuite) TestAnteHandlerMemoGas() {
 		{
 			"tx does not have enough gas",
 			func() {
-				feeAmount = sdk.NewCoins(sdk.NewInt64Coin("atom", 0))
+				feeAmount = sdk.NewCoins(sdk.NewInt64Coin(coretypes.MicroTokenDenom, 0))
 				gasLimit = 0
 			},
 			false,
@@ -550,7 +551,7 @@ func (suite *AnteTestSuite) TestAnteHandlerMemoGas() {
 		{
 			"tx with memo doesn't have enough gas",
 			func() {
-				feeAmount = sdk.NewCoins(sdk.NewInt64Coin("atom", 0))
+				feeAmount = sdk.NewCoins(sdk.NewInt64Coin(coretypes.MicroTokenDenom, 0))
 				gasLimit = 801
 				suite.txBuilder.SetMemo("abcininasidniandsinasindiansdiansdinaisndiasndiadninsd")
 			},
@@ -561,7 +562,7 @@ func (suite *AnteTestSuite) TestAnteHandlerMemoGas() {
 		{
 			"memo too large",
 			func() {
-				feeAmount = sdk.NewCoins(sdk.NewInt64Coin("atom", 0))
+				feeAmount = sdk.NewCoins(sdk.NewInt64Coin(coretypes.MicroTokenDenom, 0))
 				gasLimit = 50000
 				suite.txBuilder.SetMemo(strings.Repeat("01234567890", 500))
 			},
@@ -572,7 +573,7 @@ func (suite *AnteTestSuite) TestAnteHandlerMemoGas() {
 		{
 			"tx with memo has enough gas",
 			func() {
-				feeAmount = sdk.NewCoins(sdk.NewInt64Coin("atom", 0))
+				feeAmount = sdk.NewCoins(sdk.NewInt64Coin(coretypes.MicroTokenDenom, 0))
 				gasLimit = 50000
 				suite.txBuilder.SetMemo(strings.Repeat("0123456789", 10))
 			},
@@ -600,7 +601,7 @@ func (suite *AnteTestSuite) TestAnteHandlerMultiSigner() {
 	msg1 := testdata.NewTestMsg(accounts[0].acc.GetAddress(), accounts[1].acc.GetAddress())
 	msg2 := testdata.NewTestMsg(accounts[2].acc.GetAddress(), accounts[0].acc.GetAddress())
 	msg3 := testdata.NewTestMsg(accounts[1].acc.GetAddress(), accounts[2].acc.GetAddress())
-	feeAmount := testdata.NewTestFeeAmount()
+	feeAmount := NewTestFeeAmount()
 	gasLimit := testdata.NewTestGasLimit()
 
 	// Variable data per test case
@@ -688,7 +689,7 @@ func (suite *AnteTestSuite) TestAnteHandlerBadSignBytes() {
 			"test good tx and signBytes",
 			func() {
 				chainID = suite.ctx.ChainID()
-				feeAmount = testdata.NewTestFeeAmount()
+				feeAmount = NewTestFeeAmount()
 				gasLimit = testdata.NewTestGasLimit()
 				msgs = []sdk.Msg{msg0}
 				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv}, []uint64{0}, []uint64{0}
@@ -740,7 +741,7 @@ func (suite *AnteTestSuite) TestAnteHandlerBadSignBytes() {
 			"test wrong fee gas",
 			func() {
 				msgs = []sdk.Msg{msg0} // Back to correct msgs
-				feeAmount = testdata.NewTestFeeAmount()
+				feeAmount = NewTestFeeAmount()
 				gasLimit = testdata.NewTestGasLimit() + 100
 			},
 			false,
@@ -750,7 +751,7 @@ func (suite *AnteTestSuite) TestAnteHandlerBadSignBytes() {
 		{
 			"test wrong fee amount",
 			func() {
-				feeAmount = testdata.NewTestFeeAmount()
+				feeAmount = NewTestFeeAmount()
 				feeAmount[0].Amount = feeAmount[0].Amount.AddRaw(100)
 				gasLimit = testdata.NewTestGasLimit()
 			},
@@ -761,7 +762,7 @@ func (suite *AnteTestSuite) TestAnteHandlerBadSignBytes() {
 		{
 			"test wrong signer if public key exist",
 			func() {
-				feeAmount = testdata.NewTestFeeAmount()
+				feeAmount = NewTestFeeAmount()
 				gasLimit = testdata.NewTestGasLimit()
 				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[1].priv}, []uint64{0}, []uint64{1}
 			},
@@ -796,7 +797,7 @@ func (suite *AnteTestSuite) TestAnteHandlerSetPubKey() {
 
 	// Same data for every test cases
 	accounts := suite.CreateTestAccounts(2)
-	feeAmount := testdata.NewTestFeeAmount()
+	feeAmount := NewTestFeeAmount()
 	gasLimit := testdata.NewTestGasLimit()
 
 	// Variable data per test case
@@ -982,7 +983,7 @@ func (suite *AnteTestSuite) TestAnteHandlerSigLimitExceeded() {
 	}
 	msgs := []sdk.Msg{testdata.NewTestMsg(addrs...)}
 	accNums, accSeqs := []uint64{0, 1, 2, 3, 4, 5, 6, 7}, []uint64{0, 0, 0, 0, 0, 0, 0, 0}
-	feeAmount := testdata.NewTestFeeAmount()
+	feeAmount := NewTestFeeAmount()
 	gasLimit := testdata.NewTestGasLimit()
 
 	testCases := []TestCase{
@@ -1033,7 +1034,7 @@ func (suite *AnteTestSuite) TestCustomSignatureVerificationGasConsumer() {
 
 	// Same data for every test cases
 	accounts := suite.CreateTestAccounts(1)
-	feeAmount := testdata.NewTestFeeAmount()
+	feeAmount := NewTestFeeAmount()
 	gasLimit := testdata.NewTestGasLimit()
 
 	// Variable data per test case
@@ -1076,7 +1077,7 @@ func (suite *AnteTestSuite) TestAnteHandlerReCheck() {
 	// Same data for every test cases
 	accounts := suite.CreateTestAccounts(1)
 
-	feeAmount := testdata.NewTestFeeAmount()
+	feeAmount := NewTestFeeAmount()
 	gasLimit := testdata.NewTestGasLimit()
 	suite.txBuilder.SetFeeAmount(feeAmount)
 	suite.txBuilder.SetGasLimit(gasLimit)

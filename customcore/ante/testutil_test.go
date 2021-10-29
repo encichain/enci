@@ -200,6 +200,11 @@ func (suite *AnteTestSuite) RunTestCase(privs []cryptotypes.PrivKey, msgs []sdk.
 	})
 }
 
+// NewTestFeeAmount is a test fee amount.
+func NewTestFeeAmount() sdk.Coins {
+	return sdk.NewCoins(sdk.NewInt64Coin(coretypes.MicroTokenDenom, 150))
+}
+
 func TestAnteTestSuite(t *testing.T) {
 	suite.Run(t, new(AnteTestSuite))
 }
