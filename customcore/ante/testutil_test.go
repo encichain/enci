@@ -13,14 +13,17 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/simapp"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
-	"github.com/cosmos/cosmos-sdk/x/auth/ante"
+	cosmosante "github.com/cosmos/cosmos-sdk/x/auth/ante"
 	xauthsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	enciapp "github.com/user/encichain/app"
+	"github.com/user/encichain/customcore/ante"
+	coretypes "github.com/user/encichain/types"
+	charitytypes "github.com/user/encichain/x/charity/types"
 )
 
 // TestAccount represents an account used in the tests in x/auth/ante.
@@ -33,7 +36,7 @@ type TestAccount struct {
 type AnteTestSuite struct {
 	suite.Suite
 
-	app         *simapp.SimApp
+	app         *enciapp.EnciApp
 	anteHandler sdk.AnteHandler
 	ctx         sdk.Context
 	clientCtx   client.Context
@@ -41,21 +44,22 @@ type AnteTestSuite struct {
 }
 
 // returns context and app with params set on account keeper
-func createTestApp(isCheckTx bool) (*simapp.SimApp, sdk.Context) {
-	app := simapp.Setup(isCheckTx)
+func CreateTestApp(isCheckTx bool, tempDir string) (*enciapp.EnciApp, sdk.Context) {
+	app := enciapp.Setup(isCheckTx, tempDir)
 	ctx := app.BaseApp.NewContext(isCheckTx, tmproto.Header{})
 	app.AccountKeeper.SetParams(ctx, authtypes.DefaultParams())
-
+	app.CharityKeeper.SetParams(ctx, charitytypes.DefaultParamsSet)
 	return app, ctx
 }
 
-// SetupTest setups a new test, with new app, context, and anteHandler.
+// SetupTest setups a new test, with new app, context, and antehandler.
 func (suite *AnteTestSuite) SetupTest(isCheckTx bool) {
-	suite.app, suite.ctx = createTestApp(isCheckTx)
+	tempDir := suite.T().TempDir()
+	suite.app, suite.ctx = CreateTestApp(isCheckTx, tempDir)
 	suite.ctx = suite.ctx.WithBlockHeight(1)
 
 	// Set up TxConfig.
-	encodingConfig := simapp.MakeTestEncodingConfig()
+	encodingConfig := enciapp.MakeTestEncodingConfig()
 	// We're using TestMsg encoding in some tests, so register it here.
 	encodingConfig.Amino.RegisterConcrete(&testdata.TestMsg{}, "testdata.TestMsg", nil)
 	testdata.RegisterInterfaces(encodingConfig.InterfaceRegistry)
@@ -68,8 +72,9 @@ func (suite *AnteTestSuite) SetupTest(isCheckTx bool) {
 			AccountKeeper:   suite.app.AccountKeeper,
 			BankKeeper:      suite.app.BankKeeper,
 			FeegrantKeeper:  suite.app.FeeGrantKeeper,
+			CharityKeeper:   suite.app.CharityKeeper,
 			SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
-			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+			SigGasConsumer:  cosmosante.DefaultSigVerificationGasConsumer,
 		},
 	)
 
@@ -89,7 +94,7 @@ func (suite *AnteTestSuite) CreateTestAccounts(numAccs int) []TestAccount {
 		suite.Require().NoError(err)
 		suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 		someCoins := sdk.Coins{
-			sdk.NewInt64Coin("atom", 10000000),
+			sdk.NewInt64Coin(coretypes.MicroTokenDenom, 10000000),
 		}
 		err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, someCoins)
 		suite.Require().NoError(err)

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	charitymaintypes "github.com/user/encichain/types"
+	coretypes "github.com/user/encichain/types"
 	"github.com/user/encichain/x/charity/keeper"
 	"github.com/user/encichain/x/charity/types"
 	//bankKeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
@@ -18,9 +18,9 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	// this line is used by starport scaffolding # ibc/genesis/init
 
 	// Set the Denom meta data
-	_, set := k.GetDenomMetaData(ctx, charitymaintypes.MicroTokenDenom)
+	_, set := k.GetDenomMetaData(ctx, coretypes.MicroTokenDenom)
 	if !set {
-		k.SetDenomMetaData(ctx, charitymaintypes.TokenMetaData)
+		k.SetDenomMetaData(ctx, coretypes.TokenMetaData)
 	}
 
 	k.SetParams(ctx, genState.Params)
