@@ -384,6 +384,7 @@ func MakeEncodingConfig() simparams.EncodingConfig {
 	}
 }
 
+// setup returns a new EnciApp instance at tempDir, with genesis state if specified. deliverState is nil if InitChain is not called.
 func setup(withGenesis bool, invCheckPeriod uint, tempDir string) (*EnciApp, GenesisState) {
 	db := dbm.NewMemDB()
 	encCdc := MakeTestEncodingConfig()
