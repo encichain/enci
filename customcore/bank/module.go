@@ -1,12 +1,11 @@
 package bank
 
 import (
-	"github.com/spf13/cobra"
+	//"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/bank"
-
-	customcli "github.com/user/encichain/customcore/bank/client/cli"
+	//customcli "github.com/user/encichain/customcore/bank/client/cli"
 )
 
 var (
@@ -19,6 +18,7 @@ type AppModuleBasic struct {
 }
 
 // GetTxCmd returns the root tx command for the bank module.
-func (AppModuleBasic) GetTxCmd() *cobra.Command {
+/*func (AppModuleBasic) GetTxCmd() *cobra.Command {
 	return customcli.NewTxCmd()
 }
+*/
