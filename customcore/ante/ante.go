@@ -43,14 +43,13 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 	anteDecorators := []sdk.AnteDecorator{
 		cosmosante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
 		cosmosante.NewRejectExtensionOptionsDecorator(),
-		cosmosante.NewMempoolFeeDecorator(),
+		NewMempoolFeeTaxDecorator(options.CharityKeeper),
 		cosmosante.NewValidateBasicDecorator(),
 		cosmosante.TxTimeoutHeightDecorator{},
 		cosmosante.NewValidateMemoDecorator(options.AccountKeeper),
 		cosmosante.NewConsumeGasForTxSizeDecorator(options.AccountKeeper),
-		cosmosante.NewDeductFeeDecorator(options.AccountKeeper, options.BankKeeper, options.FeegrantKeeper),
-		NewDeductTaxDecorator(options.AccountKeeper, options.BankKeeper, options.CharityKeeper, options.FeegrantKeeper),
-		cosmosante.NewSetPubKeyDecorator(options.AccountKeeper), // SetPubKeyDecorator must be called before all signature verification decorators
+		NewDeductTaxFeeDecorator(options.AccountKeeper, options.BankKeeper, options.CharityKeeper, options.FeegrantKeeper), // Deducts Fees (gas +charity tax) from the fee payer account
+		cosmosante.NewSetPubKeyDecorator(options.AccountKeeper),                                                            // SetPubKeyDecorator must be called before all signature verification decorators
 		cosmosante.NewValidateSigCountDecorator(options.AccountKeeper),
 		cosmosante.NewSigGasConsumeDecorator(options.AccountKeeper, sigGasConsumer),
 		cosmosante.NewSigVerificationDecorator(options.AccountKeeper, options.SignModeHandler),

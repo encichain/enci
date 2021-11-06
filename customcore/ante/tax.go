@@ -11,20 +11,20 @@ import (
 	charitytypes "github.com/user/encichain/x/charity/types"
 )
 
-// DeductTaxDecorator deducts charity tax from the first signer of the tx
-// Tax is calculated based on tx.Amount, independent of Fee.
+// DeductTaxFeeDecorator deducts charity tax from the first signer of the tx
+// Fee of Tx should include sufficient fees for both gas fee and charity tax
 // If the first signer does not have the funds to pay for the tax, return with InsufficientFunds error
 // Call next AnteHandler if tax successfully deducted
-// CONTRACT: Tx must implement FeeTx interface to use DeductTaxDecorator
-type DeductTaxDecorator struct {
+// CONTRACT: Tx must implement FeeTx interface to use DeductTaxFeeDecorator
+type DeductTaxFeeDecorator struct {
 	ak             AccountKeeper
 	bankKeeper     types.BankKeeper
 	CharityKeeper  CharityKeeper
 	feegrantKeeper FeegrantKeeper
 }
 
-func NewDeductTaxDecorator(ak AccountKeeper, bk types.BankKeeper, ck CharityKeeper, fk FeegrantKeeper) DeductTaxDecorator {
-	return DeductTaxDecorator{
+func NewDeductTaxFeeDecorator(ak AccountKeeper, bk types.BankKeeper, ck CharityKeeper, fk FeegrantKeeper) DeductTaxFeeDecorator {
+	return DeductTaxFeeDecorator{
 		ak:             ak,
 		bankKeeper:     bk,
 		CharityKeeper:  ck,
@@ -32,7 +32,7 @@ func NewDeductTaxDecorator(ak AccountKeeper, bk types.BankKeeper, ck CharityKeep
 	}
 }
 
-func (dtd DeductTaxDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+func (dtd DeductTaxFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
 	feeTx, ok := tx.(sdk.FeeTx)
 	if !ok {
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
@@ -43,6 +43,11 @@ func (dtd DeductTaxDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 	}
 
 	tax := ParseMsgAndComputeTax(ctx, dtd.CharityKeeper, tx.GetMsgs()...)
+
+	gasfee, hasNeg := feeTx.GetFee().SafeSub(tax)
+	if hasNeg {
+		return ctx, sdkerrors.Wrapf(sdkerrors.ErrInsufficientFee, "insufficient fees(tax); got: %s, required %s", feeTx.GetFee(), tax)
+	}
 	taxPayer := feeTx.FeePayer()
 	feeGranter := feeTx.FeeGranter()
 	deductFeesFrom := taxPayer
@@ -53,8 +58,7 @@ func (dtd DeductTaxDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 		if dtd.feegrantKeeper == nil {
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "fee grants are not enabled")
 		} else if !feeGranter.Equals(taxPayer) {
-			err := dtd.feegrantKeeper.UseGrantedFees(ctx, feeGranter, taxPayer, tax, tx.GetMsgs())
-
+			err := dtd.feegrantKeeper.UseGrantedFees(ctx, feeGranter, taxPayer, feeTx.GetFee(), tx.GetMsgs())
 			if err != nil {
 				return ctx, sdkerrors.Wrapf(err, "%s not allowed to pay fees from %s", feeGranter, taxPayer)
 			}
@@ -69,8 +73,16 @@ func (dtd DeductTaxDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 	}
 
 	// deduct the fees
+	if !gasfee.IsZero() {
+		err = DeductFees(dtd.bankKeeper, ctx, deductTaxFromAcc, gasfee)
+		if err != nil {
+			return ctx, err
+		}
+	}
+
+	// deduct the tax
 	if !tax.IsZero() {
-		err = DeductFees(dtd.bankKeeper, ctx, deductTaxFromAcc, tax)
+		err = DeductTaxes(ctx, dtd.bankKeeper, deductTaxFromAcc, tax)
 		if err != nil {
 			return ctx, err
 		}
@@ -81,8 +93,22 @@ func (dtd DeductTaxDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 	return next(ctx, tx, simulate)
 }
 
-// DeductFees deducts taxes from the given account. sending the taxes to the specified collector account
-func DeductFees(bankKeeper types.BankKeeper, ctx sdk.Context, acc types.AccountI, tax sdk.Coins) error {
+// DeductFees deducts fees from the given account.
+func DeductFees(bankKeeper types.BankKeeper, ctx sdk.Context, acc types.AccountI, fees sdk.Coins) error {
+	if !fees.IsValid() {
+		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFee, "invalid fee amount: %s", fees)
+	}
+
+	err := bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), types.FeeCollectorName, fees)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
+	}
+
+	return nil
+}
+
+// DeductTaxes deducts charity tax from the given account, sending the proceeds to the charity tax collector account
+func DeductTaxes(ctx sdk.Context, bankKeeper types.BankKeeper, acc types.AccountI, tax sdk.Coins) error {
 	if !tax.IsValid() {
 		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFee, "invalid tax amount: %s", tax)
 	}
