@@ -23,6 +23,16 @@ func (k Keeper) GetTaxRate(ctx sdk.Context) (taxrate sdk.Dec) {
 	return
 }
 
+// SetTaxRate sets the specified TaxRate to the param store
+// Note: For testing purposes only
+func (k Keeper) SetTaxRate(ctx sdk.Context, taxRate sdk.Dec) error {
+	taxString, err := taxRate.MarshalJSON()
+	if err != nil {
+		return err
+	}
+	return k.paramStore.Update(ctx, types.ParamKeyTaxRate, taxString)
+}
+
 // GetParamTaxCaps returns the []TaxCap from the paramstore
 func (k Keeper) GetParamTaxCaps(ctx sdk.Context) (taxcaps []types.TaxCap) {
 	k.paramStore.Get(ctx, types.ParamKeyTaxCaps, &taxcaps)

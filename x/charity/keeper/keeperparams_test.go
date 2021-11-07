@@ -229,3 +229,15 @@ func TestTaxCapsParamChangeProposal(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, []types.TaxCap{{Denom: "uenci", Cap: sdk.NewInt(int64(2000000))}}, app.CharityKeeper.GetParamTaxCaps(app.Ctx))
 }
+
+func TestTaxRateChangeFunc(t *testing.T) {
+	app := CreateTestApp(t)
+
+	app.CharityKeeper.SetParams(app.Ctx, types.DefaultParams())
+	require.Equal(t, types.DefaultTaxRate, app.CharityKeeper.GetTaxRate(app.Ctx))
+
+	newTaxRate := sdk.NewDecWithPrec(1, 2)
+	err := app.CharityKeeper.SetTaxRate(app.Ctx, newTaxRate)
+	require.NoError(t, err)
+	require.Equal(t, newTaxRate, app.CharityKeeper.GetTaxRate(app.Ctx))
+}

@@ -17,7 +17,7 @@ var (
 
 // Default values
 var (
-	DefaultTaxRate = sdk.NewDecWithPrec(1, 1)   // 0.1 || 10%
+	DefaultTaxRate = sdk.NewDecWithPrec(5, 3)   // 0.005 || 0.5%
 	DefaultCap     = sdk.NewInt(int64(1000000)) // 1000000 utoken or 1 token
 	DefaultTaxCaps = []TaxCap{{
 		Denom: coretypes.MicroTokenDenom,

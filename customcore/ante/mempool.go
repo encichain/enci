@@ -44,7 +44,9 @@ func (mfd MempoolFeeTaxDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 				return ctx, err
 			}
 		}
+
 		// Ensure supplied fee is not lower than tax amount
+		// This is also called in DeliverTx. Unlike Gas fees which vary based on local validator, charity tax does not change with different validators
 		if _, hasNeg := feeCoins.SafeSub(tax); hasNeg {
 			return ctx, sdkerrors.Wrapf(sdkerrors.ErrInsufficientFee, "insufficient fees; got: %s required: %s", feeCoins, tax)
 		}
@@ -53,8 +55,8 @@ func (mfd MempoolFeeTaxDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 	return next(ctx, tx, simulate)
 }
 
-// EnsureSufficientMempoolFees verifies that the given transaction has supplied
-// enough fees to cover a proposer's minimum fees.
+// CheckMemPoolFeeTax verifies that the given transaction has supplied
+// enough fees to cover the proposer's minimum gas prices
 // Error is returned on failure
 func CheckMempoolFeeTax(ctx sdk.Context, gas uint64, fees sdk.Coins, tax sdk.Coins) error {
 	minGasPrices := ctx.MinGasPrices()
@@ -75,13 +77,13 @@ func CheckMempoolFeeTax(ctx sdk.Context, gas uint64, fees sdk.Coins, tax sdk.Coi
 	// Checks for both insufficient tax and insufficient supplied gas fee
 	feegas, neg := fees.SafeSub(tax)
 	if neg {
-		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFee, "1; insufficient fees(tax); got: %s, required: %s = %s(gas) +%s(charity tax)",
+		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFee, "insufficient fees(tax); got: %s, required: %s = %s(gas) +%s(charity tax)",
 			feegas.Add(tax...), requiredFees.Add(tax...), requiredFees, tax)
 	}
 
 	// Ensure supplied fees(gas w/o tax) can cover required fees
 	if !requiredFees.IsZero() && !feegas.IsAnyGTE(requiredFees) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFee, "2; insufficient fees(gas); got: %s, required: %s = %s(gas) +%s(charity tax)",
+		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFee, "insufficient fees; got: %s, required: %s = %s(gas) +%s(charity tax)",
 			feegas.Add(tax...), requiredFees.Add(tax...), requiredFees, tax)
 	}
 	return nil
