@@ -66,8 +66,8 @@ func (suite *AnteTestSuite) TestEnsureMempoolFeeTax() {
 	taxRate := suite.app.CharityKeeper.GetTaxRate(suite.ctx)
 	amt := sdk.NewDecFromInt(feeAmount[0].Amount).Quo(taxRate).TruncateInt().Add(sdk.NewInt(int64(10000)))
 	highTaxCoin := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, amt))
-	bankmsg := banktypes.NewMsgSend(addr1, addr1, highTaxCoin)
 
+	bankmsg := banktypes.NewMsgSend(addr1, addr1, highTaxCoin)
 	suite.Require().NoError(suite.txBuilder.SetMsgs(bankmsg))
 	suite.txBuilder.SetFeeAmount(feeAmount)
 	tx, err = suite.CreateTestTx(privs, accNums, accSeqs, suite.ctx.ChainID())
@@ -80,6 +80,21 @@ func (suite *AnteTestSuite) TestEnsureMempoolFeeTax() {
 	suite.ctx = suite.ctx.WithIsCheckTx(false)
 	_, err = antehandler(suite.ctx, tx, false)
 	suite.Require().NotNil(err, "Decorator should have errored on too low fee for tax in DeliverTx")
+
+	// Set IsCheckTx back to True
+	suite.ctx = suite.ctx.WithIsCheckTx(true)
+
+	// non-Zero gas fee and tax. Sufficient fees
+	uenciPrice = sdk.NewDecCoinFromDec(coretypes.MicroTokenDenom, sdk.NewDec(100).Quo(sdk.NewDec(100000)))
+	lowerGasPrice := []sdk.DecCoin{uenciPrice}
+	suite.ctx = suite.ctx.WithMinGasPrices(lowerGasPrice)
+
+	sufficientfee := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, feeAmount[0].Amount.Add(sdk.NewInt(int64(1000)))))
+	suite.txBuilder.SetFeeAmount(sufficientfee)
+	tx, err = suite.CreateTestTx(privs, accNums, accSeqs, suite.ctx.ChainID())
+	_, err = antehandler(suite.ctx, tx, false)
+	suite.Require().Nil(err, "Decorator should not have errored on sufficient fee for non-zero gas fee and tax")
+
 }
 
 func (suite *AnteTestSuite) TestDeductTaxesNoGasFee() {
@@ -120,8 +135,8 @@ func (suite *AnteTestSuite) TestDeductTaxesNoGasFee() {
 
 	suite.Require().NotNil(err, "Tx did not error when fee payer had insufficient funds")
 	expectedTax := sdk.NewCoin(coretypes.MicroTokenDenom, feeAmount[0].Amount)
-	ctaxaddr := suite.app.AccountKeeper.GetModuleAccount(suite.ctx, charitytypes.CharityCollectorName)
-	taxAccBal := suite.app.BankKeeper.HasBalance(suite.ctx, ctaxaddr.GetAddress(), expectedTax)
+	ctaxacc := suite.app.AccountKeeper.GetModuleAccount(suite.ctx, charitytypes.CharityCollectorName)
+	taxAccBal := suite.app.BankKeeper.HasBalance(suite.ctx, ctaxacc.GetAddress(), expectedTax)
 	suite.Require().False(taxAccBal)
 
 	// Set account with sufficient funds
@@ -131,8 +146,115 @@ func (suite *AnteTestSuite) TestDeductTaxesNoGasFee() {
 
 	_, err = antehandler(suite.ctx, tx, false)
 
-	taxAccBal = suite.app.BankKeeper.HasBalance(suite.ctx, ctaxaddr.GetAddress(), expectedTax)
+	taxAccBal = suite.app.BankKeeper.HasBalance(suite.ctx, ctaxacc.GetAddress(), expectedTax)
 	suite.Require().True(taxAccBal)
 
 	suite.Require().Nil(err, "Tx errored after account has been set with sufficient funds")
+}
+
+func (suite *AnteTestSuite) TestDeductTaxesFees() {
+	suite.SetupTest(true)
+	suite.txBuilder = suite.clientCtx.TxConfig.NewTxBuilder()
+
+	// keys and addresses
+	priv1, _, addr1 := testdata.KeyTestPubAddr()
+
+	// fees, gas limit, msg and signatures
+	//amt == DefaultTaxCap
+	amt := int64(1000000)
+	coins := sdk.NewCoins(sdk.NewInt64Coin(coretypes.MicroTokenDenom, amt))
+	msg := banktypes.NewMsgSend(addr1, addr1, coins)
+	taxRate := suite.app.CharityKeeper.GetTaxRate(suite.ctx)
+
+	// Both tax and gas fees
+	feeAmount := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, taxRate.MulInt64(amt).TruncateInt().Add(sdk.NewInt(int64(100)))))
+	gasLimit := testdata.NewTestGasLimit()
+	suite.Require().NoError(suite.txBuilder.SetMsgs(msg))
+	suite.txBuilder.SetFeeAmount(feeAmount)
+	suite.txBuilder.SetGasLimit(gasLimit)
+
+	privs, accNums, accSeqs := []cryptotypes.PrivKey{priv1}, []uint64{0}, []uint64{0}
+	tx, err := suite.CreateTestTx(privs, accNums, accSeqs, suite.ctx.ChainID())
+	suite.Require().NoError(err)
+
+	// Set account with insufficient funds
+	acc := suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, addr1)
+	suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
+	coins = sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(10)))
+	err = simapp.FundAccount(suite.app.BankKeeper, suite.ctx, addr1, coins)
+	suite.Require().NoError(err)
+
+	dtd := customante.NewDeductTaxFeeDecorator(suite.app.AccountKeeper, suite.app.BankKeeper, suite.app.CharityKeeper, suite.app.FeeGrantKeeper)
+	antehandler := sdk.ChainAnteDecorators(dtd)
+
+	_, err = antehandler(suite.ctx, tx, false)
+
+	suite.Require().NotNil(err, "Tx did not error when fee payer had insufficient funds")
+	expectedTax := sdk.NewCoin(coretypes.MicroTokenDenom, feeAmount[0].Amount.Sub(sdk.NewInt(int64(100))))
+	ctaxacc := suite.app.AccountKeeper.GetModuleAccount(suite.ctx, charitytypes.CharityCollectorName)
+	taxAccBal := suite.app.BankKeeper.HasBalance(suite.ctx, ctaxacc.GetAddress(), expectedTax)
+	suite.Require().False(taxAccBal)
+
+	// Set account with sufficient funds
+	suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
+	err = simapp.FundAccount(suite.app.BankKeeper, suite.ctx, addr1, sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(2000000))))
+	suite.Require().NoError(err)
+
+	_, err = antehandler(suite.ctx, tx, false)
+
+	taxAccBal = suite.app.BankKeeper.HasBalance(suite.ctx, ctaxacc.GetAddress(), expectedTax)
+	suite.Require().True(taxAccBal)
+
+	suite.Require().Nil(err, "Tx errored after account has been set with sufficient funds")
+}
+
+func (suite *AnteTestSuite) TestAnteMultiSend() {
+	suite.SetupTest(true) // setup
+	suite.txBuilder = suite.clientCtx.TxConfig.NewTxBuilder()
+
+	// keys and addresses
+	priv1, _, addr1 := testdata.KeyTestPubAddr()
+
+	// msg and signatures
+	amount := int64(1000000)
+	coins := sdk.NewCoins(sdk.NewInt64Coin(coretypes.MicroTokenDenom, amount))
+	msg := banktypes.NewMsgMultiSend(
+		[]banktypes.Input{
+			banktypes.NewInput(addr1, coins),
+			banktypes.NewInput(addr1, coins),
+		},
+		[]banktypes.Output{
+			banktypes.NewOutput(addr1, coins.Add(coins...)),
+		},
+	)
+
+	feeAmount := NewTestFeeAmount()
+	gasLimit := testdata.NewTestGasLimit()
+	suite.Require().NoError(suite.txBuilder.SetMsgs(msg))
+	suite.txBuilder.SetFeeAmount(feeAmount)
+	suite.txBuilder.SetGasLimit(gasLimit)
+
+	privs, accNums, accSeqs := []cryptotypes.PrivKey{priv1}, []uint64{0}, []uint64{0}
+	tx, err := suite.CreateTestTx(privs, accNums, accSeqs, suite.ctx.ChainID())
+	suite.Require().NoError(err)
+
+	mftd := customante.NewMempoolFeeTaxDecorator(suite.app.CharityKeeper)
+	dtd := customante.NewDeductTaxFeeDecorator(suite.app.AccountKeeper, suite.app.BankKeeper, suite.app.CharityKeeper, suite.app.FeeGrantKeeper)
+	antehandler := sdk.ChainAnteDecorators(mftd, dtd)
+
+	//Set checkTX to true
+	suite.ctx = suite.ctx.WithIsCheckTx(true)
+
+	//Set gas prices, low gas
+	uenciPrice := sdk.NewDecCoinFromDec(coretypes.MicroTokenDenom, sdk.NewDec(50).Quo(sdk.NewDec(100000)))
+	lowGasPrice := []sdk.DecCoin{uenciPrice}
+	suite.ctx = suite.ctx.WithMinGasPrices(lowGasPrice)
+
+	expectedTaxAmt := suite.app.CharityKeeper.GetTaxRate(suite.ctx).MulInt64(amount).TruncateInt()
+	expectedTax := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, expectedTaxAmt))
+
+	// Set too low fee for gas + tax
+	suite.txBuilder.SetFeeAmount(expectedTax)
+	_, err = antehandler(suite.ctx, tx, false)
+	suite.Require().Error(err, "Mempool Decorator should have errored on too low fee for local gas price + tax")
 }

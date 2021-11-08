@@ -236,8 +236,10 @@ func TestTaxRateChangeFunc(t *testing.T) {
 	app.CharityKeeper.SetParams(app.Ctx, types.DefaultParams())
 	require.Equal(t, types.DefaultTaxRate, app.CharityKeeper.GetTaxRate(app.Ctx))
 
-	newTaxRate := sdk.NewDecWithPrec(1, 2)
-	err := app.CharityKeeper.SetTaxRate(app.Ctx, newTaxRate)
-	require.NoError(t, err)
-	require.Equal(t, newTaxRate, app.CharityKeeper.GetTaxRate(app.Ctx))
+	for i := int64(1); i < 5; i++ {
+		newTaxRate := sdk.NewDecWithPrec(i, 2)
+		err := app.CharityKeeper.SetTaxRate(app.Ctx, newTaxRate)
+		require.NoError(t, err)
+		require.Equal(t, newTaxRate, app.CharityKeeper.GetTaxRate(app.Ctx))
+	}
 }

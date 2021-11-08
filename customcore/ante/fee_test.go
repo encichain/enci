@@ -5,14 +5,26 @@ import (
 	"github.com/cosmos/cosmos-sdk/simapp"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	customante "github.com/user/encichain/customcore/ante"
 	coretypes "github.com/user/encichain/types"
+	"github.com/user/encichain/x/charity/types"
 )
 
 func (suite *AnteTestSuite) TestDeductFees() {
 	suite.SetupTest(false) // setup
 	suite.txBuilder = suite.clientCtx.TxConfig.NewTxBuilder()
+
+	// Set 0 TaxRateMin *RateMin*
+	newTaxLimit := types.TaxRateLimits{RateMin: sdk.NewDec(int64(0)), RateMax: sdk.NewDecWithPrec(2, 2)}
+	suite.app.CharityKeeper.SetTaxRateLimits(suite.ctx, newTaxLimit)
+	taxRateLim := suite.app.CharityKeeper.GetTaxRateLimits(suite.ctx)
+	suite.Require().Equal(newTaxLimit, taxRateLim)
+
+	// Set 0 taxrate
+	suite.app.CharityKeeper.SetTaxRate(suite.ctx, sdk.NewDec(int64(0)))
+	suite.Require().True(suite.app.CharityKeeper.GetTaxRate(suite.ctx).IsZero())
 
 	// keys and addresses
 	priv1, _, addr1 := testdata.KeyTestPubAddr()
@@ -50,7 +62,16 @@ func (suite *AnteTestSuite) TestDeductFees() {
 	err = simapp.FundAccount(suite.app.BankKeeper, suite.ctx, addr1, sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(200))))
 	suite.Require().NoError(err)
 
+	// Ensure fee is not in fee collector account
+	fcacc := suite.app.AccountKeeper.GetModuleAccount(suite.ctx, authtypes.FeeCollectorName)
+	feeAccBal := suite.app.BankKeeper.HasBalance(suite.ctx, fcacc.GetAddress(), feeAmount[0])
+	suite.Require().False(feeAccBal)
+
 	_, err = antehandler(suite.ctx, tx, false)
 
 	suite.Require().Nil(err, "Tx errored after account has been set with sufficient funds")
+
+	// Ensure fee has been sent to fee collector account
+	feeAccBal = suite.app.BankKeeper.HasBalance(suite.ctx, fcacc.GetAddress(), feeAmount[0])
+	suite.Require().True(feeAccBal)
 }
