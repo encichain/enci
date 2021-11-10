@@ -8,6 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/bank/types"
+	"github.com/user/encichain/customcore/ante"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -49,8 +50,26 @@ ignored as it is implied from [from_key_or_address].`,
 			}
 
 			msg := types.NewMsgSend(clientCtx.GetFromAddress(), toAddr, coins)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
 
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			//Create new transaction factory
+			txF := tx.NewFactoryCLI(clientCtx, cmd.Flags())
+
+			if !clientCtx.GenerateOnly && txF.Fees().IsZero() {
+				// estimate tax and gas fees
+				fees, err := ante.ComputeFeeTaxCmd(clientCtx, cmd.Flags(), msg)
+				if err != nil {
+					return err
+				}
+				// Update Fee
+				txF = txF.WithFees(fees.String()).
+					WithSimulateAndExecute(false).
+					WithGasPrices("")
+			}
+			// Generate tx and print if clientCtx.GenerateOnly == true ; sign and broadcast if false
+			return tx.GenerateOrBroadcastTxWithFactory(clientCtx, txF, msg)
 		},
 	}
 

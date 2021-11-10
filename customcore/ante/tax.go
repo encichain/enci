@@ -121,7 +121,7 @@ func DeductTaxes(ctx sdk.Context, bankKeeper types.BankKeeper, acc types.Account
 	return nil
 }
 
-// Filter bank messages and compute tax on each transaction.
+// Filter taxed messages and compute tax on each MsgSend/MsgMultiSend
 func ParseMsgAndComputeTax(ctx sdk.Context, ck CharityKeeper, msgs ...sdk.Msg) sdk.Coins {
 	taxFinal := sdk.Coins{}
 
