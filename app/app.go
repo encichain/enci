@@ -98,6 +98,7 @@ import (
 
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	customante "github.com/user/encichain/customcore/ante"
+	custombank "github.com/user/encichain/customcore/bank"
 	customgov "github.com/user/encichain/customcore/gov"
 	customstaking "github.com/user/encichain/customcore/staking"
 	charitykeeper "github.com/user/encichain/x/charity/keeper"
@@ -138,7 +139,7 @@ var (
 	ModuleBasics = module.NewBasicManager(
 		auth.AppModuleBasic{},
 		genutil.AppModuleBasic{},
-		bank.AppModuleBasic{},
+		custombank.AppModuleBasic{},
 		capability.AppModuleBasic{},
 		customstaking.AppModuleBasic{},
 		mint.AppModuleBasic{},

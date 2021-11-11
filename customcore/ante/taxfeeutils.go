@@ -13,11 +13,19 @@ import (
 )
 
 // Compute fees and tax with CLI options
-func ComputeFeeTaxCmd(clientCtx client.Context, flagset *pflag.FlagSet, msgs ...sdk.Msg) (sdk.Coins, error) {
+func ComputeFeeTaxCli(clientCtx client.Context, flagset *pflag.FlagSet, msgs ...sdk.Msg) (fees sdk.Coins, gas uint64, err error) {
 	// Create new tx factory
 	txF := tx.NewFactoryCLI(clientCtx, flagset)
-	gas := txF.Gas()
-	fees := txF.Fees()
+	gas = txF.Gas()
+
+	if txF.SimulateAndExecute() {
+		_, adjusted, err := tx.CalculateGas(clientCtx, txF, msgs...)
+		if err != nil {
+			return nil, gas, err
+		}
+		gas = adjusted
+	}
+	fees = txF.Fees()
 
 	// Compute gasFee from gas price, if gas price is not zero
 	// fee = ceil(gasPrice * gasLimit).
@@ -35,11 +43,11 @@ func ComputeFeeTaxCmd(clientCtx client.Context, flagset *pflag.FlagSet, msgs ...
 	// Compute taxes and add to current fees
 	taxes, err := ClientParseMsgAndComputeTax(clientCtx, msgs...)
 	if err != nil {
-		return nil, err
+		return nil, gas, err
 	}
 
 	fees = fees.Add(taxes...)
-	return fees, nil
+	return
 }
 
 // Filter messages and compute tax on each MsgSend/MsgMultiSend

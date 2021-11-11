@@ -59,12 +59,13 @@ ignored as it is implied from [from_key_or_address].`,
 
 			if !clientCtx.GenerateOnly && txF.Fees().IsZero() {
 				// estimate tax and gas fees
-				fees, err := ante.ComputeFeeTaxCmd(clientCtx, cmd.Flags(), msg)
+				fees, gas, err := ante.ComputeFeeTaxCli(clientCtx, cmd.Flags(), msg)
 				if err != nil {
 					return err
 				}
-				// Update Fee
+				// Update tx
 				txF = txF.WithFees(fees.String()).
+					WithGas(gas).
 					WithSimulateAndExecute(false).
 					WithGasPrices("")
 			}
