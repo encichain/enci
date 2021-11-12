@@ -75,7 +75,7 @@ func (p Params) Validate() error {
 
 		hashlength := len([]rune(charity.Checksum))
 		if charity.Checksum != "" && hashlength != 64 {
-			return fmt.Errorf("invalid sha256 hash length")
+			return fmt.Errorf("invalid sha256 length")
 		}
 	}
 

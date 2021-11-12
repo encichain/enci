@@ -2,6 +2,7 @@ package types
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -41,10 +42,20 @@ func NewGenesisState(params Params, taxratelimits TaxRateLimits, taxcaps []TaxCa
 // failure.
 func (gs GenesisState) Validate() error {
 	// this line is used by starport scaffolding # ibc/genesistype/validate
+	if err := gs.Params.Validate(); err != nil {
+		return err
+	}
 
-	// this line is used by starport scaffolding # genesis/types/validate
+	if gs.Params.TaxRate.LT(gs.TaxRateLimits.RateMin) {
+		return fmt.Errorf("TaxRate must be greater than RateMin(%s)", gs.TaxRateLimits.RateMin)
+	}
+
+	if gs.Params.TaxRate.GT(gs.TaxRateLimits.RateMax) {
+		return fmt.Errorf("TaxRate must be less than RateMax(%s)", gs.TaxRateLimits.RateMin)
+	}
 
 	return nil
+	// this line is used by starport scaffolding # genesis/types/validate
 }
 
 // GetGenesisStateFromAppState returns x/charity GenesisState given raw application
