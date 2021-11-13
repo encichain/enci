@@ -88,7 +88,6 @@ func (p Params) Validate() error {
 	for _, taxcap := range p.TaxCaps {
 
 		err := sdk.ValidateDenom(taxcap.Denom)
-
 		if err != nil {
 			return fmt.Errorf("taxCap Denom must be valid")
 		}
@@ -153,7 +152,6 @@ func validateTaxCaps(i interface{}) error {
 	for _, taxcap := range v {
 
 		err := sdk.ValidateDenom(taxcap.Denom)
-
 		if err != nil {
 			return fmt.Errorf("taxCap Denom must be valid")
 		}

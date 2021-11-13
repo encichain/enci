@@ -41,6 +41,28 @@ func TestGenesisStateValidate(t *testing.T) {
 			true,
 		},
 		{
+			"negative rateMin",
+			GenesisState{
+				DefaultParams(),
+				TaxRateLimits{RateMin: DefaultRateMin.Neg(), RateMax: DefaultRateMax},
+				DefaultTaxCaps,
+				sdk.Coins{},
+				[]CollectionPeriod{},
+			},
+			true,
+		},
+		{
+			"too high RateMax",
+			GenesisState{
+				DefaultParams(),
+				TaxRateLimits{RateMin: DefaultRateMin, RateMax: sdk.NewDecWithPrec(6, 2)},
+				DefaultTaxCaps,
+				sdk.Coins{},
+				[]CollectionPeriod{},
+			},
+			true,
+		},
+		{
 			"taxRate lower than RateMin",
 			GenesisState{
 				Params{

@@ -46,12 +46,17 @@ func (gs GenesisState) Validate() error {
 		return err
 	}
 
+	//RateMin cannot be negative && RateMax cannot be greater than 5%
+	if gs.TaxRateLimits.RateMin.IsNegative() || gs.TaxRateLimits.RateMax.GT(sdk.NewDecWithPrec(5, 2)) {
+		return fmt.Errorf("rateMin(%s) must be positive and RateMax(%s) must be less than 5%%", gs.TaxRateLimits.RateMin, gs.TaxRateLimits.RateMax)
+	}
+
 	if gs.Params.TaxRate.LT(gs.TaxRateLimits.RateMin) {
-		return fmt.Errorf("TaxRate must be greater than RateMin(%s)", gs.TaxRateLimits.RateMin)
+		return fmt.Errorf("taxRate must be greater than RateMin(%s)", gs.TaxRateLimits.RateMin)
 	}
 
 	if gs.Params.TaxRate.GT(gs.TaxRateLimits.RateMax) {
-		return fmt.Errorf("TaxRate must be less than RateMax(%s)", gs.TaxRateLimits.RateMin)
+		return fmt.Errorf("taxRate must be less than RateMax(%s)", gs.TaxRateLimits.RateMin)
 	}
 
 	return nil

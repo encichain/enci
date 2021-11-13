@@ -3,7 +3,9 @@ package types
 import (
 	"testing"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
+	coretypes "github.com/user/encichain/types"
 )
 
 func TestParams(t *testing.T) {
@@ -36,6 +38,18 @@ func TestParams(t *testing.T) {
 	p1.Charities[0].AccAddress = ""
 	p1.Charities[0].Checksum = "D821F6C986794B80524D765385A106C9D68F79FA6EAD18FF2F79F58B45DAA848"
 	require.NoError(t, p1.Validate())
+
+	// negative taxrate
+	p1.TaxRate = DefaultTaxRate.Neg()
+	require.Error(t, p1.Validate())
+
+	// zero cap
+	p1.TaxCaps = []TaxCap{{Denom: coretypes.MicroTokenDenom, Cap: sdk.NewInt(int64(0))}}
+	require.Error(t, p1.Validate())
+
+	//negative cap
+	p1.TaxCaps = []TaxCap{{Denom: coretypes.MicroTokenDenom, Cap: DefaultCap.Neg()}}
+	require.Error(t, p1.Validate())
 
 	// Setting param set pairs should not result in nil
 	p2 := DefaultParams()
