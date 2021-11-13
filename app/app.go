@@ -169,8 +169,9 @@ var (
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
-		charitytypes.ModuleName:           {authtypes.Minter, authtypes.Burner, authtypes.Staking},
+		//charitytypes.ModuleName:         	nil,
 		charitytypes.CharityCollectorName: nil,
+		charitytypes.BurnAccName:          {authtypes.Burner},
 	}
 )
 
@@ -310,7 +311,7 @@ func NewEnciApp(
 		appCodec, keys[authtypes.StoreKey], app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms,
 	)
 	app.BankKeeper = bankkeeper.NewBaseKeeper(
-		appCodec, keys[banktypes.StoreKey], app.AccountKeeper, app.GetSubspace(banktypes.ModuleName), app.ModuleAccountAddrs(),
+		appCodec, keys[banktypes.StoreKey], app.AccountKeeper, app.GetSubspace(banktypes.ModuleName), app.BankBlockList(),
 	)
 	stakingKeeper := stakingkeeper.NewKeeper(
 		appCodec, keys[stakingtypes.StoreKey], app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName),
@@ -558,6 +559,20 @@ func (app *EnciApp) ModuleAccountAddrs() map[string]bool {
 		modAccAddrs[authtypes.NewModuleAddress(acc).String()] = true
 	}
 
+	return modAccAddrs
+}
+
+// BankBlockList returns all module account addresses to be blacklisted from receiving funds
+func (app *EnciApp) BankBlockList() map[string]bool {
+	modAccAddrs := make(map[string]bool)
+	for acc := range maccPerms {
+		// Whitelist burner account
+		if acc == charitytypes.BurnAccName {
+			modAccAddrs[authtypes.NewModuleAddress(acc).String()] = false
+		} else {
+			modAccAddrs[authtypes.NewModuleAddress(acc).String()] = true
+		}
+	}
 	return modAccAddrs
 }
 

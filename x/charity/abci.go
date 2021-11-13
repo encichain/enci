@@ -21,7 +21,8 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 		defer k.SetTaxProceeds(ctx, sdk.Coins{})
 
 		// Disburse donations according to CharityTaxCollector balance
-		payouts := k.DisburseDonations(ctx, charities)
+		payouts, errs := k.DisburseDonations(ctx, charities)
+
 		// Set payouts to store under current *period*
 		k.SetPayouts(ctx, period, payouts)
 		// Set period tax proceeds to store
@@ -34,5 +35,12 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 				Period:  uint64(period),
 				Payouts: payouts,
 			})
+		if len(errs) > 0 {
+			ctx.EventManager().EmitTypedEvent(
+				&types.EventFailedPayouts{
+					Period: uint64(period),
+					Errors: errs,
+				})
+		}
 	}
 }

@@ -9,11 +9,11 @@ import (
 	"github.com/user/encichain/x/charity/types"
 )
 
-// DisburseDonations sends funds from CharityTaxCollector to all specified charities and returns a []Payout
+// DisburseDonations sends funds from CharityTaxCollector to all specified charities and returns []Payout and []string representation of errors
 // Should not be called except during end of period.
-func (k Keeper) DisburseDonations(ctx sdk.Context, charities []types.Charity) []types.Payout {
+func (k Keeper) DisburseDonations(ctx sdk.Context, charities []types.Charity) ([]types.Payout, []string) {
 	payouts := []types.Payout{}
-
+	errors := []string{}
 	// Get the donation split
 	finalsplit := k.CalculateSplit(ctx, charities)
 
@@ -21,12 +21,12 @@ func (k Keeper) DisburseDonations(ctx sdk.Context, charities []types.Charity) []
 	for _, charity := range charities {
 		err := k.DonateCharity(ctx, finalsplit, charity)
 		if err != nil {
-			continue
+			errors = append(errors, err.Error())
 		}
 		payout := types.Payout{Recipientaddr: charity.AccAddress, Coins: finalsplit}
 		payouts = append(payouts, payout)
 	}
-	return payouts
+	return payouts, errors
 }
 
 // DonateCharity sends proceeds to the specified charity

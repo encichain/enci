@@ -11,3 +11,9 @@ message EventPayout {
     uint64 period = 1;
     repeated Payout payouts = 2 [(gogoproto.nullable) = false];
 }
+
+// EventFailedPayouts defines a Payout failure Event
+message EventFailedPayouts {
+    uint64 period = 1;
+    repeated string errors = 2;
+}

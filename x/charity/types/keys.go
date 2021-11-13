@@ -14,7 +14,7 @@ const (
 	// RouterKey is the message route for slashing
 	RouterKey = ModuleName
 
-	//CharityCollectorName the root string for the fee collector account address
+	//CharityCollectorName defines the root string for the fee collector account address
 	CharityCollectorName = "charitytax_collector"
 
 	// QuerierRoute defines the module's query routing key
@@ -23,6 +23,8 @@ const (
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_charity"
 
+	// BurnAccName defines the root string for the charity burn account address
+	BurnAccName = "burner"
 	// this line is used by starport scaffolding # ibc/keys/name
 )
 

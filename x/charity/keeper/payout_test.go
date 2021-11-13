@@ -139,7 +139,7 @@ func TestPayoutFunctions(t *testing.T) {
 	split := app.CharityKeeper.CalculateSplit(app.Ctx, app.CharityKeeper.GetCharity(app.Ctx))
 	require.Equal(t, baseamt[0].Amount.Quo(sdk.NewInt(int64(2))), split[0].Amount)
 	//Test DisburseDonations
-	payouts := app.CharityKeeper.DisburseDonations(app.Ctx, charities)
+	payouts, _ := app.CharityKeeper.DisburseDonations(app.Ctx, charities)
 	require.Equal(t, []types.Payout{{Recipientaddr: bech32addr1, Coins: split}, {Recipientaddr: bech32addr2, Coins: split}}, payouts)
 
 }
