@@ -98,11 +98,11 @@ func (k Keeper) SetTaxRateLimits(ctx sdk.Context, taxratelimits types.TaxRateLim
 // Stops iteration when callback returns true.
 func (k Keeper) IterateTaxCaps(ctx sdk.Context, cb func(denom string, taxcap sdk.Int) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.TaxCapKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.TaxCapKeyPref)
 
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
-		denom := string(iterator.Key()[len(types.TaxCapKey):])
+		denom := string(iterator.Key()[len(types.TaxCapKeyPref):])
 		ip := sdk.IntProto{}
 		k.cdc.MustUnmarshal(iterator.Value(), &ip)
 
@@ -115,7 +115,7 @@ func (k Keeper) IterateTaxCaps(ctx sdk.Context, cb func(denom string, taxcap sdk
 // ClearTaxCaps iterates over all stored TaxCap and deletes the key from store
 func (k Keeper) ClearTaxCaps(ctx sdk.Context) {
 	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.TaxCapKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.TaxCapKeyPref)
 
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
@@ -257,7 +257,7 @@ func (k Keeper) GetCollectionPeriods(ctx sdk.Context) []types.CollectionPeriod {
 func (k Keeper) ClearPeriodTaxProceeds(ctx sdk.Context) {
 	store := ctx.KVStore(k.storeKey)
 
-	iter := sdk.KVStorePrefixIterator(store, types.PeriodTaxProceedsKey)
+	iter := sdk.KVStorePrefixIterator(store, types.PeriodTaxProceedsKeyPref)
 	defer iter.Close()
 
 	for ; iter.Valid(); iter.Next() {
@@ -270,7 +270,7 @@ func (k Keeper) ClearPeriodTaxProceeds(ctx sdk.Context) {
 func (k Keeper) ClearPayouts(ctx sdk.Context) {
 	store := ctx.KVStore(k.storeKey)
 
-	iter := sdk.KVStorePrefixIterator(store, types.PayoutsKey)
+	iter := sdk.KVStorePrefixIterator(store, types.PayoutsKeyPref)
 	defer iter.Close()
 
 	for ; iter.Valid(); iter.Next() {

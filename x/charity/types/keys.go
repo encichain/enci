@@ -34,11 +34,11 @@ const (
 // 0x04 | period bytes  -> ProtocolBuffer(sdk.Coins)
 // 0x05 | period bytes  -> ProtocolBuffer([]Payout)
 var (
-	TaxRateLimitsKey     = []byte{0x01} // Key for tax rate limits
-	TaxCapKey            = []byte{0x02} // Prefix to taxcaps key
-	TaxProceedsKey       = []byte{0x03} // Key for tax proceeds
-	PeriodTaxProceedsKey = []byte{0x04} // Prefix to *period* TaxProceeds Key
-	PayoutsKey           = []byte{0x05} // Prefix to *period* Payouts Key
+	TaxRateLimitsKey         = []byte{0x01} // Key for tax rate limits
+	TaxCapKeyPref            = []byte{0x02} // Prefix to taxcaps key
+	TaxProceedsKey           = []byte{0x03} // Key for tax proceeds
+	PeriodTaxProceedsKeyPref = []byte{0x04} // Prefix to *period* TaxProceeds Key
+	PayoutsKeyPref           = []byte{0x05} // Prefix to *period* Payouts Key
 )
 
 // this line is used by starport scaffolding # ibc/keys/port
@@ -49,17 +49,17 @@ func KeyPrefix(p string) []byte {
 
 // GetTaxCapKey - stored by *denom*
 func GetTaxCapKey(denom string) []byte {
-	return append(TaxCapKey, []byte(denom)...)
+	return append(TaxCapKeyPref, []byte(denom)...)
 }
 
 // GetPeriodTaxProceedsKey - stored by *period* in CollectionPeriod
 func GetPeriodTaxProceedsKey(period int64) []byte {
-	return GetSubKeyForPeriod(PeriodTaxProceedsKey, period)
+	return GetSubKeyForPeriod(PeriodTaxProceedsKeyPref, period)
 }
 
 // GetPayoutsKey - stored by *period*
 func GetPayoutsKey(period int64) []byte {
-	return GetSubKeyForPeriod(PayoutsKey, period)
+	return GetSubKeyForPeriod(PayoutsKeyPref, period)
 }
 
 // GetSubKeyForPeriod returns a subkey stored by *period*
