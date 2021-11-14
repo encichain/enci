@@ -113,7 +113,7 @@ func TestPayoutFunctions(t *testing.T) {
 	csb2 := sha256.Sum256([]byte("Test Charity 2" + bech32addr2))
 	checksum2 := hex.EncodeToString(csb2[:])
 
-	params.Charities = []types.Charity{
+	validCharities := []types.Charity{
 		{CharityName: "Test Charity",
 			AccAddress: bech32addr1,
 			Checksum:   checksum1,
@@ -122,6 +122,20 @@ func TestPayoutFunctions(t *testing.T) {
 			AccAddress: bech32addr2,
 			Checksum:   checksum2},
 	}
+
+	invalidCharities := []types.Charity{
+		{CharityName: "Invalid charity1",
+			//invalid accAddress and checksum
+			AccAddress: bech32addr1 + "a",
+			Checksum:   CreateCharitySha256("Invalid charity1", (bech32addr1 + "a")),
+		},
+		{CharityName: "Invalid charity2",
+			AccAddress: bech32addr2,
+			//invalid checksum
+			Checksum: checksum2},
+	}
+
+	params.Charities = invalidCharities
 
 	app.CharityKeeper.SetParams(app.Ctx, params)
 	require.Equal(t, app.CharityKeeper.GetAllParams(app.Ctx), params)
@@ -138,8 +152,24 @@ func TestPayoutFunctions(t *testing.T) {
 	//Test calculate split
 	split := app.CharityKeeper.CalculateSplit(app.Ctx, app.CharityKeeper.GetCharity(app.Ctx))
 	require.Equal(t, baseamt[0].Amount.Quo(sdk.NewInt(int64(2))), split[0].Amount)
-	//Test DisburseDonations
-	payouts, _ := app.CharityKeeper.DisburseDonations(app.Ctx, charities)
-	require.Equal(t, []types.Payout{{Recipientaddr: bech32addr1, Coins: split}, {Recipientaddr: bech32addr2, Coins: split}}, payouts)
 
+	//DisburseDonations with invalid charities should return errors
+	payouts, errs := app.CharityKeeper.DisburseDonations(app.Ctx, charities)
+	require.NotEmpty(t, errs)
+	require.Equal(t, true, len(errs) == 2)
+	require.Empty(t, payouts)
+	expectedErrs := []string{"Payout failed for charity: Invalid charity1, with error: invalid address", "Payout failed for charity: Invalid charity2, with error: checksum is invalid"}
+	require.Equal(t, expectedErrs, errs)
+
+	//Test DisburseDonations with valid charity
+	params.Charities = validCharities
+	app.CharityKeeper.SetParams(app.Ctx, params)
+	charities = app.CharityKeeper.GetCharity(app.Ctx)
+	require.Equal(t, params.Charities, charities)
+	require.Equal(t, app.CharityKeeper.GetAllParams(app.Ctx), params)
+
+	payouts, errs = app.CharityKeeper.DisburseDonations(app.Ctx, charities)
+	require.Empty(t, errs)
+	require.Equal(t, true, len(payouts) == 2)
+	require.Equal(t, []types.Payout{{Recipientaddr: bech32addr1, Coins: split}, {Recipientaddr: bech32addr2, Coins: split}}, payouts)
 }

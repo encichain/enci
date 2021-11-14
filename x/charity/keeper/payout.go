@@ -6,14 +6,15 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/user/encichain/x/charity/types"
 )
 
-// DisburseDonations sends funds from CharityTaxCollector to all specified charities and returns []Payout and []string representation of errors
+// DisburseDonations sends funds from CharityTaxCollector to all specified charities and returns []Payout and []string representation of errors..
 // Should not be called except during end of period.
-func (k Keeper) DisburseDonations(ctx sdk.Context, charities []types.Charity) ([]types.Payout, []string) {
-	payouts := []types.Payout{}
-	errors := []string{}
+func (k Keeper) DisburseDonations(ctx sdk.Context, charities []types.Charity) (payouts []types.Payout, errs []string) {
+	payouts = []types.Payout{}
+	errs = []string{}
 	// Get the donation split
 	finalsplit := k.CalculateSplit(ctx, charities)
 
@@ -21,16 +22,19 @@ func (k Keeper) DisburseDonations(ctx sdk.Context, charities []types.Charity) ([
 	for _, charity := range charities {
 		err := k.DonateCharity(ctx, finalsplit, charity)
 		if err != nil {
-			errors = append(errors, err.Error())
+			errmsg := sdkerrors.Wrapf(err, "Payout failed for charity: %s, with error", charity.CharityName)
+			errs = append(errs, errmsg.Error())
+			continue
 		}
 		payout := types.Payout{Recipientaddr: charity.AccAddress, Coins: finalsplit}
 		payouts = append(payouts, payout)
 	}
-	return payouts, errors
+	return
 }
 
 // DonateCharity sends proceeds to the specified charity
 func (k Keeper) DonateCharity(ctx sdk.Context, proceeds sdk.Coins, charity types.Charity) error {
+	// Validate Charity
 	err := k.IsValidCharity(ctx, charity)
 	if err != nil {
 		return err
@@ -50,12 +54,11 @@ func (k Keeper) DonateCharity(ctx sdk.Context, proceeds sdk.Coins, charity types
 // IsValidCharity performs Validation on Charity object
 func (k Keeper) IsValidCharity(ctx sdk.Context, charity types.Charity) error {
 	// Check if Checksum is valid
-	csb := sha256.Sum256([]byte(charity.CharityName + charity.AccAddress))
-	checksum := hex.EncodeToString(csb[:])
-
+	checksum := CreateCharitySha256(charity.CharityName, charity.AccAddress)
 	if checksum != charity.Checksum {
 		return fmt.Errorf("checksum is invalid")
 	}
+
 	// Check account address
 	// TODO: Use AccountKeeper.HasAccount method when implemented in cosmos-sdk.
 	addr, err := sdk.AccAddressFromBech32(charity.AccAddress)
@@ -91,4 +94,11 @@ func (k Keeper) CalculateSplit(ctx sdk.Context, charities []types.Charity) sdk.C
 		coins = append(coins, sc)
 	}
 	return sdk.NewCoins(coins...)
+}
+
+// CreateCharitySha256 returns the hexadecimal encoding of sha256 checksum of a charity name + charity accAddress(Bech32 string)
+func CreateCharitySha256(charityName string, accAddr string) string {
+	csb := sha256.Sum256([]byte(charityName + accAddr))
+	checksum := hex.EncodeToString(csb[:])
+	return checksum
 }
