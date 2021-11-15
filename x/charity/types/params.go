@@ -13,6 +13,7 @@ var (
 	ParamKeyCharities = []byte("Charities")
 	ParamKeyTaxCaps   = []byte("Taxcaps")
 	ParamKeyTaxRate   = []byte("TaxRate")
+	ParamKeyBurnRate  = []byte("BurnRate")
 )
 
 // Default values
@@ -34,10 +35,12 @@ var (
 	DefaultTaxRateLimits = TaxRateLimits{RateMin: DefaultRateMin, RateMax: DefaultRateMax}
 	DefaultCoinProceed   = sdk.Coin{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(100)}
 	DefaultTaxProceeds   = sdk.Coins{}
+	DefaultBurnRate      = sdk.NewDecWithPrec(1, 2) // 0.01 || 1%
 	DefaultParamsSet     = Params{
 		Charities: DefaultCharities,
 		TaxCaps:   DefaultTaxCaps,
 		TaxRate:   DefaultTaxRate,
+		BurnRate:  DefaultBurnRate,
 	}
 )
 
@@ -59,6 +62,7 @@ func (p *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 		paramstypes.NewParamSetPair(ParamKeyCharities, &p.Charities, validateCharities),
 		paramstypes.NewParamSetPair(ParamKeyTaxRate, &p.TaxRate, validateTaxRate),
 		paramstypes.NewParamSetPair(ParamKeyTaxCaps, &p.TaxCaps, validateTaxCaps),
+		paramstypes.NewParamSetPair(ParamKeyBurnRate, &p.BurnRate, validateBurnRate),
 	}
 }
 
@@ -80,8 +84,11 @@ func (p Params) Validate() error {
 	}
 
 	// validate taxrate
+	if p.TaxRate.IsNil() {
+		return fmt.Errorf("taxRate must not be nil")
+	}
 	if p.TaxRate.IsNegative() {
-		return fmt.Errorf("tax Rate must be positive")
+		return fmt.Errorf("taxRate must be positive")
 	}
 
 	// Validate taxcaps
@@ -95,6 +102,15 @@ func (p Params) Validate() error {
 		if taxcap.Cap.IsNegative() || taxcap.Cap.IsZero() || taxcap.Cap.IsNil() {
 			return fmt.Errorf("taxCap Cap is invalid: Must not be negative, 0, nor nil")
 		}
+	}
+
+	// validate burnRate
+	if p.BurnRate.IsNil() {
+		return fmt.Errorf("burnRate must not be nil")
+	}
+
+	if p.BurnRate.IsNegative() {
+		return fmt.Errorf("burnRate must be positive")
 	}
 
 	return nil
@@ -131,9 +147,11 @@ func validateTaxRate(i interface{}) error {
 	// Type check
 	v, ok := i.(sdk.Dec)
 	if !ok {
-		return fmt.Errorf("invalid parameter type: %T. Expected sdk.Dec", i)
+		return fmt.Errorf("invalid parameter type: %T. Expected Dec", i)
 	}
-
+	if v.IsNil() {
+		return fmt.Errorf("taxRate must not be nil")
+	}
 	if v.IsNegative() {
 		return fmt.Errorf("tax Rate must be positive")
 	}
@@ -159,6 +177,26 @@ func validateTaxCaps(i interface{}) error {
 		if taxcap.Cap.IsNegative() || taxcap.Cap.IsZero() || taxcap.Cap.IsNil() {
 			return fmt.Errorf("taxCap Cap is invalid: Must not be negative, 0, nor nil")
 		}
+
 	}
+	return nil
+}
+
+// validateBurnRate performs basic validation on BurnRate
+func validateBurnRate(i interface{}) error {
+	// Type check
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T. Expected Dec", i)
+	}
+
+	if v.IsNil() {
+		return fmt.Errorf("burnRate must not be nil")
+	}
+
+	if v.IsNegative() {
+		return fmt.Errorf("burnRate must be positive")
+	}
+
 	return nil
 }

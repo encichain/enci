@@ -17,13 +17,19 @@ message Charity {
 // Params defines parameters of the charity module able to be changed by governance proposals
 message Params {
     repeated Charity charities = 1 [(gogoproto.nullable) = false]; // Set the target charities
-    
+    // tax_rate defines the charity tax rate per taxable transaction message ; constrained by TaxRateLimits
     string tax_rate = 2 [               
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", 
         (gogoproto.nullable) = false
     ];
-    // Tax_caps represent max tax amount for each denom
+    // Tax_caps represents max tax amount for each denom
     repeated TaxCap tax_caps = 3 [(gogoproto.nullable) = false]; 
+    // burn_rate represents the percentage of balance to be burned from charity tax collector account per end of period
+    // constrained by TaxRateLimits
+    string burn_rate = 4 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", 
+        (gogoproto.nullable) = false        
+    ];
 }
 
 // TaxCap defines a tax cap for a denom
@@ -36,7 +42,7 @@ message TaxCap {
 }
 
 
-// TaxRateLimits defines upper and lower limits to the tax_rate
+// TaxRateLimits defines upper and lower limits to the tax_rate and burn_rate
 message TaxRateLimits {
     string rate_min = 1 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",

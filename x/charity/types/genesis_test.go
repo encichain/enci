@@ -19,12 +19,12 @@ func TestGenesisStateValidate(t *testing.T) {
 			*DefaultGenesis(),
 			false,
 		},
-		/*// Empty params results in nil pointer dereference due to TaxRate.IsNeg() check in Validate()
+		// Empty params results in nil pointer dereference due to TaxRate.IsNeg() check in Validate()
 		{
 			"Empty genesis",
 			GenesisState{},
-			false,
-		}, */
+			true,
+		},
 		{
 			"invalid params",
 			GenesisState{
