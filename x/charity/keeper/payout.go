@@ -96,6 +96,22 @@ func (k Keeper) CalculateSplit(ctx sdk.Context, charities []types.Charity) sdk.C
 	return sdk.NewCoins(coins...)
 }
 
+// BurnCoinsFromBurner burns all coins from the Burner account
+func (k Keeper) BurnCoinsFromBurner(ctx sdk.Context) error {
+	burnerAddr := k.AccountKeeper.GetModuleAddress(types.BurnAccName)
+	if burnerAddr == nil {
+		panic(fmt.Sprintf("burn failed. %s account address not set", types.BurnAccName))
+	}
+	// Get all balances
+	bals := k.BankKeeper.GetAllBalances(ctx, burnerAddr)
+	// Burn coins
+	err := k.BankKeeper.BurnCoins(ctx, types.BurnAccName, bals)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // CreateCharitySha256 returns the hexadecimal encoding of sha256 checksum of a charity name + charity accAddress(Bech32 string)
 func CreateCharitySha256(charityName string, accAddr string) string {
 	csb := sha256.Sum256([]byte(charityName + accAddr))

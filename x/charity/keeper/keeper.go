@@ -43,8 +43,13 @@ func NewKeeper(
 	}
 
 	// Check if charity tax collector address is set. Panic if nil
-	if collectaddr := AccountKeeper.GetModuleAddress(types.CharityCollectorName); collectaddr == nil {
+	if collectAddr := AccountKeeper.GetModuleAddress(types.CharityCollectorName); collectAddr == nil {
 		panic(fmt.Sprintf("%s module account not set", types.CharityCollectorName))
+	}
+
+	// Check if burner account address is set. Panic if nil
+	if burnerAddr := AccountKeeper.GetModuleAddress(types.BurnAccName); burnerAddr == nil {
+		panic(fmt.Sprintf("%s module account not set", types.BurnAccName))
 	}
 
 	return &Keeper{
