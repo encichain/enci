@@ -32,6 +32,7 @@ func TestParamsFuncs(t *testing.T) {
 	require.Equal(t, defaultParams.Charities, app.CharityKeeper.GetCharity(app.Ctx))
 	require.Equal(t, defaultParams.TaxRate, app.CharityKeeper.GetTaxRate(app.Ctx))
 	require.Equal(t, defaultParams.TaxCaps, app.CharityKeeper.GetParamTaxCaps(app.Ctx))
+	require.Equal(t, defaultParams.BurnRate, app.CharityKeeper.GetBurnRate(app.Ctx))
 
 	//Try to set new params
 	app.CharityKeeper.SetParams(app.Ctx, testParams)
@@ -40,6 +41,7 @@ func TestParamsFuncs(t *testing.T) {
 	require.Equal(t, testParams.Charities, app.CharityKeeper.GetCharity(app.Ctx))
 	require.Equal(t, testParams.TaxRate, app.CharityKeeper.GetTaxRate(app.Ctx))
 	require.Equal(t, testParams.TaxCaps, app.CharityKeeper.GetParamTaxCaps(app.Ctx))
+	require.Equal(t, testParams.BurnRate, app.CharityKeeper.GetBurnRate(app.Ctx))
 
 }
 
@@ -243,5 +245,19 @@ func TestTaxRateChangeFunc(t *testing.T) {
 		err := app.CharityKeeper.SetTaxRate(app.Ctx, newTaxRate)
 		require.NoError(t, err)
 		require.Equal(t, newTaxRate, app.CharityKeeper.GetTaxRate(app.Ctx))
+	}
+}
+
+func TestBurnRateChangeFunc(t *testing.T) {
+	app := CreateKeeperTestApp(t)
+
+	app.CharityKeeper.SetParams(app.Ctx, types.DefaultParams())
+	require.Equal(t, types.DefaultBurnRate, app.CharityKeeper.GetBurnRate(app.Ctx))
+
+	for i := int64(1); i < 5; i++ {
+		newBurnRate := sdk.NewDecWithPrec(i, 2)
+		err := app.CharityKeeper.SetBurnRate(app.Ctx, newBurnRate)
+		require.NoError(t, err)
+		require.Equal(t, newBurnRate, app.CharityKeeper.GetBurnRate(app.Ctx))
 	}
 }
