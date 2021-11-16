@@ -15,7 +15,7 @@ import (
 )
 
 func TestParamsFuncs(t *testing.T) {
-	app := CreateTestApp(t)
+	app := CreateKeeperTestApp(t)
 	testParams := types.Params{
 		Charities: []types.Charity{
 			{CharityName: "test", AccAddress: "enci1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6test", Checksum: "8FF7B399E22B0C99B5FF1B8F0859858797ECB81609BD0088F14A53CC9B417185"}},
@@ -44,7 +44,7 @@ func TestParamsFuncs(t *testing.T) {
 }
 
 func TestSyncParams(t *testing.T) {
-	app := CreateTestApp(t)
+	app := CreateKeeperTestApp(t)
 
 	defaultCap := sdk.NewInt(int64(2000000))
 	paramsDefaultCap := sdk.NewInt(int64(3000000))
@@ -76,7 +76,7 @@ func TestSyncParams(t *testing.T) {
 }
 
 func TestCharityParamChangeProposal(t *testing.T) {
-	app := CreateTestApp(t)
+	app := CreateKeeperTestApp(t)
 
 	proposalfile := sdktestutil.WriteToNewTempFile(t, `
 	{
@@ -148,7 +148,7 @@ func TestCharityParamChangeProposal(t *testing.T) {
 }
 
 func TestTaxRateParamChangeProposal(t *testing.T) {
-	app := CreateTestApp(t)
+	app := CreateKeeperTestApp(t)
 
 	proposalfile := sdktestutil.WriteToNewTempFile(t, `
 	{
@@ -189,7 +189,7 @@ func TestTaxRateParamChangeProposal(t *testing.T) {
 }
 
 func TestTaxCapsParamChangeProposal(t *testing.T) {
-	app := CreateTestApp(t)
+	app := CreateKeeperTestApp(t)
 
 	proposalfile := sdktestutil.WriteToNewTempFile(t, `
 	{
@@ -233,7 +233,7 @@ func TestTaxCapsParamChangeProposal(t *testing.T) {
 }
 
 func TestTaxRateChangeFunc(t *testing.T) {
-	app := CreateTestApp(t)
+	app := CreateKeeperTestApp(t)
 
 	app.CharityKeeper.SetParams(app.Ctx, types.DefaultParams())
 	require.Equal(t, types.DefaultTaxRate, app.CharityKeeper.GetTaxRate(app.Ctx))

@@ -44,7 +44,7 @@ func setupKeeper(t testing.TB) (*Keeper, sdk.Context) {
 }
 
 func TestGetCurrentPeriod(t *testing.T) {
-	app := CreateTestApp(t)
+	app := CreateKeeperTestApp(t)
 	for i := int64(0); i < 10; i++ {
 		ctx := app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerPeriod) * i)
 		period := app.CharityKeeper.GetCurrentPeriod(ctx)
@@ -53,7 +53,7 @@ func TestGetCurrentPeriod(t *testing.T) {
 }
 
 func TestTaxRateLimits(t *testing.T) {
-	app := CreateTestApp(t)
+	app := CreateKeeperTestApp(t)
 
 	for i := int64(0); i < 10; i++ {
 		app.CharityKeeper.SetTaxRateLimits(app.Ctx, types.TaxRateLimits{
@@ -69,7 +69,7 @@ func TestTaxRateLimits(t *testing.T) {
 }
 
 func TestTaxCap(t *testing.T) {
-	app := CreateTestApp(t)
+	app := CreateKeeperTestApp(t)
 
 	for i := int64(0); i < 10; i++ {
 		app.CharityKeeper.SetTaxCap(app.Ctx, coretypes.MicroTokenDenom, sdk.NewInt(i))
@@ -78,13 +78,13 @@ func TestTaxCap(t *testing.T) {
 }
 
 func TestIterateTaxCap(t *testing.T) {
-	input := CreateTestApp(t)
+	app := CreateKeeperTestApp(t)
 
 	uenciCap := sdk.NewInt(1000000)
-	input.CharityKeeper.SetTaxCap(input.Ctx, coretypes.MicroTokenDenom, uenciCap)
-	require.Equal(t, input.CharityKeeper.GetTaxCap(input.Ctx, coretypes.MicroTokenDenom), uenciCap)
+	app.CharityKeeper.SetTaxCap(app.Ctx, coretypes.MicroTokenDenom, uenciCap)
+	require.Equal(t, app.CharityKeeper.GetTaxCap(app.Ctx, coretypes.MicroTokenDenom), uenciCap)
 
-	input.CharityKeeper.IterateTaxCaps(input.Ctx, func(denom string, taxCap sdk.Int) bool {
+	app.CharityKeeper.IterateTaxCaps(app.Ctx, func(denom string, taxCap sdk.Int) bool {
 		if denom == coretypes.MicroTokenDenom {
 			require.Equal(t, uenciCap, taxCap)
 		}
@@ -93,7 +93,7 @@ func TestIterateTaxCap(t *testing.T) {
 }
 
 func TestGetTaxCaps(t *testing.T) {
-	app := CreateTestApp(t)
+	app := CreateKeeperTestApp(t)
 	app.CharityKeeper.SetTaxCap(app.Ctx, coretypes.MicroTokenDenom, types.DefaultCap)
 	taxcaps := app.CharityKeeper.GetTaxCaps(app.Ctx)
 
@@ -101,7 +101,7 @@ func TestGetTaxCaps(t *testing.T) {
 }
 
 func TestClearTaxCaps(t *testing.T) {
-	app := CreateTestApp(t)
+	app := CreateKeeperTestApp(t)
 	defaultCap := sdk.NewInt(int64(2000000))
 	testTaxCaps := []types.TaxCap{{Denom: "uenci", Cap: defaultCap}, {Denom: "menci", Cap: defaultCap}, {Denom: "enci", Cap: defaultCap}}
 	// Set taxcaps to store
@@ -122,43 +122,43 @@ func TestClearTaxCaps(t *testing.T) {
 }
 
 func TestParams(t *testing.T) {
-	input := CreateTestApp(t)
+	app := CreateKeeperTestApp(t)
 
 	defaultParams := types.DefaultParams()
-	input.CharityKeeper.SetParams(input.Ctx, defaultParams)
+	app.CharityKeeper.SetParams(app.Ctx, defaultParams)
 
-	getParams := input.CharityKeeper.GetAllParams(input.Ctx)
+	getParams := app.CharityKeeper.GetAllParams(app.Ctx)
 	require.Equal(t, defaultParams, getParams)
 }
 
 func TestTaxProceeds(t *testing.T) {
-	input := CreateTestApp(t)
+	app := CreateKeeperTestApp(t)
 
 	for i := int64(0); i < 10; i++ {
 		proceeds := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(100+i)))
 		for j := 0; j < 3; j++ {
-			input.CharityKeeper.AddTaxProceeds(input.Ctx, proceeds)
+			app.CharityKeeper.AddTaxProceeds(app.Ctx, proceeds)
 		}
 
-		require.Equal(t, proceeds.Add(proceeds...).Add(proceeds...), input.CharityKeeper.GetTaxProceeds(input.Ctx))
-		require.False(t, input.CharityKeeper.GetTaxProceeds(input.Ctx).IsZero())
-		input.CharityKeeper.SetTaxProceeds(input.Ctx, sdk.Coins{})
-		require.True(t, input.CharityKeeper.GetTaxProceeds(input.Ctx).IsZero())
+		require.Equal(t, proceeds.Add(proceeds...).Add(proceeds...), app.CharityKeeper.GetTaxProceeds(app.Ctx))
+		require.False(t, app.CharityKeeper.GetTaxProceeds(app.Ctx).IsZero())
+		app.CharityKeeper.SetTaxProceeds(app.Ctx, sdk.Coins{})
+		require.True(t, app.CharityKeeper.GetTaxProceeds(app.Ctx).IsZero())
 	}
 
 	proceeds := sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(100)}}
-	input.CharityKeeper.SetTaxProceeds(input.Ctx, proceeds)
-	require.Equal(t, proceeds, input.CharityKeeper.GetTaxProceeds(input.Ctx))
+	app.CharityKeeper.SetTaxProceeds(app.Ctx, proceeds)
+	require.Equal(t, proceeds, app.CharityKeeper.GetTaxProceeds(app.Ctx))
 
 	// Test AddTaxProceed single case
-	input.CharityKeeper.SetTaxProceeds(input.Ctx, proceeds)
-	input.CharityKeeper.AddTaxProceeds(input.Ctx, proceeds)
-	require.Equal(t, proceeds.Add(proceeds...), input.CharityKeeper.GetTaxProceeds(input.Ctx))
-	require.False(t, input.CharityKeeper.GetTaxProceeds(input.Ctx).IsZero())
+	app.CharityKeeper.SetTaxProceeds(app.Ctx, proceeds)
+	app.CharityKeeper.AddTaxProceeds(app.Ctx, proceeds)
+	require.Equal(t, proceeds.Add(proceeds...), app.CharityKeeper.GetTaxProceeds(app.Ctx))
+	require.False(t, app.CharityKeeper.GetTaxProceeds(app.Ctx).IsZero())
 }
 
 func TestPeriodTaxProceeds(t *testing.T) {
-	testApp := CreateTestApp(t)
+	testApp := CreateKeeperTestApp(t)
 
 	for i := int64(0); i < 10; i++ {
 		// Set TaxProceed to store
@@ -187,7 +187,7 @@ func TestPeriodTaxProceeds(t *testing.T) {
 }
 
 func TestPayouts(t *testing.T) {
-	app := CreateTestApp(t)
+	app := CreateKeeperTestApp(t)
 	addr1 := "enci1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6test"
 	addr2 := "enci1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6test2"
 	for i := int64(0); i < 10; i++ {
@@ -210,7 +210,7 @@ func TestPayouts(t *testing.T) {
 }
 
 func TestGetCollectionPeriods(t *testing.T) {
-	app := CreateTestApp(t)
+	app := CreateKeeperTestApp(t)
 	addr1 := "enci1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6test"
 	addr2 := "enci1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6test2"
 	for i := int64(0); i < 10; i++ {

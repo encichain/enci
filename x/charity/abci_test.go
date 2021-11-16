@@ -14,7 +14,7 @@ import (
 )
 
 func TestEndBlocker(t *testing.T) {
-	app := keeper.CreateTestApp(t)
+	app := keeper.CreateKeeperTestApp(t)
 	sdk.GetConfig().SetBech32PrefixForAccount("enci", "encipub")
 	// Configure test charity accounts
 	bech32addr1 := "enci1aag23fr2qjxan9aktyfsywp3udxg036c9zxv55"

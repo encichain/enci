@@ -14,9 +14,9 @@ import (
 )
 
 func TestPayoutFunctions(t *testing.T) {
-	// Note: Goroutine leaks detected in App. Will cause abnormalities and failed tests in subsequent test functions if CreateTestApp is reinitialized.
+	// Note: Goroutine leaks detected in App. Will cause abnormalities and failed tests in subsequent test functions if CreateKeeperTestApp is reinitialized.
 	//defer goleak.VerifyNone(t)
-	app := CreateTestApp(t)
+	app := CreateKeeperTestApp(t)
 	sdk.GetConfig().SetBech32PrefixForAccount("enci", "encipub")
 
 	bech32addr := "enci1aag23fr2qjxan9aktyfsywp3udxg036c9zxv55"
@@ -41,7 +41,7 @@ func TestPayoutFunctions(t *testing.T) {
 	require.Equal(t, app.CharityKeeper.GetAllParams(app.Ctx), params)
 
 	// Check if able to send coins to addr
-	coins := sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(int64(1000))}}
+	coins := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(int64(1000))))
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(app.Ctx, types.CharityCollectorName, addr, coins)
 	require.NoError(t, err)
 
@@ -125,7 +125,7 @@ func TestPayoutFunctions(t *testing.T) {
 
 	invalidCharities := []types.Charity{
 		{CharityName: "Invalid charity1",
-			//invalid accAddress and checksum
+			//invalid accAddress
 			AccAddress: bech32addr1 + "a",
 			Checksum:   CreateCharitySha256("Invalid charity1", (bech32addr1 + "a")),
 		},
@@ -172,4 +172,25 @@ func TestPayoutFunctions(t *testing.T) {
 	require.Empty(t, errs)
 	require.Equal(t, true, len(payouts) == 2)
 	require.Equal(t, []types.Payout{{Recipientaddr: bech32addr1, Coins: split}, {Recipientaddr: bech32addr2, Coins: split}}, payouts)
+}
+
+func TestBurnCoins(t *testing.T) {
+	app := CreateKeeperTestApp(t)
+	// Get burner account address and ensure it has no balance
+	burnAddr := app.AccountKeeper.GetModuleAddress(types.BurnAccName)
+	isZeroBal := app.BankKeeper.GetAllBalances(app.Ctx, burnAddr).IsZero()
+	require.True(t, isZeroBal)
+
+	// Fund burner account
+	coins := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(int64(10000000))))
+	err := FundModuleAccount(app.BankKeeper, app.Ctx, types.BurnAccName, coins)
+	require.NoError(t, err)
+	hasBal := app.BankKeeper.HasBalance(app.Ctx, burnAddr, sdk.NewCoin(coretypes.MicroTokenDenom, coins[0].Amount))
+	require.True(t, hasBal)
+
+	// Test BurnCoinsFromBurner
+	err = app.CharityKeeper.BurnCoinsFromBurner(app.Ctx)
+	require.NoError(t, err)
+	isZeroBal = app.BankKeeper.GetAllBalances(app.Ctx, burnAddr).IsZero()
+	require.True(t, isZeroBal)
 }

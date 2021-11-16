@@ -82,7 +82,7 @@ import (
 	charitytypes "github.com/user/encichain/x/charity/types"
 )
 
-// NewEnciTestApp creates a new EnciApp instance for testing purposes, reutrning *EnciApp rather than cosmoscmd App.
+// NewEnciTestApp creates a new EnciApp instance for testing purposes, returning *EnciApp rather than cosmoscmd App.
 func NewEnciTestApp(
 	logger log.Logger,
 	db dbm.DB,

@@ -119,7 +119,7 @@ type TestApp struct {
 	ParamsKeeper  paramskeeper.Keeper
 }
 
-func CreateTestApp(t *testing.T) TestApp {
+func CreateKeeperTestApp(t *testing.T) TestApp {
 	keyAcc := sdk.NewKVStoreKey(authtypes.StoreKey)
 	keyBank := sdk.NewKVStoreKey(banktypes.StoreKey)
 	keyParams := sdk.NewKVStoreKey(paramstypes.StoreKey)
@@ -168,7 +168,7 @@ func CreateTestApp(t *testing.T) TestApp {
 	accountKeeper := authkeeper.NewAccountKeeper(appCodec, keyAcc, paramsKeeper.Subspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms)
 	bankKeeper := bankkeeper.NewBaseKeeper(appCodec, keyBank, accountKeeper, paramsKeeper.Subspace(banktypes.ModuleName), blackListAddrs)
 
-	totalSupply := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, InitTokens.MulRaw(int64(len(Addrs)*12))))
+	totalSupply := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, InitTokens.MulRaw(int64(len(Addrs)*13))))
 	err := bankKeeper.MintCoins(ctx, faucetAccount, totalSupply)
 	require.NoError(t, err)
 
