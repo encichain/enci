@@ -13,6 +13,27 @@ import (
 	//"go.uber.org/goleak"
 )
 
+func TestBurnCoins(t *testing.T) {
+	app := CreateKeeperTestApp(t)
+	// Get burner account address and ensure it has no balance
+	burnAddr := app.AccountKeeper.GetModuleAddress(types.BurnAccName)
+	isZeroBal := app.BankKeeper.GetAllBalances(app.Ctx, burnAddr).IsZero()
+	require.True(t, isZeroBal)
+
+	// Fund burner account
+	coins := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(int64(10000000))))
+	err := FundModuleAccount(app.BankKeeper, app.Ctx, types.BurnAccName, coins)
+	require.NoError(t, err)
+	hasBal := app.BankKeeper.HasBalance(app.Ctx, burnAddr, sdk.NewCoin(coretypes.MicroTokenDenom, coins[0].Amount))
+	require.True(t, hasBal)
+
+	// Test BurnCoinsFromBurner
+	err = app.CharityKeeper.BurnCoinsFromBurner(app.Ctx)
+	require.NoError(t, err)
+	isZeroBal = app.BankKeeper.GetAllBalances(app.Ctx, burnAddr).IsZero()
+	require.True(t, isZeroBal)
+}
+
 func TestPayoutFunctions(t *testing.T) {
 	// Note: Goroutine leaks detected in App. Will cause abnormalities and failed tests in subsequent test functions if CreateKeeperTestApp is reinitialized.
 	//defer goleak.VerifyNone(t)
@@ -172,25 +193,4 @@ func TestPayoutFunctions(t *testing.T) {
 	require.Empty(t, errs)
 	require.Equal(t, true, len(payouts) == 2)
 	require.Equal(t, []types.Payout{{Recipientaddr: bech32addr1, Coins: split}, {Recipientaddr: bech32addr2, Coins: split}}, payouts)
-}
-
-func TestBurnCoins(t *testing.T) {
-	app := CreateKeeperTestApp(t)
-	// Get burner account address and ensure it has no balance
-	burnAddr := app.AccountKeeper.GetModuleAddress(types.BurnAccName)
-	isZeroBal := app.BankKeeper.GetAllBalances(app.Ctx, burnAddr).IsZero()
-	require.True(t, isZeroBal)
-
-	// Fund burner account
-	coins := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(int64(10000000))))
-	err := FundModuleAccount(app.BankKeeper, app.Ctx, types.BurnAccName, coins)
-	require.NoError(t, err)
-	hasBal := app.BankKeeper.HasBalance(app.Ctx, burnAddr, sdk.NewCoin(coretypes.MicroTokenDenom, coins[0].Amount))
-	require.True(t, hasBal)
-
-	// Test BurnCoinsFromBurner
-	err = app.CharityKeeper.BurnCoinsFromBurner(app.Ctx)
-	require.NoError(t, err)
-	isZeroBal = app.BankKeeper.GetAllBalances(app.Ctx, burnAddr).IsZero()
-	require.True(t, isZeroBal)
 }
