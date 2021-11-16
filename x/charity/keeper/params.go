@@ -26,17 +26,35 @@ func (k Keeper) GetTaxRate(ctx sdk.Context) (taxrate sdk.Dec) {
 // SetTaxRate sets the specified TaxRate to the param store
 // Note: For testing purposes only
 func (k Keeper) SetTaxRate(ctx sdk.Context, taxRate sdk.Dec) error {
-	taxString, err := taxRate.MarshalJSON()
+	// Marshal the Dec. x/Params uses amino codec
+	taxJSON, err := taxRate.MarshalJSON()
 	if err != nil {
 		return err
 	}
-	return k.paramStore.Update(ctx, types.ParamKeyTaxRate, taxString)
+	return k.paramStore.Update(ctx, types.ParamKeyTaxRate, taxJSON)
 }
 
 // GetParamTaxCaps returns the []TaxCap from the paramstore
 func (k Keeper) GetParamTaxCaps(ctx sdk.Context) (taxcaps []types.TaxCap) {
 	k.paramStore.Get(ctx, types.ParamKeyTaxCaps, &taxcaps)
 	return
+}
+
+// GetBurnRate returns the current charity burn rate
+func (k Keeper) GetBurnRate(ctx sdk.Context) (burnRate sdk.Dec) {
+	k.paramStore.Get(ctx, types.ParamKeyBurnRate, &burnRate)
+	return
+}
+
+// SetBurnRate sets the specified BurnRate to the param store..
+// Note: For testing purposes only
+func (k Keeper) SetBurnRate(ctx sdk.Context, burnRate sdk.Dec) error {
+	// Marshal the Dec. x/Params uses amino codec
+	rateJSON, err := burnRate.MarshalJSON()
+	if err != nil {
+		return nil
+	}
+	return k.paramStore.Update(ctx, types.ParamKeyBurnRate, rateJSON)
 }
 
 // SetParams sets all params of charity module

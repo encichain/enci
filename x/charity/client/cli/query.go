@@ -36,6 +36,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdQueryCharities(),
 		CmdQueryTaxCap(),
 		CmdQueryTaxCaps(),
+		CmdQueryBurnRate(),
 		CmdQueryTaxRateLimits(),
 		CmdQueryTaxProceeds(),
 		CmdQueryCollectionPeriods(),
@@ -163,6 +164,33 @@ func CmdQueryTaxCaps() *cobra.Command {
 			queryClient := types.NewQueryClient(clientCtx)
 
 			res, err := queryClient.TaxCaps(context.Background(), &types.QueryTaxCapsRequest{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+// CmdQueryBurnRate implements the query BurnRate command and returns the BurnRate
+func CmdQueryBurnRate() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "burn-rate",
+		Args:  cobra.NoArgs,
+		Short: "Query the charity burn rate",
+		Long: `Query the charity burn rate. Returned is a decimal, representing the percent
+				of the charity tax proceeds that is burned at the end of each period`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.BurnRate(context.Background(), &types.QueryBurnRateRequest{})
 			if err != nil {
 				return err
 			}

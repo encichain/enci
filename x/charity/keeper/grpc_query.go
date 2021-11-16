@@ -72,6 +72,12 @@ func (q Querier) TaxCaps(context context.Context, req *types.QueryTaxCapsRequest
 	return &types.QueryTaxCapsResponse{TaxCaps: taxcaps}, nil
 }
 
+// BurnRate returns the charity burn rate
+func (q Querier) BurnRate(context context.Context, req *types.QueryBurnRateRequest) (*types.QueryBurnRateResponse, error) {
+	ctx := sdk.UnwrapSDKContext(context)
+	return &types.QueryBurnRateResponse{BurnRate: q.GetBurnRate(ctx)}, nil
+}
+
 // TaxRateLimits returns the limits to the taxrate
 func (q Querier) TaxRateLimits(context context.Context, req *types.QueryTaxRateLimitsRequest) (*types.QueryTaxRateLimitsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(context)

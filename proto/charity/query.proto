@@ -34,6 +34,11 @@ service Query {
         option (google.api.http).get = "/encichain/charity/taxcaps";
     }
 
+    // BurnRate returns the set charity burn rate
+    rpc BurnRate(QueryBurnRateRequest) returns (QueryBurnRateResponse) {
+        option (google.api.http).get = "/encichain/charity/burnrate";
+    }
+
     // TaxCap returns the tax cap based on denom
     rpc TaxCap(QueryTaxCapRequest) returns (QueryTaxCapResponse) {
         option (google.api.http).get = "/encichain/charity/taxcaps/{denom}";
@@ -90,6 +95,26 @@ message QueryCharitiesResponse {
     repeated Charity charity = 1 [(gogoproto.nullable) = false];
 }
 
+// QueryTaxCapsRequest is the request type for the Query TaxCaps Request gRPC method
+// Request type for all taxcaps
+message QueryTaxCapsRequest {}
+
+// QueryTaxCapsResponse is the response type for the Query TaxCaps Request gRPC method
+message QueryTaxCapsResponse {
+    repeated TaxCap tax_caps = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryBurnRateRequest is the request type for the Query BurnRate Request RPC method
+message QueryBurnRateRequest {}
+
+// QueryBurnRateResponse is the response type for the Query BurnRate Request RPC method
+message QueryBurnRateResponse {
+    string burn_rate = 1 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", 
+        (gogoproto.nullable) = false
+    ];
+}
+
 // QueryTaxCapRequest is the request type for the Query TaxCap Request RPC method
 // Request type for a single denom taxcap
 message QueryTaxCapRequest {
@@ -105,14 +130,6 @@ message QueryTaxCapResponse {
         ];
 }
 
-// QueryTaxCapsRequest is the request type for the Query TaxCaps Request gRPC method
-// Request type for all taxcaps
-message QueryTaxCapsRequest {}
-
-// QueryTaxCapsResponse is the response type for the Query TaxCaps Request gRPC method
-message QueryTaxCapsResponse {
-    repeated TaxCap tax_caps = 1 [(gogoproto.nullable) = false];
-}
 
 // QueryTaxProceedsRequest is the request type for the Query TaxProceeds RPC method.
 message QueryTaxProceedsRequest {}

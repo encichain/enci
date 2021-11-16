@@ -24,6 +24,7 @@ func TestParamsFuncs(t *testing.T) {
 			Denom: "uenci",
 			Cap:   sdk.NewInt(int64(2000000)),
 		}},
+		BurnRate: sdk.NewDecWithPrec(1, 2),
 	}
 	defaultParams := types.DefaultParams()
 
@@ -60,6 +61,7 @@ func TestSyncParams(t *testing.T) {
 		Charities: types.DefaultCharities,
 		TaxCaps:   paramsTaxCaps,
 		TaxRate:   types.DefaultTaxRate,
+		BurnRate:  types.DefaultBurnRate,
 	}
 	// Set params to store
 	app.CharityKeeper.SetParams(app.Ctx, defaultParams)
