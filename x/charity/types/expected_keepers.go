@@ -15,6 +15,7 @@ type AccountKeeper interface {
 
 type BankKeeper interface {
 	// Methods imported from bank should be defined here
+	SendCoinsFromModuleToModule(ctx sdk.Context, senderModule, recipientModule string, amt sdk.Coins) error
 	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
 	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
 	GetDenomMetaData(ctx sdk.Context, denom string) (banktypes.Metadata, bool)

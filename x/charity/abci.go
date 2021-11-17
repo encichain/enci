@@ -1,6 +1,7 @@
 package charity
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/telemetry"
@@ -17,8 +18,23 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 	if coretypes.IsLastBlockPeriod(ctx) {
 		period := k.GetCurrentPeriod(ctx)
 		charities := k.GetCharity(ctx)
+		charityBal := k.BankKeeper.SpendableCoins(ctx, k.AccountKeeper.GetModuleAddress(types.CharityCollectorName))
 		// Reset tax proceeds
 		defer k.SetTaxProceeds(ctx, sdk.Coins{})
+
+		// Calculate burn amount from CharityTaxCollector and send to burner account
+		if !charityBal.IsZero() {
+			burnAmount := k.CalculateBurnAmount(ctx, charityBal)
+			err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.CharityCollectorName, types.BurnAccName, burnAmount)
+			if err != nil {
+				panic(fmt.Sprintf("could not send coins from CharityTaxCollector to burn account: %s", err))
+			}
+		}
+		// Burn all balances from burn module account
+		err := k.BurnCoinsFromBurner(ctx)
+		if err != nil {
+			panic(fmt.Sprintf("failed to burn coins from burner account: %s", err))
+		}
 
 		// Disburse donations according to CharityTaxCollector balance
 		payouts, errs := k.DisburseDonations(ctx, charities)

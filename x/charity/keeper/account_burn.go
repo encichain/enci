@@ -15,10 +15,12 @@ func (k Keeper) BurnCoinsFromBurner(ctx sdk.Context) error {
 	}
 	// Get all balances
 	bals := k.BankKeeper.GetAllBalances(ctx, burnerAddr)
-	// Burn coins
-	err := k.BankKeeper.BurnCoins(ctx, types.BurnAccName, bals)
-	if err != nil {
-		return err
+	// Burn coins if balance is not zero
+	if !bals.IsZero() {
+		err := k.BankKeeper.BurnCoins(ctx, types.BurnAccName, bals)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

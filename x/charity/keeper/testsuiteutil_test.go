@@ -1,11 +1,14 @@
 package keeper_test
 
 import (
+	"testing"
+
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	enciapp "github.com/user/encichain/app"
@@ -34,6 +37,13 @@ func (suite *CharityTestSuite) SetupTest(isCheckTx bool) {
 	tempDir := suite.T().TempDir()
 	suite.app, suite.ctx = CreateTestApp(isCheckTx, tempDir)
 	suite.ctx = suite.ctx.WithBlockHeight(1)
+	sdk.GetConfig().SetBech32PrefixForAccount("enci", "encipub")
+	mintAcc := suite.app.AccountKeeper.GetModuleAccount(suite.ctx, minttypes.ModuleName)
+	faucetAcc := suite.app.AccountKeeper.GetModuleAccount(suite.ctx, "faucet")
+	charityTaxAcc := suite.app.AccountKeeper.GetModuleAccount(suite.ctx, charitytypes.CharityCollectorName)
+	suite.app.AccountKeeper.SetModuleAccount(suite.ctx, faucetAcc)
+	suite.app.AccountKeeper.SetModuleAccount(suite.ctx, charityTaxAcc)
+	suite.app.AccountKeeper.SetModuleAccount(suite.ctx, mintAcc)
 
 	// Set up TxConfig.
 	encodingConfig := enciapp.MakeTestEncodingConfig()
@@ -52,4 +62,8 @@ func FundModuleAccount(bankKeeper bankkeeper.Keeper, faucetName string, ctx sdk.
 	}
 
 	return bankKeeper.SendCoinsFromModuleToModule(ctx, faucetName, recipientMod, amounts)
+}
+
+func TestAnteTestSuite(t *testing.T) {
+	suite.Run(t, new(CharityTestSuite))
 }

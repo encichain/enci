@@ -234,6 +234,47 @@ func TestTaxCapsParamChangeProposal(t *testing.T) {
 	require.Equal(t, []types.TaxCap{{Denom: "uenci", Cap: sdk.NewInt(int64(2000000))}}, app.CharityKeeper.GetParamTaxCaps(app.Ctx))
 }
 
+func TestBurnRateParamChangeProposal(t *testing.T) {
+	app := CreateKeeperTestApp(t)
+
+	proposalfile := sdktestutil.WriteToNewTempFile(t, `
+	{
+		"title": "Charity BurnRate Change",
+		"description": "Update BurnRate to 2%",
+		"changes": [
+		  {
+			"subspace": "charity",
+			"key": "BurnRate",
+			"value": "0.020000000000000000"
+		  }
+		],
+		"deposit": "10000000stake"
+	  }
+	`)
+	// Test parsing param change proposal file
+	proposal, err := paramsutils.ParseParamChangeProposalJSON(app.Cdc, proposalfile.Name())
+	require.NoError(t, err)
+	require.Equal(t, "Charity BurnRate Change", proposal.Title)
+	require.Equal(t, "Update BurnRate to 2%", proposal.Description)
+	require.Equal(t, "10000000stake", proposal.Deposit)
+
+	// Create new ParameterChangeProposal{} from proposal
+	content := paramproposal.NewParameterChangeProposal(
+		proposal.Title, proposal.Description, proposal.Changes.ToParamChanges(),
+	)
+	err = content.ValidateBasic()
+	require.NoError(t, err)
+	err = paramproposal.ValidateChanges(proposal.Changes.ToParamChanges())
+	require.NoError(t, err)
+
+	require.Equal(t, types.DefaultBurnRate, app.CharityKeeper.GetBurnRate(app.Ctx))
+
+	// Attempt to update BurnRate
+	err = handleParameterChangeProposal(app.Ctx, app.ParamsKeeper, content)
+	require.NoError(t, err)
+	require.Equal(t, sdk.NewDecWithPrec(2, 2), app.CharityKeeper.GetBurnRate(app.Ctx))
+}
+
 func TestTaxRateChangeFunc(t *testing.T) {
 	app := CreateKeeperTestApp(t)
 
