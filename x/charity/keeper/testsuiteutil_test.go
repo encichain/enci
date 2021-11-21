@@ -5,13 +5,19 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	enciapp "github.com/user/encichain/app"
+	"github.com/user/encichain/x/charity/types"
 	charitytypes "github.com/user/encichain/x/charity/types"
 )
 
@@ -22,25 +28,54 @@ type CharityTestSuite struct {
 	ctx sdk.Context
 }
 
+func (suite *CharityTestSuite) initKeepersWithmAccPerms() (authkeeper.AccountKeeper, bankkeeper.BaseKeeper) {
+	app := suite.app
+	maccPerms := enciapp.GetMaccPerms()
+	appCodec := enciapp.MakeTestEncodingConfig().Codec
+	blackListAddrs := map[string]bool{
+		authtypes.FeeCollectorName:        true,
+		stakingtypes.NotBondedPoolName:    true,
+		stakingtypes.BondedPoolName:       true,
+		distrtypes.ModuleName:             true,
+		minttypes.ModuleName:              true,
+		charitytypes.CharityCollectorName: true,
+		charitytypes.BurnAccName:          false,
+	}
+
+	authKeeper := authkeeper.NewAccountKeeper(
+		appCodec, app.GetKey(types.StoreKey), app.GetSubspace(types.ModuleName),
+		authtypes.ProtoBaseAccount, maccPerms,
+	)
+	bankkeeper := keeper.NewBaseKeeper(
+		appCodec, app.GetKey(types.StoreKey), authKeeper,
+		app.GetSubspace(types.ModuleName), blackListAddrs,
+	)
+
+	return authKeeper, bankkeeper
+}
+
 // returns context and app with params set on account keeper
-func CreateTestApp(isCheckTx bool, tempDir string) (*enciapp.EnciApp, sdk.Context) {
-	app := enciapp.Setup(isCheckTx, tempDir)
+func CreateTestApp(isCheckTx bool) (*enciapp.EnciApp, sdk.Context) {
+	app := enciapp.Setup(isCheckTx)
 	ctx := app.BaseApp.NewContext(isCheckTx, tmproto.Header{})
 	app.AccountKeeper.SetParams(ctx, authtypes.DefaultParams())
 	app.CharityKeeper.SetParams(ctx, charitytypes.DefaultParamsSet)
 	app.BankKeeper.SetParams(ctx, banktypes.DefaultParams())
+	app.MintKeeper.SetParams(ctx, minttypes.DefaultParams())
 	return app, ctx
 }
 
 // SetupTest setups a new test, with new app, context, and antehandler.
 func (suite *CharityTestSuite) SetupTest(isCheckTx bool) {
-	tempDir := suite.T().TempDir()
-	suite.app, suite.ctx = CreateTestApp(isCheckTx, tempDir)
+	//tempDir := suite.T().TempDir()
+	suite.app, suite.ctx = CreateTestApp(isCheckTx)
 	suite.ctx = suite.ctx.WithBlockHeight(1)
 	sdk.GetConfig().SetBech32PrefixForAccount("enci", "encipub")
+
 	mintAcc := suite.app.AccountKeeper.GetModuleAccount(suite.ctx, minttypes.ModuleName)
 	faucetAcc := suite.app.AccountKeeper.GetModuleAccount(suite.ctx, "faucet")
 	charityTaxAcc := suite.app.AccountKeeper.GetModuleAccount(suite.ctx, charitytypes.CharityCollectorName)
+
 	suite.app.AccountKeeper.SetModuleAccount(suite.ctx, faucetAcc)
 	suite.app.AccountKeeper.SetModuleAccount(suite.ctx, charityTaxAcc)
 	suite.app.AccountKeeper.SetModuleAccount(suite.ctx, mintAcc)
@@ -58,10 +93,14 @@ func (suite *CharityTestSuite) SetupTest(isCheckTx bool) {
 // purposes only!
 func FundModuleAccount(bankKeeper bankkeeper.Keeper, faucetName string, ctx sdk.Context, recipientMod string, amounts sdk.Coins) error {
 	if err := bankKeeper.MintCoins(ctx, faucetName, amounts); err != nil {
-		return err
+		return sdkerrors.Wrap(err, "Could not mint coins")
 	}
 
-	return bankKeeper.SendCoinsFromModuleToModule(ctx, faucetName, recipientMod, amounts)
+	err := bankKeeper.SendCoinsFromModuleToModule(ctx, faucetName, recipientMod, amounts)
+	if err != nil {
+		return sdkerrors.Wrap(err, "Could not fund module account with error")
+	}
+	return nil
 }
 
 func TestAnteTestSuite(t *testing.T) {

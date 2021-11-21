@@ -18,9 +18,13 @@ func TestBurnCoins(t *testing.T) {
 	isZeroBal := app.BankKeeper.GetAllBalances(app.Ctx, burnAddr).IsZero()
 	require.True(t, isZeroBal)
 
+	//Try burning with zero balance
+	err := app.CharityKeeper.BurnCoinsFromBurner(app.Ctx)
+	require.NoError(t, err)
+
 	// Fund burner account
 	coins := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(int64(10000000))))
-	err := FundModuleAccount(app.BankKeeper, app.Ctx, types.BurnAccName, coins)
+	err = FundModuleAccount(app.BankKeeper, app.Ctx, types.BurnAccName, coins)
 	require.NoError(t, err)
 	hasBal := app.BankKeeper.HasBalance(app.Ctx, burnAddr, sdk.NewCoin(coretypes.MicroTokenDenom, coins[0].Amount))
 	require.True(t, hasBal)

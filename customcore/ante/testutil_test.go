@@ -44,7 +44,7 @@ type AnteTestSuite struct {
 
 // returns context and app with params set on account keeper
 func CreateTestApp(isCheckTx bool, tempDir string) (*enciapp.EnciApp, sdk.Context) {
-	app := enciapp.Setup(isCheckTx, tempDir)
+	app := enciapp.Setup(isCheckTx)
 	ctx := app.BaseApp.NewContext(isCheckTx, tmproto.Header{})
 	app.AccountKeeper.SetParams(ctx, authtypes.DefaultParams())
 	app.CharityKeeper.SetParams(ctx, charitytypes.DefaultParamsSet)

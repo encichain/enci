@@ -403,10 +403,10 @@ func MakeEncodingConfig() simparams.EncodingConfig {
 }
 
 // setup returns a new EnciApp instance at tempDir, with genesis state if specified. deliverState is nil if InitChain is not called.
-func setup(withGenesis bool, invCheckPeriod uint, tempDir string) (*EnciApp, GenesisState) {
+func setup(withGenesis bool, invCheckPeriod uint) (*EnciApp, GenesisState) {
 	db := dbm.NewMemDB()
 	encCdc := MakeTestEncodingConfig()
-	app := NewEnciTestApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, tempDir, invCheckPeriod, encCdc, simapp.EmptyAppOptions{})
+	app := NewEnciTestApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, invCheckPeriod, encCdc, simapp.EmptyAppOptions{})
 	if withGenesis {
 		return app, NewDefaultGenesisState(encCdc.Codec)
 	}
@@ -414,8 +414,8 @@ func setup(withGenesis bool, invCheckPeriod uint, tempDir string) (*EnciApp, Gen
 }
 
 // Setup initializes a new EnciApp. A Nop logger is set in SimApp.
-func Setup(isCheckTx bool, tempDir string) *EnciApp {
-	app, genesisState := setup(!isCheckTx, 5, tempDir)
+func Setup(isCheckTx bool) *EnciApp {
+	app, genesisState := setup(!isCheckTx, 5)
 	if !isCheckTx {
 		// init chain must be called to stop deliverState from being nil
 		stateBytes, err := json.MarshalIndent(genesisState, "", " ")

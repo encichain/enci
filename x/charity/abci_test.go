@@ -5,13 +5,58 @@ import (
 	"encoding/hex"
 	"testing"
 
+	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 	coretypes "github.com/user/encichain/types"
-
 	"github.com/user/encichain/x/charity/keeper"
 	"github.com/user/encichain/x/charity/types"
 )
+
+func TestBurnEndblock(t *testing.T) {
+	app := keeper.CreateKeeperTestApp(t)
+	// Burner account balance should be 0
+	burnAddr := app.AccountKeeper.GetModuleAddress(types.BurnAccName)
+	require.True(t, app.BankKeeper.GetAllBalances(app.Ctx, burnAddr).IsZero())
+
+	// Fund burner account
+	testCoins := sdk.NewCoins(sdk.NewInt64Coin(coretypes.MicroTokenDenom, 1500))
+	err := keeper.FundModuleAccount(app.BankKeeper, app.Ctx, types.BurnAccName, testCoins)
+	require.NoError(t, err)
+	require.True(t, app.BankKeeper.HasBalance(app.Ctx, burnAddr, testCoins[0]))
+
+	app.Ctx = app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerPeriod - 1))
+	// Call endblock
+	EndBlocker(app.Ctx, app.CharityKeeper)
+	require.True(t, app.BankKeeper.GetAllBalances(app.Ctx, burnAddr).IsZero())
+}
+
+func TestUserSendBurnEndBlock(t *testing.T) {
+	app := keeper.CreateKeeperTestApp(t)
+	// Burner account balance should be 0
+	burnAddr := app.AccountKeeper.GetModuleAddress(types.BurnAccName)
+	require.True(t, app.BankKeeper.GetAllBalances(app.Ctx, burnAddr).IsZero())
+
+	// Set up account and fund it
+	_, _, addr1 := testdata.KeyTestPubAddr()
+	testCoins := sdk.NewCoins(sdk.NewInt64Coin(coretypes.MicroTokenDenom, 1500))
+	acc1 := app.AccountKeeper.NewAccountWithAddress(app.Ctx, addr1)
+	require.NotNil(t, acc1)
+	err := keeper.FundAccount(app.BankKeeper, app.Ctx, acc1.GetAddress(), testCoins)
+	require.NoError(t, err)
+	require.True(t, app.BankKeeper.HasBalance(app.Ctx, acc1.GetAddress(), testCoins[0]))
+
+	// Send coins from account to burn module
+	err = app.BankKeeper.SendCoinsFromAccountToModule(app.Ctx, acc1.GetAddress(), types.BurnAccName, testCoins)
+	require.NoError(t, err)
+	require.True(t, app.BankKeeper.HasBalance(app.Ctx, burnAddr, testCoins[0]))
+
+	// Set block height to end of period and call EndBlocker
+	app.Ctx = app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerPeriod) - 1)
+	EndBlocker(app.Ctx, app.CharityKeeper)
+
+	require.True(t, app.BankKeeper.GetAllBalances(app.Ctx, burnAddr).IsZero())
+}
 
 func TestEndBlocker(t *testing.T) {
 	app := keeper.CreateKeeperTestApp(t)
@@ -27,6 +72,7 @@ func TestEndBlocker(t *testing.T) {
 	require.NotNil(t, acc1)
 	acc2 := app.AccountKeeper.NewAccountWithAddress(app.Ctx, addr2)
 	require.NotNil(t, acc2)
+	taxAddr := app.AccountKeeper.GetModuleAddress(types.CharityCollectorName)
 
 	// Set accounts to store
 	app.AccountKeeper.SetAccount(app.Ctx, acc1)
@@ -61,10 +107,14 @@ func TestEndBlocker(t *testing.T) {
 	require.Equal(t, params.Charities, charities)
 
 	// Make sure a charity account has 0 balance
-	hasbal := app.BankKeeper.HasBalance(app.Ctx, addr1, sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(int64(1000))))
-	hasbal2 := app.BankKeeper.HasBalance(app.Ctx, addr2, sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(int64(1000))))
-	require.False(t, hasbal)
-	require.False(t, hasbal2)
+	zeroBal1 := app.BankKeeper.GetAllBalances(app.Ctx, addr1).IsZero()
+	zeroBal2 := app.BankKeeper.GetAllBalances(app.Ctx, addr2).IsZero()
+	require.True(t, zeroBal1)
+	require.True(t, zeroBal2)
+	// Burner account balance should be 0
+	burnAddr := app.AccountKeeper.GetModuleAddress(types.BurnAccName)
+	require.True(t, app.BankKeeper.GetAllBalances(app.Ctx, burnAddr).IsZero())
+
 	// Set test TaxProceeds to store
 	proceeds := sdk.NewInt(int64(50000000))
 	app.CharityKeeper.AddTaxProceeds(app.Ctx, sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: proceeds}})
@@ -73,22 +123,34 @@ func TestEndBlocker(t *testing.T) {
 	// Make sure store taxcap is set to default taxcap
 	require.Equal(t, types.DefaultCap, app.CharityKeeper.GetTaxCap(app.Ctx, coretypes.MicroTokenDenom))
 
-	// Set blockheight to end of period and call Charity EndBlocker
+	// Set blockheight to end of period
 	app.Ctx = app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerPeriod - 1))
-	require.Equal(t, keeper.InitCoins, app.BankKeeper.GetAllBalances(app.Ctx, app.AccountKeeper.GetModuleAddress(types.CharityCollectorName)))
+	// Get balances and calculate burn amount and post deduction balance
+	charityTaxBal := app.BankKeeper.GetAllBalances(app.Ctx, taxAddr)
+	require.Equal(t, keeper.InitCoins, charityTaxBal)
+	burnAmt := app.CharityKeeper.CalculateBurnAmount(app.Ctx, charityTaxBal)
+	afterBurnBal := charityTaxBal.Sub(burnAmt)
 
+	// Call EndBlocker
 	EndBlocker(app.Ctx, app.CharityKeeper)
 
 	// Check if target charity accounts have received donation
-	hasbal = app.BankKeeper.HasBalance(app.Ctx, addr1, sdk.NewCoin(coretypes.MicroTokenDenom, keeper.InitTokens.Quo(sdk.NewInt(int64(2)))))
-	hasbal2 = app.BankKeeper.HasBalance(app.Ctx, addr2, sdk.NewCoin(coretypes.MicroTokenDenom, keeper.InitTokens.Quo(sdk.NewInt(int64(2)))))
+	hasbal := app.BankKeeper.HasBalance(app.Ctx, addr1, sdk.NewCoin(coretypes.MicroTokenDenom, afterBurnBal[0].Amount.Quo(sdk.NewInt(int64(2)))))
+	hasbal2 := app.BankKeeper.HasBalance(app.Ctx, addr2, sdk.NewCoin(coretypes.MicroTokenDenom, afterBurnBal[0].Amount.Quo(sdk.NewInt(int64(2)))))
 	require.True(t, hasbal)
 	require.True(t, hasbal2)
 
+	// Verify burn amount has been deducted by ensuring charity recipient balance < pre-burn charity collector amount
+	require.False(t, app.BankKeeper.HasBalance(app.Ctx, addr1, sdk.NewCoin(coretypes.MicroTokenDenom, keeper.InitTokens.Quo(sdk.NewInt(int64(2))))))
+	require.False(t, app.BankKeeper.HasBalance(app.Ctx, addr2, sdk.NewCoin(coretypes.MicroTokenDenom, keeper.InitTokens.Quo(sdk.NewInt(int64(2))))))
+
+	// Verify that burn module account is now zero in balance
+	require.True(t, app.BankKeeper.GetAllBalances(app.Ctx, burnAddr).IsZero())
+
 	// Check if Payouts have been created and set to store under *period*
 	require.Equal(t, []types.Payout{
-		{Recipientaddr: bech32addr1, Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: keeper.InitTokens.Quo(sdk.NewInt(int64(2)))}}},
-		{Recipientaddr: bech32addr2, Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: keeper.InitTokens.Quo(sdk.NewInt(int64(2)))}}}},
+		{Recipientaddr: bech32addr1, Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: afterBurnBal[0].Amount.Quo(sdk.NewInt(int64(2)))}}},
+		{Recipientaddr: bech32addr2, Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: afterBurnBal[0].Amount.Quo(sdk.NewInt(int64(2)))}}}},
 		app.CharityKeeper.GetPayouts(app.Ctx, app.CharityKeeper.GetCurrentPeriod(app.Ctx)))
 
 	// Check if taxproceeds have been stored under current *period*

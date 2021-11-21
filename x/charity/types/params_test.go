@@ -9,11 +9,7 @@ import (
 )
 
 func TestParams(t *testing.T) {
-	defaultParamsSet := Params{
-		Charities: DefaultCharities,
-		TaxCaps:   DefaultTaxCaps,
-		TaxRate:   DefaultTaxRate,
-	}
+	defaultParamsSet := DefaultParams()
 	p1 := defaultParamsSet
 	require.NoError(t, p1.Validate())
 

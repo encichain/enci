@@ -44,8 +44,8 @@ import (
 
 	//charitykeeper "github.com/user/encichain/x/charity/keeper"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/cosmos/cosmos-sdk/x/params/types/proposal"
-	"github.com/user/encichain/x/charity/types"
 	charitytypes "github.com/user/encichain/x/charity/types"
 )
 
@@ -146,15 +146,19 @@ func CreateKeeperTestApp(t *testing.T) TestApp {
 	require.NoError(t, ms.LoadLatestVersion())
 
 	blackListAddrs := map[string]bool{
-		authtypes.FeeCollectorName:     true,
-		stakingtypes.NotBondedPoolName: true,
-		stakingtypes.BondedPoolName:    true,
-		distrtypes.ModuleName:          true,
-		faucetAccount:                  true,
+		authtypes.FeeCollectorName:        true,
+		stakingtypes.NotBondedPoolName:    true,
+		stakingtypes.BondedPoolName:       true,
+		distrtypes.ModuleName:             true,
+		faucetAccount:                     true,
+		minttypes.ModuleName:              true,
+		charitytypes.CharityCollectorName: true,
+		charitytypes.BurnAccName:          false,
 	}
 
 	maccPerms := map[string][]string{
 		faucetAccount:                     {authtypes.Minter, authtypes.Burner},
+		minttypes.ModuleName:              {authtypes.Minter},
 		authtypes.FeeCollectorName:        nil,
 		stakingtypes.NotBondedPoolName:    {authtypes.Burner, authtypes.Staking},
 		stakingtypes.BondedPoolName:       {authtypes.Burner, authtypes.Staking},
@@ -168,7 +172,7 @@ func CreateKeeperTestApp(t *testing.T) TestApp {
 	accountKeeper := authkeeper.NewAccountKeeper(appCodec, keyAcc, paramsKeeper.Subspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms)
 	bankKeeper := bankkeeper.NewBaseKeeper(appCodec, keyBank, accountKeeper, paramsKeeper.Subspace(banktypes.ModuleName), blackListAddrs)
 
-	totalSupply := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, InitTokens.MulRaw(int64(len(Addrs)*13))))
+	totalSupply := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, InitTokens.MulRaw(int64(len(Addrs)*14))))
 	err := bankKeeper.MintCoins(ctx, faucetAccount, totalSupply)
 	require.NoError(t, err)
 
@@ -199,6 +203,7 @@ func CreateKeeperTestApp(t *testing.T) TestApp {
 	stakingKeeper.SetHooks(stakingtypes.NewMultiStakingHooks(distrKeeper.Hooks()))
 
 	feeCollectorAcc := authtypes.NewEmptyModuleAccount(authtypes.FeeCollectorName)
+	mintAcc := authtypes.NewEmptyModuleAccount(minttypes.ModuleName, authtypes.Minter)
 	notBondedPool := authtypes.NewEmptyModuleAccount(stakingtypes.NotBondedPoolName, authtypes.Burner, authtypes.Staking)
 	bondPool := authtypes.NewEmptyModuleAccount(stakingtypes.BondedPoolName, authtypes.Burner, authtypes.Staking)
 	distrAcc := authtypes.NewEmptyModuleAccount(distrtypes.ModuleName)
@@ -207,6 +212,7 @@ func CreateKeeperTestApp(t *testing.T) TestApp {
 	burnAcc := authtypes.NewEmptyModuleAccount(charitytypes.BurnAccName, authtypes.Burner)
 
 	accountKeeper.SetModuleAccount(ctx, feeCollectorAcc)
+	accountKeeper.SetModuleAccount(ctx, mintAcc)
 	accountKeeper.SetModuleAccount(ctx, bondPool)
 	accountKeeper.SetModuleAccount(ctx, notBondedPool)
 	accountKeeper.SetModuleAccount(ctx, distrAcc)
@@ -228,17 +234,20 @@ func CreateKeeperTestApp(t *testing.T) TestApp {
 	err = bankKeeper.SendCoinsFromModuleToModule(ctx, faucetAccount, stakingtypes.NotBondedPoolName, sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, InitTokens.MulRaw(int64(len(Addrs)+1)))))
 	require.NoError(t, err)
 
-	// Test charity burn
-	err = bankKeeper.SendCoinsFromModuleToModule(ctx, faucetAccount, types.BurnAccName, InitCoins)
-	require.NoError(t, err)
-	err = bankKeeper.BurnCoins(ctx, charitytypes.BurnAccName, InitCoins)
-	require.NoError(t, err)
-
+	/*
+		// Test charity burn
+		err = bankKeeper.SendCoinsFromModuleToModule(ctx, faucetAccount, types.BurnAccName, InitCoins)
+		require.NoError(t, err)
+		err = bankKeeper.BurnCoins(ctx, charitytypes.BurnAccName, InitCoins)
+		require.NoError(t, err)
+	*/
 	for _, addr := range Addrs {
 		accountKeeper.SetAccount(ctx, authtypes.NewBaseAccountWithAddress(addr))
 		err := bankKeeper.SendCoinsFromModuleToAccount(ctx, faucetAccount, addr, InitCoins)
 		require.NoError(t, err)
 	}
+
+	accountKeeper.SetModuleAccount(ctx, burnAcc)
 
 	charityKeeper := NewKeeper(
 		appCodec,

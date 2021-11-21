@@ -17,6 +17,15 @@ func TestPayoutFunctions(t *testing.T) {
 	// Note: Goroutine leaks detected in App. Will cause abnormalities and failed tests in subsequent test functions if CreateKeeperTestApp is reinitialized.
 	//defer goleak.VerifyNone(t)
 	app := CreateKeeperTestApp(t)
+
+	// Test fundmodule
+	coins := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(int64(1000))))
+	modAcc := app.AccountKeeper.GetModuleAccount(app.Ctx, types.CharityCollectorName)
+	require.NotNil(t, modAcc)
+	bal := app.BankKeeper.GetAllBalances(app.Ctx, modAcc.GetAddress())
+	err := FundModuleAccount(app.BankKeeper, app.Ctx, modAcc.GetName(), coins)
+	require.NoError(t, err)
+	require.True(t, app.BankKeeper.HasBalance(app.Ctx, modAcc.GetAddress(), bal[0].Add(coins[0])))
 	sdk.GetConfig().SetBech32PrefixForAccount("enci", "encipub")
 
 	bech32addr := "enci1aag23fr2qjxan9aktyfsywp3udxg036c9zxv55"
@@ -41,7 +50,7 @@ func TestPayoutFunctions(t *testing.T) {
 	require.Equal(t, app.CharityKeeper.GetAllParams(app.Ctx), params)
 
 	// Check if able to send coins to addr
-	coins := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(int64(1000))))
+	coins = sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(int64(1000))))
 	err = app.BankKeeper.SendCoinsFromModuleToAccount(app.Ctx, types.CharityCollectorName, addr, coins)
 	require.NoError(t, err)
 
