@@ -19,13 +19,15 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 		period := k.GetCurrentPeriod(ctx)
 		charities := k.GetCharity(ctx)
 		charityBal := k.BankKeeper.SpendableCoins(ctx, k.AccountKeeper.GetModuleAddress(types.CharityCollectorName))
+		burnAmt := sdk.Coins{}
+
 		// Reset tax proceeds
 		defer k.SetTaxProceeds(ctx, sdk.Coins{})
 
 		// Calculate burn amount from CharityTaxCollector and send to burner account
 		if !charityBal.IsZero() {
-			burnAmount := k.CalculateBurnAmount(ctx, charityBal)
-			err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.CharityCollectorName, types.BurnAccName, burnAmount)
+			burnAmt = k.CalculateBurnAmount(ctx, charityBal)
+			err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.CharityCollectorName, types.BurnAccName, burnAmt)
 			if err != nil {
 				panic(fmt.Sprintf("could not send coins from CharityTaxCollector to burn account: %s", err))
 			}
@@ -48,8 +50,9 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 
 		ctx.EventManager().EmitTypedEvent(
 			&types.EventPayout{
-				Period:  uint64(period),
-				Payouts: payouts,
+				Period:      uint64(period),
+				Payouts:     payouts,
+				BurnedCoins: burnAmt,
 			})
 		if len(errs) > 0 {
 			ctx.EventManager().EmitTypedEvent(

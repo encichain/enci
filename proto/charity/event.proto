@@ -3,6 +3,7 @@ package user.encichain.charity;
 
 import "charity/charity.proto";
 import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/user/encichain/x/charity/types";
 
@@ -10,6 +11,9 @@ option go_package = "github.com/user/encichain/x/charity/types";
 message EventPayout {
     uint64 period = 1;
     repeated Payout payouts = 2 [(gogoproto.nullable) = false];
+    repeated cosmos.base.v1beta1.Coin burned_coins = 3 [
+        (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+        (gogoproto.nullable) = false];
 }
 
 // EventFailedPayouts defines a Payout failure Event
