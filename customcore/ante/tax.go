@@ -90,6 +90,11 @@ func (dtd DeductTaxFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate
 		dtd.CharityKeeper.AddTaxProceeds(ctx, tax)
 	}
 
+	events := sdk.Events{sdk.NewEvent(sdk.EventTypeTx,
+		sdk.NewAttribute(sdk.AttributeKeyFee, feeTx.GetFee().String()),
+	)}
+	ctx.EventManager().EmitEvents(events)
+
 	return next(ctx, tx, simulate)
 }
 
