@@ -44,7 +44,7 @@ func TestGenesisStateValidate(t *testing.T) {
 			"negative rateMin",
 			GenesisState{
 				DefaultParams(),
-				TaxRateLimits{RateMin: DefaultRateMin.Neg(), RateMax: DefaultRateMax},
+				TaxRateLimits{RateMin: sdk.NewDecWithPrec(1, 4).Neg(), TaxRateMax: DefaultTaxRateMax, BurnRateMax: DefaultBurnRateMax},
 				DefaultTaxCaps,
 				sdk.Coins{},
 				[]CollectionPeriod{},
@@ -52,10 +52,21 @@ func TestGenesisStateValidate(t *testing.T) {
 			true,
 		},
 		{
-			"too high RateMax",
+			"too high TaxRateMax",
 			GenesisState{
 				DefaultParams(),
-				TaxRateLimits{RateMin: DefaultRateMin, RateMax: sdk.NewDecWithPrec(6, 2)},
+				TaxRateLimits{RateMin: DefaultRateMin, TaxRateMax: sdk.NewDecWithPrec(6, 2), BurnRateMax: DefaultBurnRateMax},
+				DefaultTaxCaps,
+				sdk.Coins{},
+				[]CollectionPeriod{},
+			},
+			true,
+		},
+		{
+			"too high BurnRateMax",
+			GenesisState{
+				DefaultParams(),
+				TaxRateLimits{RateMin: DefaultRateMin, TaxRateMax: DefaultTaxRateMax, BurnRateMax: sdk.NewDecWithPrec(60, 2)},
 				DefaultTaxCaps,
 				sdk.Coins{},
 				[]CollectionPeriod{},
@@ -82,7 +93,7 @@ func TestGenesisStateValidate(t *testing.T) {
 			GenesisState{
 				Params{
 					Charities: DefaultCharities,
-					TaxRate:   DefaultRateMax.Add(sdk.NewDecWithPrec(1, 4)),
+					TaxRate:   DefaultTaxRateMax.Add(sdk.NewDecWithPrec(1, 4)),
 					TaxCaps:   DefaultTaxCaps,
 				},
 				DefaultTaxRateLimits,

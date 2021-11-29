@@ -17,7 +17,7 @@ func (suite *AnteTestSuite) TestDeductFees() {
 	suite.txBuilder = suite.clientCtx.TxConfig.NewTxBuilder()
 
 	// Set 0 TaxRateMin *RateMin*
-	newTaxLimit := types.TaxRateLimits{RateMin: sdk.NewDec(int64(0)), RateMax: sdk.NewDecWithPrec(2, 2)}
+	newTaxLimit := types.TaxRateLimits{RateMin: sdk.NewDec(int64(0)), TaxRateMax: sdk.NewDecWithPrec(2, 2), BurnRateMax: types.DefaultBurnRateMax}
 	suite.app.CharityKeeper.SetTaxRateLimits(suite.ctx, newTaxLimit)
 	taxRateLim := suite.app.CharityKeeper.GetTaxRateLimits(suite.ctx)
 	suite.Require().Equal(newTaxLimit, taxRateLim)

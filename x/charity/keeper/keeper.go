@@ -91,8 +91,9 @@ func (k Keeper) GetTaxRateLimits(ctx sdk.Context) types.TaxRateLimits {
 func (k Keeper) SetTaxRateLimits(ctx sdk.Context, taxratelimits types.TaxRateLimits) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(&types.TaxRateLimits{
-		RateMin: taxratelimits.RateMin,
-		RateMax: taxratelimits.RateMax,
+		RateMin:     taxratelimits.RateMin,
+		TaxRateMax:  taxratelimits.TaxRateMax,
+		BurnRateMax: taxratelimits.BurnRateMax,
 	})
 
 	// Set the store

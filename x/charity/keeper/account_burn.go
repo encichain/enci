@@ -29,6 +29,9 @@ func (k Keeper) BurnCoinsFromBurner(ctx sdk.Context) error {
 func (k Keeper) CalculateBurnAmount(ctx sdk.Context, balance sdk.Coins) sdk.Coins {
 	burnRate := k.GetBurnRate(ctx)
 	coins := sdk.Coins{}
+	if burnRate.IsZero() {
+		return coins
+	}
 
 	if !balance.IsZero() {
 		for _, coin := range balance {

@@ -57,13 +57,15 @@ func TestTaxRateLimits(t *testing.T) {
 
 	for i := int64(0); i < 10; i++ {
 		app.CharityKeeper.SetTaxRateLimits(app.Ctx, types.TaxRateLimits{
-			RateMin: sdk.NewDecWithPrec(i, 3),
-			RateMax: sdk.NewDecWithPrec(i, 2),
+			RateMin:     sdk.NewDecWithPrec(i, 3),
+			TaxRateMax:  sdk.NewDecWithPrec(i, 2),
+			BurnRateMax: sdk.NewDecWithPrec(i, 2),
 		},
 		)
 		require.Equal(t, types.TaxRateLimits{
-			RateMin: sdk.NewDecWithPrec(i, 3),
-			RateMax: sdk.NewDecWithPrec(i, 2),
+			RateMin:     sdk.NewDecWithPrec(i, 3),
+			TaxRateMax:  sdk.NewDecWithPrec(i, 2),
+			BurnRateMax: sdk.NewDecWithPrec(i, 2),
 		}, app.CharityKeeper.GetTaxRateLimits(app.Ctx))
 	}
 }

@@ -47,22 +47,23 @@ func (gs GenesisState) Validate() error {
 	}
 
 	//TaxRateLimits cannot be nil
-	if gs.TaxRateLimits.RateMin.IsNil() || gs.TaxRateLimits.RateMax.IsNil() {
-		return fmt.Errorf("rateMin(%s) and rateMax(%s) should not be nil", gs.TaxRateLimits.RateMin, gs.TaxRateLimits.RateMax)
+	if gs.TaxRateLimits.RateMin.IsNil() || gs.TaxRateLimits.TaxRateMax.IsNil() || gs.TaxRateLimits.BurnRateMax.IsNil() {
+		return fmt.Errorf("rateMin(%s), taxRateMax(%s), burnRateMax(%s) should not be nil", gs.TaxRateLimits.RateMin, gs.TaxRateLimits.TaxRateMax, &gs.TaxRateLimits.BurnRateMax)
 	}
-	//RateMin cannot be negative && RateMax cannot be greater than 5%
-	if gs.TaxRateLimits.RateMin.IsNegative() || gs.TaxRateLimits.RateMax.GT(sdk.NewDecWithPrec(5, 2)) {
-		return fmt.Errorf("rateMin(%s) must be positive and RateMax(%s) must be less than 5%%", gs.TaxRateLimits.RateMin, gs.TaxRateLimits.RateMax)
+	//RateMin cannot be negative && RateMax cannot be greater than DefaultTaxRateMax && BurnRateMax cannot be greater than DefaultBurnRateMax
+	if gs.TaxRateLimits.RateMin.IsNegative() || gs.TaxRateLimits.TaxRateMax.GT(DefaultTaxRateMax) || gs.TaxRateLimits.BurnRateMax.GT(DefaultBurnRateMax) {
+		return fmt.Errorf("rateMin(%s) must be positive, taxRateMax(%s) must be less than %s, and burnRateMax less than %s",
+			gs.TaxRateLimits.RateMin, gs.TaxRateLimits.TaxRateMax, DefaultTaxRateMax, DefaultBurnRateMax)
 	}
 
 	//TaxRate must be within range of TaxRateLimits
-	if gs.Params.TaxRate.LT(gs.TaxRateLimits.RateMin) || gs.Params.TaxRate.GT(gs.TaxRateLimits.RateMax) {
-		return fmt.Errorf("taxRate must be greater than RateMin(%s) and less than RateMax(%s)", gs.TaxRateLimits.RateMin, &gs.TaxRateLimits.RateMax)
+	if gs.Params.TaxRate.LT(gs.TaxRateLimits.RateMin) || gs.Params.TaxRate.GT(gs.TaxRateLimits.TaxRateMax) {
+		return fmt.Errorf("taxRate must be greater than RateMin(%s) and less than RateMax(%s)", gs.TaxRateLimits.RateMin, &gs.TaxRateLimits.TaxRateMax)
 	}
 
 	//BurnRate must be within range of TaxRateLimits
-	if gs.Params.BurnRate.LT(gs.TaxRateLimits.RateMin) || gs.Params.BurnRate.GT(gs.TaxRateLimits.RateMax) {
-		return fmt.Errorf("burnRate must be greater than RateMin(%s) and less than RateMax(%s)", gs.TaxRateLimits.RateMin, &gs.TaxRateLimits.RateMax)
+	if gs.Params.BurnRate.LT(gs.TaxRateLimits.RateMin) || gs.Params.BurnRate.GT(gs.TaxRateLimits.BurnRateMax) {
+		return fmt.Errorf("burnRate must be greater than RateMin(%s) and less than RateMax(%s)", gs.TaxRateLimits.RateMin, &gs.TaxRateLimits.BurnRateMax)
 	}
 
 	return nil

@@ -48,11 +48,14 @@ message TaxRateLimits {
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable)   = false
     ];
-    string rate_max = 2 [
+    string tax_rate_max = 2 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable)   = false
     ];
-
+    string burn_rate_max = 3 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable)   = false
+    ];
 }
 
 // CollectionPeriod defines the record of each tax collection period

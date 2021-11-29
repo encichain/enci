@@ -27,9 +27,11 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 		// Calculate burn amount from CharityTaxCollector and send to burner account
 		if !charityBal.IsZero() {
 			burnAmt = k.CalculateBurnAmount(ctx, charityBal)
-			err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.CharityCollectorName, types.BurnAccName, burnAmt)
-			if err != nil {
-				panic(fmt.Sprintf("could not send coins from CharityTaxCollector to burn account: %s", err))
+			if !burnAmt.IsZero() {
+				err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.CharityCollectorName, types.BurnAccName, burnAmt)
+				if err != nil {
+					panic(fmt.Sprintf("could not send coins from CharityTaxCollector to burn account: %s", err))
+				}
 			}
 		}
 		// Burn all balances from burn module account

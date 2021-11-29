@@ -41,6 +41,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdQueryTaxProceeds(),
 		CmdQueryCollectionPeriods(),
 		CmdQueryCollectionPeriod(),
+		//CmdQueryChecksum(),
 	)
 
 	return cmd

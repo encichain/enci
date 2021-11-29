@@ -10,7 +10,7 @@ The following notation is used to describe key to value mapping:
 
 `key -> value`
 
-with `|` used to describe concatenation. Most keys will resemble the following format:
+with `|` used to describe concatenation. Most key-value pairs will resemble the following format:
 
 `0x00 | exampleBytes -> encoding_type(value_object)`
 
@@ -22,7 +22,7 @@ The constraints for the TaxRate and BurnRate. The minimum and maximum rate curre
 
 ## TaxCaps
 
-A `TaxCap` is the maximum amount of charity tax that can be charged for a single transaction for a specific denomination. A slice of `TaxCap` is stored in the module `GenesisState`. In the `KVStore` of the Charity module, a `denom` in the form of a string is mapped to a Cosmos SDK `Int`. TaxCaps can be updated via a governance proposal. 
+A `TaxCap` is the maximum amount of charity tax that can be charged for a single transaction for a specific denomination. A slice of `TaxCap` is stored in the module `KVStore` and is part of the `GenesisState`. In the `KVStore` of the Charity module, a `denom` in the form of a string is mapped to a Cosmos SDK `Int`. TaxCaps can be updated via a governance proposal. 
 
 The charity module param store holds a separate set of TaxCap objects, which is synchronized to the `KVStore` at the end of each period during `EndBlock`. When calculating taxes on transactions, the `TaxCap` is fetched from the `KVstore`.
 

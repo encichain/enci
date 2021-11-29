@@ -28,7 +28,7 @@ The `Charities` param is stored in the param store to enable change via governan
 `TaxRate` determines the tax that is be collected from each applicable transaction message. This tax is not determined by the local validator, and is instead a universal tax. Tax fees are added onto Gas fees for a transaction, and summed as `Fee`. The handling of tax calculation and deduction is done via the `AnteHandler`. `TaxRate` is constrained by `TaxRateLimits`, which determine the minimum rate and the maximum rate that can be set. 
 
 ## TaxCaps
-The `TaxCaps` in the parameter store are not used directly by the app. Instead, a separate copy in the KVStore is fetched instead to be used for tax calculation. However, the KVStore tax caps are synchronized with the parameter store `TaxCaps`. As such, `TaxCaps` updated via param-change proposals do not take effect until the KVStore is updated. 
+The `TaxCaps` in the parameter store are not used directly by the app. Instead, a separate copy in the KVStore is fetched for tax calculation. However, the KVStore tax caps are synchronized with the parameter store `TaxCaps` at the end of each period. As such, `TaxCaps` updated via param-change proposals do not take effect until the KVStore is updated. 
 
 ## BurnRate
 

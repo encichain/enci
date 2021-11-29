@@ -30,9 +30,10 @@ var (
 		Checksum:    "",
 	}
 	DefaultCharities     = []Charity{DefaultCharity}
-	DefaultRateMin       = sdk.NewDecWithPrec(1, 3) // 0.001 || 0.1%
-	DefaultRateMax       = sdk.NewDecWithPrec(1, 2) // 0.01 || 1%
-	DefaultTaxRateLimits = TaxRateLimits{RateMin: DefaultRateMin, RateMax: DefaultRateMax}
+	DefaultRateMin       = sdk.ZeroDec()             // 0
+	DefaultTaxRateMax    = sdk.NewDecWithPrec(5, 2)  // 0.01 || 5%
+	DefaultBurnRateMax   = sdk.NewDecWithPrec(50, 2) // 0.50 || 50%
+	DefaultTaxRateLimits = TaxRateLimits{RateMin: DefaultRateMin, TaxRateMax: DefaultTaxRateMax, BurnRateMax: DefaultBurnRateMax}
 	DefaultCoinProceed   = sdk.Coin{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(100)}
 	DefaultTaxProceeds   = sdk.Coins{}
 	DefaultBurnRate      = sdk.NewDecWithPrec(1, 2) // 0.01 || 1%
@@ -147,7 +148,7 @@ func validateTaxRate(i interface{}) error {
 	// Type check
 	v, ok := i.(sdk.Dec)
 	if !ok {
-		return fmt.Errorf("invalid parameter type: %T. Expected Dec", i)
+		return fmt.Errorf("invalid parameter type: %T. Expected sdk.Dec", i)
 	}
 	if v.IsNil() {
 		return fmt.Errorf("taxRate must not be nil")
@@ -187,7 +188,7 @@ func validateBurnRate(i interface{}) error {
 	// Type check
 	v, ok := i.(sdk.Dec)
 	if !ok {
-		return fmt.Errorf("invalid parameter type: %T. Expected Dec", i)
+		return fmt.Errorf("invalid parameter type: %T. Expected sdk.Dec", i)
 	}
 
 	if v.IsNil() {
