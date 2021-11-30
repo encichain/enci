@@ -32,6 +32,10 @@ func (k Keeper) CalculateBurnAmount(ctx sdk.Context, balance sdk.Coins) sdk.Coin
 	if burnRate.IsZero() {
 		return coins
 	}
+	rateLim := k.GetTaxRateLimits(ctx)
+	if burnRate.LT(rateLim.RateMin) || burnRate.GT(rateLim.BurnRateMax) {
+		burnRate = types.DefaultBurnRate
+	}
 
 	if !balance.IsZero() {
 		for _, coin := range balance {

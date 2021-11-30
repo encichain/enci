@@ -3,6 +3,7 @@ package ante
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	charitytypes "github.com/user/encichain/x/charity/types"
 )
 
 // AccountKeeper defines the contract needed for AccountKeeper related APIs.
@@ -24,4 +25,5 @@ type CharityKeeper interface {
 	AddTaxProceeds(ctx sdk.Context, proceeds sdk.Coins)
 	GetTaxCap(ctx sdk.Context, denom string) sdk.Int
 	GetTaxRate(ctx sdk.Context) sdk.Dec
+	GetTaxRateLimits(ctx sdk.Context) charitytypes.TaxRateLimits
 }

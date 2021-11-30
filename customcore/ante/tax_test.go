@@ -316,3 +316,18 @@ func (suite *AnteTestSuite) TestAnteAuthzExec() {
 	bal := suite.app.BankKeeper.GetBalance(suite.ctx, ctaxacc.GetAddress(), coretypes.MicroTokenDenom)
 	suite.Require().Equal(sdk.NewCoin(coretypes.MicroTokenDenom, expectedTaxAmt), bal)
 }
+
+func (suite *AnteTestSuite) TestCalculateTaxLim() {
+	suite.SetupTest(false) // setup
+	app := suite.app
+	ctx := suite.ctx
+	defaultRateAmt := sdk.NewDecFromInt(sdk.NewInt(100)).Mul(charitytypes.DefaultTaxRate).TruncateInt()
+	defaultRateCoins := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, defaultRateAmt))
+	// Set too high tax rate
+	app.CharityKeeper.SetTaxRate(ctx, sdk.NewDecWithPrec(6, 2))
+	taxRate := app.CharityKeeper.GetTaxRate(ctx)
+	suite.Require().NotEqual(charitytypes.DefaultTaxRate, taxRate)
+
+	tax := customante.ComputeTax(ctx, app.CharityKeeper, sdk.NewCoins(sdk.NewInt64Coin(coretypes.MicroTokenDenom, 100)))
+	suite.Require().Equal(defaultRateCoins, tax)
+}

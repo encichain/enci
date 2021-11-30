@@ -157,6 +157,11 @@ func ComputeTax(ctx sdk.Context, ck CharityKeeper, coins sdk.Coins) sdk.Coins {
 	if taxRate.Equal(sdk.ZeroDec()) {
 		return taxFinal
 	}
+	// If taxRate is not within TaxRateLimits, set taxRate == default tax rate
+	taxLims := ck.GetTaxRateLimits(ctx)
+	if taxRate.LT(taxLims.RateMin) || taxRate.GT(taxLims.TaxRateMax) {
+		taxRate = charitytypes.DefaultTaxRate
+	}
 
 	for _, coin := range coins {
 		taxOwed := sdk.NewDecFromInt(coin.Amount).Mul(taxRate).TruncateInt()
