@@ -18,9 +18,9 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	// this line is used by starport scaffolding # ibc/genesis/init
 
 	// Set the Denom meta data
-	_, set := k.GetDenomMetaData(ctx, coretypes.MicroTokenDenom)
+	_, set := k.BankKeeper.GetDenomMetaData(ctx, coretypes.MicroTokenDenom)
 	if !set {
-		k.SetDenomMetaData(ctx, coretypes.TokenMetaData)
+		k.BankKeeper.SetDenomMetaData(ctx, coretypes.TokenMetaData)
 	}
 
 	k.SetParams(ctx, genState.Params)
