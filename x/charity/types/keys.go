@@ -33,7 +33,7 @@ const (
 // 0x01 				-> ProtocolBuffer(TaxRateLimits)
 // 0x02 | denom bytes	-> ProtocolBuffer(sdk.Int)
 // 0x03 				-> ProtocolBuffer(TaxProceeds{TaxProceeds: sdk.Coins})
-// 0x04 | period bytes  -> ProtocolBuffer(sdk.Coins)
+// 0x04 | period bytes  -> ProtocolBuffer(TaxProceeds{TaxProceeds: sdk.Coins})
 // 0x05 | period bytes  -> ProtocolBuffer([]Payout)
 var (
 	TaxRateLimitsKey         = []byte{0x01} // Key for tax rate limits
