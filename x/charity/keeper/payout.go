@@ -96,7 +96,7 @@ func (k Keeper) CalculateSplit(ctx sdk.Context, charities []types.Charity) sdk.C
 	return sdk.NewCoins(coins...)
 }
 
-// CreateCharitySha256 returns the hexadecimal encoding of sha256 checksum of a charity name + charity accAddress(Bech32 string)
+// CreateCharitySha256 returns the hexadecimal encoding of sha256 checksum of a charity name + charity accAddress(Bech32)
 func CreateCharitySha256(charityName string, accAddr string) string {
 	csb := sha256.Sum256([]byte(charityName + accAddr))
 	checksum := hex.EncodeToString(csb[:])
