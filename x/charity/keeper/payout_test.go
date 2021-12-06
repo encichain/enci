@@ -3,6 +3,7 @@ package keeper
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -35,7 +36,8 @@ func TestPayoutFunctions(t *testing.T) {
 	require.NotNil(t, acc)
 
 	// Create checksum and encode to string
-	csb := sha256.Sum256([]byte("Test Charity" + bech32addr))
+	bz, _ := json.Marshal("Test Charity" + bech32addr)
+	csb := sha256.Sum256(bz)
 	checksum := hex.EncodeToString(csb[:])
 	require.NotEqual(t, "", checksum)
 
@@ -66,7 +68,9 @@ func TestPayoutFunctions(t *testing.T) {
 	// Test non-existent account
 	bech32addr = "enci1vvcw744ck9kzczrhf282lqmset47jnxe9090qt"
 	require.NoError(t, err)
-	csb = sha256.Sum256([]byte("Test Charity" + bech32addr))
+
+	bz, _ = json.Marshal("Test Charity" + bech32addr)
+	csb = sha256.Sum256(bz)
 	checksum = hex.EncodeToString(csb[:])
 	params.Charities[0].AccAddress = bech32addr
 	params.Charities[0].Checksum = checksum
@@ -115,11 +119,13 @@ func TestPayoutFunctions(t *testing.T) {
 	app.AccountKeeper.SetAccount(app.Ctx, acc1)
 	app.AccountKeeper.SetAccount(app.Ctx, acc2)
 	// Create checksums and encode to strings
-	csb1 := sha256.Sum256([]byte("Test Charity" + bech32addr1))
+	bz, _ = json.Marshal("Test Charity" + bech32addr1)
+	csb1 := sha256.Sum256(bz)
 	checksum1 := hex.EncodeToString(csb1[:])
 	require.NotEqual(t, "", checksum1)
 
-	csb2 := sha256.Sum256([]byte("Test Charity 2" + bech32addr2))
+	bz, _ = json.Marshal("Test Charity 2" + bech32addr2)
+	csb2 := sha256.Sum256(bz)
 	checksum2 := hex.EncodeToString(csb2[:])
 
 	validCharities := []types.Charity{

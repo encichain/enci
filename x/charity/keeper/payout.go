@@ -3,6 +3,7 @@ package keeper
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -96,9 +97,11 @@ func (k Keeper) CalculateSplit(ctx sdk.Context, charities []types.Charity) sdk.C
 	return sdk.NewCoins(coins...)
 }
 
-// CreateCharitySha256 returns the hexadecimal encoding of sha256 checksum of a charity name + charity accAddress(Bech32)
+// CreateCharitySha256 returns the hexadecimal encoding of sha256 checksum of JSON(charity name + charity accAddress(Bech32))
 func CreateCharitySha256(charityName string, accAddr string) string {
-	csb := sha256.Sum256([]byte(charityName + accAddr))
+	bz, _ := json.Marshal(charityName + accAddr)
+
+	csb := sha256.Sum256(bz)
 	checksum := hex.EncodeToString(csb[:])
 	return checksum
 }
