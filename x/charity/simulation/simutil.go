@@ -23,7 +23,8 @@ func randomString(r *rand.Rand, size int) string {
 // genTestAddresses generates a slice of account addresses
 func genTestAddresses(amount int64) []sdk.AccAddress {
 	addrs := []sdk.AccAddress{}
-	for i := amount; i < amount; i++ {
+	sdk.GetConfig().SetBech32PrefixForAccount("enci", "encipub")
+	for i := int64(0); i < amount; i++ {
 		_, _, addr := testdata.KeyTestPubAddr()
 		addrs = append(addrs, addr)
 	}

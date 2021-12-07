@@ -23,10 +23,11 @@ const (
 )
 
 // GenCharities randomized Charities
-func GenCharities(r *rand.Rand, amount int64) []types.Charity {
+func GenCharities(r *rand.Rand) []types.Charity {
 	charities := []types.Charity{}
-	addrs := genTestAddresses(amount)
-	for i := int64(0); i < amount; i++ {
+	amt := r.Int63() % 8
+	addrs := genTestAddresses(amt)
+	for i := int64(0); i < amt; i++ {
 		cname := randomString(r, r.Intn(10))
 		addr := addrs[i].String()
 
@@ -64,7 +65,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 	var charities []types.Charity
 	simState.AppParams.GetOrGenerate(
 		simState.Cdc, charitiesKey, &charities, simState.Rand,
-		func(r *rand.Rand) { charities = GenCharities(r, rand.Int63()%6) },
+		func(r *rand.Rand) { charities = GenCharities(r) },
 	)
 
 	var taxRate sdk.Dec
