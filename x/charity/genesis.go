@@ -41,8 +41,14 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	}
 
 	//Ensure charity collector module account is set
-	if k.GetCharityCollectorAcc(ctx) == nil {
+	cAcc := k.GetCharityCollectorAcc(ctx)
+	if cAcc == nil {
 		panic(fmt.Sprintf("Module account not set: %s", types.CharityCollectorName))
+	}
+
+	bAcc := k.GetBurnAcc(ctx)
+	if bAcc == nil {
+		panic(fmt.Sprintf("Module account not set: %s", types.BurnAccName))
 	}
 
 }

@@ -1,4 +1,4 @@
-package simulation
+package simulation_test
 
 import (
 	"fmt"
@@ -11,12 +11,13 @@ import (
 
 	app "github.com/user/encichain/app"
 	coretypes "github.com/user/encichain/types"
+	"github.com/user/encichain/x/charity/simulation"
 	"github.com/user/encichain/x/charity/types"
 )
 
 func TestDecodeDistributionStore(t *testing.T) {
 	cdc := app.MakeTestEncodingConfig().Codec
-	dec := NewDecodeStore(cdc)
+	dec := simulation.NewDecodeStore(cdc)
 	coins := sdk.NewCoins(sdk.NewInt64Coin(coretypes.MicroTokenDenom, 705000))
 
 	taxRateLimits := types.TaxRateLimits{RateMin: sdk.ZeroDec(), TaxRateMax: sdk.NewDecWithPrec(123, 3), BurnRateMax: sdk.NewDecWithPrec(123, 3)}

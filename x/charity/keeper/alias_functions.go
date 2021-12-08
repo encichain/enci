@@ -10,3 +10,7 @@ import (
 func (k Keeper) GetCharityCollectorAcc(ctx sdk.Context) authtypes.ModuleAccountI {
 	return k.AccountKeeper.GetModuleAccount(ctx, types.CharityCollectorName)
 }
+
+func (k Keeper) GetBurnAcc(ctx sdk.Context) authtypes.AccountI {
+	return k.AccountKeeper.GetModuleAccount(ctx, types.BurnAccName)
+}

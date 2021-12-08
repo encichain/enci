@@ -3,6 +3,7 @@ package charity
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
 
 	// this line is used by starport scaffolding # 1
 
@@ -17,10 +18,14 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
+
 	"github.com/user/encichain/x/charity/client/cli"
 	"github.com/user/encichain/x/charity/keeper"
 	"github.com/user/encichain/x/charity/types"
+
 	// this line is used by starport scaffolding # ibc/module/import
+	"github.com/user/encichain/x/charity/simulation"
 )
 
 var (
@@ -172,4 +177,34 @@ func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
 	EndBlocker(ctx, am.keeper)
 	return []abci.ValidatorUpdate{}
+}
+
+// ----------------------------------------------------------------------------
+// AppModule Simulation Functions
+// ----------------------------------------------------------------------------
+
+// GenerateGenesisState creates a randomized GenState of the distribution module.
+func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
+	simulation.RandomizedGenState(simState)
+}
+
+// ProposalContents returns all the distribution content functions used to
+// simulate governance proposals.
+func (am AppModule) ProposalContents(simState module.SimulationState) []simtypes.WeightedProposalContent {
+	return nil
+}
+
+// RandomizedParams creates randomized distribution param changes for the simulator.
+func (AppModule) RandomizedParams(r *rand.Rand) []simtypes.ParamChange {
+	return simulation.ParamChanges(r)
+}
+
+// RegisterStoreDecoder registers a decoder for distribution module's types
+func (am AppModule) RegisterStoreDecoder(sdr sdk.StoreDecoderRegistry) {
+	sdr[types.StoreKey] = simulation.NewDecodeStore(am.cdc)
+}
+
+// WeightedOperations returns the all the oracle module operations with their respective weights.
+func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
+	return nil
 }
