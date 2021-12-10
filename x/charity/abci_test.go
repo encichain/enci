@@ -1,8 +1,6 @@
 package charity
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
 	"testing"
 
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
@@ -78,12 +76,10 @@ func TestEndBlocker(t *testing.T) {
 	app.AccountKeeper.SetAccount(app.Ctx, acc1)
 	app.AccountKeeper.SetAccount(app.Ctx, acc2)
 	// Create checksums and encode to strings
-	csb1 := sha256.Sum256([]byte("Test Charity" + bech32addr1))
-	checksum1 := hex.EncodeToString(csb1[:])
+	checksum1 := keeper.CreateCharitySha256("Test Charity", bech32addr1)
 	require.NotEqual(t, "", checksum1)
 
-	csb2 := sha256.Sum256([]byte("Test Charity 2" + bech32addr2))
-	checksum2 := hex.EncodeToString(csb2[:])
+	checksum2 := keeper.CreateCharitySha256("Test Charity 2", bech32addr2)
 
 	// Set params and target charities
 	params := types.DefaultParams()

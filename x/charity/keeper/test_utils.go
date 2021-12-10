@@ -8,9 +8,10 @@ import (
 	"github.com/stretchr/testify/require"
 
 	auth "github.com/cosmos/cosmos-sdk/x/auth"
-	bank "github.com/cosmos/cosmos-sdk/x/bank"
+	//bank "github.com/cosmos/cosmos-sdk/x/bank"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	params "github.com/cosmos/cosmos-sdk/x/params"
+	custombank "github.com/user/encichain/customcore/bank"
 	coretypes "github.com/user/encichain/types"
 
 	//charity "github.com/user/encichain/x/charity"
@@ -57,7 +58,7 @@ func MakeTestCodec(t *testing.T) codec.Codec {
 
 var ModuleBasics = module.NewBasicManager(
 	auth.AppModuleBasic{},
-	bank.AppModuleBasic{},
+	custombank.AppModuleBasic{},
 	distr.AppModuleBasic{},
 	staking.AppModuleBasic{},
 	params.AppModuleBasic{},
