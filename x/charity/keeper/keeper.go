@@ -243,10 +243,17 @@ func (k Keeper) SetPayouts(ctx sdk.Context, period int64, payouts []types.Payout
 
 // GetCollectionPeriods creates and returns a slice of all existing CollectionPeriod
 func (k Keeper) GetCollectionPeriods(ctx sdk.Context) []types.CollectionPeriod {
-	var collectionPeriods []types.CollectionPeriod
+	collectionPeriods := []types.CollectionPeriod{}
 
 	// Iterate through existing *period*s and create CollectionPeriod per period
 	for p := int64(0); p < k.GetCurrentPeriod(ctx); p++ {
+		taxProceeds := k.GetPeriodTaxProceeds(ctx, p)
+		payouts := k.GetPayouts(ctx, p)
+
+		// do not include CollectionPeriods that have empty tax proceeds and empty payouts
+		if (taxProceeds.IsZero()) && (len(payouts) == 0) {
+			continue
+		}
 		collectionPeriod := types.CollectionPeriod{
 			Period:       uint64(p),
 			TaxCollected: k.GetPeriodTaxProceeds(ctx, p),

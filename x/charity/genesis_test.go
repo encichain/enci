@@ -10,12 +10,12 @@ import (
 	"github.com/user/encichain/x/charity/keeper"
 	"github.com/user/encichain/x/charity/types"
 	//bankKeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	//coreapp "github.com/user/encichain/app"
 )
 
 func TestExportGenesis(t *testing.T) {
 	app := keeper.CreateKeeperTestApp(t)
-	ctx := app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerMonth))
-
+	ctx := app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerPeriod) * 30)
 	params := types.Params{
 		Charities: []types.Charity{
 			{CharityName: "foo", AccAddress: "enci1aag23fr2qjxan9aktyfsywp3udxg036c9zxv55", Checksum: keeper.CreateCharitySha256("foo", "enci1aag23fr2qjxan9aktyfsywp3udxg036c9zxv55")},
@@ -24,16 +24,19 @@ func TestExportGenesis(t *testing.T) {
 		TaxCaps:  []types.TaxCap{{Denom: "bar", Cap: sdk.NewInt(5000000)}},
 		BurnRate: sdk.NewDecWithPrec(10, 2),
 	}
-	app.CharityKeeper.SetParams(ctx, params)
-	app.CharityKeeper.SetTaxCap(ctx, "bar", sdk.NewInt(5000000))
-	app.CharityKeeper.SetTaxProceeds(ctx, sdk.Coins{})
-	genesis := charity.ExportGenesis(ctx, app.CharityKeeper)
+	taxCaps := []types.TaxCap{{Denom: "bar", Cap: sdk.NewInt(5000000)}}
+	taxProceeds := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(2000000)))
+	taxRateLimits := types.TaxRateLimits{
+		RateMin:     sdk.ZeroDec(),
+		TaxRateMax:  sdk.NewDecWithPrec(10, 2),
+		BurnRateMax: sdk.NewDecWithPrec(40, 2),
+	}
+	collectionPeriods := []types.CollectionPeriod{}
 
-	newApp := keeper.CreateKeeperTestApp(t)
-	newCtx := app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerMonth))
-	charity.InitGenesis(newCtx, newApp.CharityKeeper, *genesis)
-	newGenesis := charity.ExportGenesis(newCtx, newApp.CharityKeeper)
-
-	require.Equal(t, genesis, newGenesis)
+	newGenesis := types.NewGenesisState(params, taxRateLimits, taxCaps, taxProceeds, collectionPeriods)
+	charity.InitGenesis(ctx, app.CharityKeeper, *newGenesis)
+	exportGenesis := charity.ExportGenesis(ctx, app.CharityKeeper)
+	// Exported genesisState should be the same as origin
+	require.Equal(t, newGenesis, exportGenesis)
 
 }
