@@ -45,6 +45,8 @@ type StoreKeysPrefixes struct {
 	Prefixes [][]byte
 }
 
+var random simtypes.RandomAccountFn
+
 // fauxMerkleModeOpt returns a BaseApp option to use a dbStoreAdapter instead of
 // an IAVLStore for faster simulation speed.
 func fauxMerkleModeOpt(bapp *baseapp.BaseApp) {
@@ -56,6 +58,8 @@ func fauxMerkleModeOpt(bapp *baseapp.BaseApp) {
 func interBlockCacheOpt() func(*baseapp.BaseApp) {
 	return baseapp.SetInterBlockCache(store.NewCommitKVStoreCacheManager())
 }
+
+//go test -mod=readonly github.com/user/encichain/app -run TestAppStateDeterminism -Enabled=true -NumBlocks=100 -BlockSize=200 -Commit=true -Period=0 -v -timeout 24h
 
 func TestFullAppSimulation(t *testing.T) {
 	config, db, dir, logger, skip, err := simapp.SetupSimulation("leveldb-app-sim", "Simulation")
@@ -72,7 +76,7 @@ func TestFullAppSimulation(t *testing.T) {
 	app := enciapp.NewEnciTestApp(logger, db, nil, true, map[int64]bool{},
 		enciapp.DefaultNodeHome, simapp.FlagPeriodValue, enciapp.MakeTestEncodingConfig(),
 		simapp.EmptyAppOptions{}, fauxMerkleModeOpt)
-	require.Equal(t, "EnciChain", app.Name())
+	require.Equal(t, "encichain", app.Name())
 
 	// run randomized simulation
 	_, simParams, simErr := simulation.SimulateFromSeed(
@@ -112,7 +116,7 @@ func TestAppImportExport(t *testing.T) {
 	app := enciapp.NewEnciTestApp(logger, db, nil, true, map[int64]bool{},
 		enciapp.DefaultNodeHome, simapp.FlagPeriodValue, enciapp.MakeTestEncodingConfig(),
 		simapp.EmptyAppOptions{}, fauxMerkleModeOpt)
-	require.Equal(t, "EnciChain", app.Name())
+	require.Equal(t, "encichain", app.Name())
 
 	// Run randomized simulation
 	_, simParams, simErr := simulation.SimulateFromSeed(
@@ -154,7 +158,7 @@ func TestAppImportExport(t *testing.T) {
 	newApp := enciapp.NewEnciTestApp(log.NewNopLogger(), newDB, nil, true, map[int64]bool{},
 		enciapp.DefaultNodeHome, simapp.FlagPeriodValue, enciapp.MakeTestEncodingConfig(),
 		simapp.EmptyAppOptions{}, fauxMerkleModeOpt)
-	require.Equal(t, "EnciChain", app.Name())
+	require.Equal(t, "encichain", app.Name())
 
 	var genesisState enciapp.GenesisState
 	err = json.Unmarshal(exported.AppState, &genesisState)
@@ -212,7 +216,7 @@ func TestAppSimulationAfterImport(t *testing.T) {
 	app := enciapp.NewEnciTestApp(logger, db, nil, true, map[int64]bool{},
 		enciapp.DefaultNodeHome, simapp.FlagPeriodValue, enciapp.MakeTestEncodingConfig(),
 		simapp.EmptyAppOptions{}, fauxMerkleModeOpt)
-	require.Equal(t, "EnciChain", app.Name())
+	require.Equal(t, "encichain", app.Name())
 
 	// Run randomized simulation
 	stopEarly, simParams, simErr := simulation.SimulateFromSeed(
@@ -259,7 +263,7 @@ func TestAppSimulationAfterImport(t *testing.T) {
 	newApp := enciapp.NewEnciTestApp(log.NewNopLogger(), newDB, nil, true, map[int64]bool{},
 		enciapp.DefaultNodeHome, simapp.FlagPeriodValue, enciapp.MakeTestEncodingConfig(),
 		simapp.EmptyAppOptions{}, fauxMerkleModeOpt)
-	require.Equal(t, "EnciChain", app.Name())
+	require.Equal(t, "encichain", app.Name())
 
 	newApp.InitChain(abci.RequestInitChain{
 		AppStateBytes: exported.AppState,
@@ -312,13 +316,13 @@ func TestAppStateDeterminism(t *testing.T) {
 			app := enciapp.NewEnciTestApp(logger, db, nil, true, map[int64]bool{},
 				enciapp.DefaultNodeHome, simapp.FlagPeriodValue, enciapp.MakeTestEncodingConfig(),
 				simapp.EmptyAppOptions{}, interBlockCacheOpt())
-			require.Equal(t, "EnciChain", app.Name())
+			require.Equal(t, "encichain", app.Name())
 
 			fmt.Printf(
 				"running non-determinism simulation; seed %d: %d/%d, attempt: %d/%d\n",
 				config.Seed, i+1, numSeeds, j+1, numTimesToRunPerSeed,
 			)
-
+			random = simtypes.RandomAccounts
 			_, _, err := simulation.SimulateFromSeed(
 				t,
 				os.Stdout,

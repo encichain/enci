@@ -108,7 +108,7 @@ import (
 
 const (
 	AccountAddressPrefix = "enci"
-	AppName              = "EnciChain"
+	AppName              = "encichain"
 	Name                 = "EnciChain"
 )
 
@@ -652,7 +652,7 @@ func (app *EnciApp) GetSubspace(moduleName string) paramstypes.Subspace {
 	return subspace
 }
 
-// ModuleManager implements the SimulationApp interface
+// ModuleManager implements the App interface
 func (app *EnciApp) ModuleManager() *module.Manager {
 	return app.mm
 }
