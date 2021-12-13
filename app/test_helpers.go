@@ -81,6 +81,8 @@ import (
 	charitymodule "github.com/user/encichain/x/charity"
 	charitykeeper "github.com/user/encichain/x/charity/keeper"
 	charitytypes "github.com/user/encichain/x/charity/types"
+
+	custombank "github.com/user/encichain/customcore/bank"
 )
 
 const (
@@ -118,6 +120,9 @@ func NewEnciTestApp(
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *EnciApp {
 
+	sdk.GetConfig().SetBech32PrefixForAccount("enci", "encipub")
+	sdk.GetConfig().SetBech32PrefixForValidator("encivaloper", "encivaloperpub")
+	sdk.GetConfig().SetBech32PrefixForConsensusNode("encivalcons", "encivalconspub")
 	appCodec := encodingConfig.Codec
 	legacyAmino := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
@@ -352,7 +357,7 @@ func NewEnciTestApp(
 	// transactions
 	app.sm = module.NewSimulationManager(
 		auth.NewAppModule(appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts),
-		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper),
+		custombank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper),
 		capability.NewAppModule(appCodec, *app.CapabilityKeeper),
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper),

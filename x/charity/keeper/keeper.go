@@ -136,6 +136,9 @@ func (k Keeper) GetTaxCap(ctx sdk.Context, denom string) sdk.Int {
 
 	// Return default cap is no tax cap has been set
 	if bz == nil {
+		if denom == sdk.DefaultBondDenom {
+			return sdk.NewInt(1)
+		}
 		return types.DefaultCap
 	}
 
