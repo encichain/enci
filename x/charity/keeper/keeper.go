@@ -134,11 +134,8 @@ func (k Keeper) GetTaxCap(ctx sdk.Context, denom string) sdk.Int {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.GetTaxCapKey(denom))
 
-	// Return default cap is no tax cap has been set
+	// Return default cap is no tax cap has been set. Default cap assumes microtoken denom.
 	if bz == nil {
-		if denom == sdk.DefaultBondDenom {
-			return sdk.NewInt(1)
-		}
 		return types.DefaultCap
 	}
 

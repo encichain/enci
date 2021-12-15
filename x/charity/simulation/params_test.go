@@ -20,9 +20,9 @@ func TestParamChanges(t *testing.T) {
 		subspace    string
 	}{
 		{"charity/Charities", "Charities", "", "charity"},
-		{"charity/Taxcaps", "Taxcaps", "[{\"denom\":\"uenci\",\"Cap\":\"7779410\"}]", "charity"},
+		{"charity/Taxcaps", "Taxcaps", "[{\"denom\":\"uenci\",\"Cap\":\"7779410\"},{\"denom\":\"stake\",\"Cap\":\"1\"}]", "charity"},
 		{"charity/TaxRate", "TaxRate", "\"0.008000000000000000\"", "charity"},
-		{"charity/BurnRate", "BurnRate", "\"0.370000000000000000\"", "charity"},
+		{"charity/BurnRate", "BurnRate", "\"0.080000000000000000\"", "charity"},
 	}
 
 	paramChanges := simulation.ParamChanges(r)

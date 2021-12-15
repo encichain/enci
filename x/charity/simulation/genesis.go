@@ -25,11 +25,11 @@ const (
 // GenCharities randomized Charities
 func GenCharities(r *rand.Rand) []types.Charity {
 	charities := []types.Charity{}
-	amt := r.Int63() % 8
-	addrs := genTestAddresses(amt)
-	for i := int64(0); i < amt; i++ {
+	addrs := createTestAddresses(r)
+	amt := r.Intn(len(addrs)) + 1
+	for i := 0; i < amt; i++ {
 		cname := randomString(r, r.Intn(10))
-		addr := addrs[i].String()
+		addr := addrs[i]
 
 		ch := types.Charity{
 			CharityName: cname,
@@ -46,6 +46,7 @@ func GenCharities(r *rand.Rand) []types.Charity {
 func GenTaxCaps(r *rand.Rand) []types.TaxCap {
 	return []types.TaxCap{
 		{Denom: coretypes.MicroTokenDenom, Cap: sdk.NewInt(int64(r.Int63() % 10000000))},
+		{Denom: sdk.DefaultBondDenom, Cap: sdk.NewInt(int64(r.Int63()%1) + 1)},
 	}
 }
 

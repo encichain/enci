@@ -17,6 +17,7 @@ import (
 	"github.com/user/encichain/x/charity/types"
 )
 
+// TestGenCharities Tests for determinism
 func TestGenCharities(t *testing.T) {
 	s := rand.NewSource(1)
 	r := rand.New(s)
@@ -48,10 +49,18 @@ func TestRandomizedGenState(t *testing.T) {
 	var charityGenesis types.GenesisState
 	simState.Cdc.MustUnmarshalJSON(simState.GenState[types.ModuleName], &charityGenesis)
 
-	require.Len(t, charityGenesis.Params.Charities, 4)
-	require.Equal(t, sdk.NewDecWithPrec(3, 2), charityGenesis.Params.TaxRate)
-	require.Equal(t, []types.TaxCap{{Denom: coretypes.MicroTokenDenom, Cap: sdk.NewInt(int64(3361739))}}, charityGenesis.Params.TaxCaps)
-	require.Equal(t, sdk.NewDecWithPrec(36, 2), charityGenesis.Params.BurnRate)
+	require.Len(t, charityGenesis.Params.Charities, 1)
+	require.Equal(t, []types.Charity{
+		{CharityName: "M", AccAddress: "enci16ruw3nnsrt963y47y8m8h0g6p4pkyudvm5j3fc", Checksum: "c21b8b6cfdd9b3c20c9f9569a5b9e813478f50ce3b4c09948992beeb5f084eda"},
+	},
+		charityGenesis.Params.Charities)
+	require.Equal(t, sdk.NewDecWithPrec(1, 2), charityGenesis.Params.TaxRate)
+	require.Equal(t, []types.TaxCap{
+		{Denom: coretypes.MicroTokenDenom, Cap: sdk.NewInt(1445515)},
+		{Denom: sdk.DefaultBondDenom, Cap: sdk.NewInt(1)},
+	}, charityGenesis.Params.TaxCaps)
+
+	require.Equal(t, sdk.NewDecWithPrec(22, 2), charityGenesis.Params.BurnRate)
 }
 
 // TestAbRandomizedGenState tests abnormal scenarios of applying RandomizedGenState.

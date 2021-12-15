@@ -100,8 +100,8 @@ func (p Params) Validate() error {
 			return fmt.Errorf("taxCap Denom must be valid")
 		}
 
-		if taxcap.Cap.IsNegative() || taxcap.Cap.IsZero() || taxcap.Cap.IsNil() {
-			return fmt.Errorf("taxCap Cap is invalid: Must not be negative, 0, nor nil")
+		if taxcap.Cap.IsNegative() || taxcap.Cap.IsNil() {
+			return fmt.Errorf("taxCap Cap is invalid: Must not be negative, nor nil")
 		}
 	}
 
@@ -175,8 +175,8 @@ func validateTaxCaps(i interface{}) error {
 			return fmt.Errorf("taxCap Denom must be valid")
 		}
 
-		if taxcap.Cap.IsNegative() || taxcap.Cap.IsZero() || taxcap.Cap.IsNil() {
-			return fmt.Errorf("taxCap Cap is invalid: Must not be negative, 0, nor nil")
+		if taxcap.Cap.IsNegative() || taxcap.Cap.IsNil() {
+			return fmt.Errorf("taxCap Cap is invalid: Must not be negative, nor nil")
 		}
 
 	}
