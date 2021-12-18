@@ -34,48 +34,50 @@ func TestCreatesModuleAccountOnInitBlock(t *testing.T) {
 }
 
 func TestBurnEndblock(t *testing.T) {
-	app := keeper.CreateKeeperTestApp(t)
+	app := coreapp.Setup(false)
+	ctx := app.GetBaseApp().NewContext(false, tmproto.Header{})
 	// Burner account balance should be 0
 	burnAddr := app.AccountKeeper.GetModuleAddress(types.BurnAccName)
-	require.True(t, app.BankKeeper.GetAllBalances(app.Ctx, burnAddr).IsZero())
+	require.True(t, app.BankKeeper.GetAllBalances(ctx, burnAddr).IsZero())
 
 	// Fund burner account
 	testCoins := sdk.NewCoins(sdk.NewInt64Coin(coretypes.MicroTokenDenom, 1500))
-	err := keeper.FundModuleAccount(app.BankKeeper, app.Ctx, types.BurnAccName, testCoins)
+	err := keeper.CoreFundModuleAccount(app.BankKeeper, ctx, types.BurnAccName, testCoins)
 	require.NoError(t, err)
-	require.True(t, app.BankKeeper.HasBalance(app.Ctx, burnAddr, testCoins[0]))
+	require.True(t, app.BankKeeper.HasBalance(ctx, burnAddr, testCoins[0]))
 
-	app.Ctx = app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerPeriod - 1))
+	ctx = ctx.WithBlockHeight(int64(coretypes.BlocksPerPeriod - 1))
 	// Call endblock
-	charity.EndBlocker(app.Ctx, app.CharityKeeper)
-	require.True(t, app.BankKeeper.GetAllBalances(app.Ctx, burnAddr).IsZero())
+	charity.EndBlocker(ctx, app.CharityKeeper)
+	require.True(t, app.BankKeeper.GetAllBalances(ctx, burnAddr).IsZero())
 }
 
 func TestUserSendBurnEndBlock(t *testing.T) {
-	app := keeper.CreateKeeperTestApp(t)
+	app := coreapp.Setup(false)
+	ctx := app.GetBaseApp().NewContext(false, tmproto.Header{})
 	// Burner account balance should be 0
 	burnAddr := app.AccountKeeper.GetModuleAddress(types.BurnAccName)
-	require.True(t, app.BankKeeper.GetAllBalances(app.Ctx, burnAddr).IsZero())
+	require.True(t, app.BankKeeper.GetAllBalances(ctx, burnAddr).IsZero())
 
 	// Set up account and fund it
 	_, _, addr1 := testdata.KeyTestPubAddr()
 	testCoins := sdk.NewCoins(sdk.NewInt64Coin(coretypes.MicroTokenDenom, 1500))
-	acc1 := app.AccountKeeper.NewAccountWithAddress(app.Ctx, addr1)
+	acc1 := app.AccountKeeper.NewAccountWithAddress(ctx, addr1)
 	require.NotNil(t, acc1)
-	err := keeper.FundAccount(app.BankKeeper, app.Ctx, acc1.GetAddress(), testCoins)
+	err := keeper.CoreFundAccount(app.BankKeeper, ctx, acc1.GetAddress(), testCoins)
 	require.NoError(t, err)
-	require.True(t, app.BankKeeper.HasBalance(app.Ctx, acc1.GetAddress(), testCoins[0]))
+	require.True(t, app.BankKeeper.HasBalance(ctx, acc1.GetAddress(), testCoins[0]))
 
 	// Send coins from account to burn module
-	err = app.BankKeeper.SendCoinsFromAccountToModule(app.Ctx, acc1.GetAddress(), types.BurnAccName, testCoins)
+	err = app.BankKeeper.SendCoinsFromAccountToModule(ctx, acc1.GetAddress(), types.BurnAccName, testCoins)
 	require.NoError(t, err)
-	require.True(t, app.BankKeeper.HasBalance(app.Ctx, burnAddr, testCoins[0]))
+	require.True(t, app.BankKeeper.HasBalance(ctx, burnAddr, testCoins[0]))
 
 	// Set block height to end of period and call EndBlocker
-	app.Ctx = app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerPeriod) - 1)
-	charity.EndBlocker(app.Ctx, app.CharityKeeper)
+	ctx = ctx.WithBlockHeight(int64(coretypes.BlocksPerPeriod) - 1)
+	charity.EndBlocker(ctx, app.CharityKeeper)
 
-	require.True(t, app.BankKeeper.GetAllBalances(app.Ctx, burnAddr).IsZero())
+	require.True(t, app.BankKeeper.GetAllBalances(ctx, burnAddr).IsZero())
 }
 
 func TestEndBlocker(t *testing.T) {
