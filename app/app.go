@@ -553,6 +553,9 @@ func NewEnciApp(
 // Name returns the name of the App
 func (app *EnciApp) Name() string { return app.BaseApp.Name() }
 
+// GetBaseApp returns the base app of the application
+func (app *EnciApp) GetBaseApp() *baseapp.BaseApp { return app.BaseApp }
+
 // BeginBlocker application updates every begin block
 func (app *EnciApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
 	return app.mm.BeginBlock(ctx, req)

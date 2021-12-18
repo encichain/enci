@@ -1,4 +1,4 @@
-package charity
+package charity_test
 
 import (
 	"testing"
@@ -7,9 +7,31 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 	coretypes "github.com/user/encichain/types"
+	charity "github.com/user/encichain/x/charity"
 	"github.com/user/encichain/x/charity/keeper"
 	"github.com/user/encichain/x/charity/types"
+
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	abcitypes "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	coreapp "github.com/user/encichain/app"
 )
+
+// module test
+func TestCreatesModuleAccountOnInitBlock(t *testing.T) {
+	app := coreapp.Setup(false)
+	ctx := app.GetBaseApp().NewContext(false, tmproto.Header{})
+	app.InitChain(
+		abcitypes.RequestInitChain{
+			AppStateBytes: []byte("{}"),
+			ChainId:       "test-chain-id",
+		},
+	)
+	cAcc := app.AccountKeeper.GetAccount(ctx, authtypes.NewModuleAddress(types.CharityCollectorName))
+	bAcc := app.AccountKeeper.GetAccount(ctx, authtypes.NewModuleAddress(types.BurnAccName))
+	require.NotNil(t, cAcc)
+	require.NotNil(t, bAcc)
+}
 
 func TestBurnEndblock(t *testing.T) {
 	app := keeper.CreateKeeperTestApp(t)
@@ -25,7 +47,7 @@ func TestBurnEndblock(t *testing.T) {
 
 	app.Ctx = app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerPeriod - 1))
 	// Call endblock
-	EndBlocker(app.Ctx, app.CharityKeeper)
+	charity.EndBlocker(app.Ctx, app.CharityKeeper)
 	require.True(t, app.BankKeeper.GetAllBalances(app.Ctx, burnAddr).IsZero())
 }
 
@@ -51,7 +73,7 @@ func TestUserSendBurnEndBlock(t *testing.T) {
 
 	// Set block height to end of period and call EndBlocker
 	app.Ctx = app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerPeriod) - 1)
-	EndBlocker(app.Ctx, app.CharityKeeper)
+	charity.EndBlocker(app.Ctx, app.CharityKeeper)
 
 	require.True(t, app.BankKeeper.GetAllBalances(app.Ctx, burnAddr).IsZero())
 }
@@ -128,7 +150,7 @@ func TestEndBlocker(t *testing.T) {
 	afterBurnBal := charityTaxBal.Sub(burnAmt)
 
 	// Call EndBlocker
-	EndBlocker(app.Ctx, app.CharityKeeper)
+	charity.EndBlocker(app.Ctx, app.CharityKeeper)
 
 	// Check if target charity accounts have received donation
 	hasbal := app.BankKeeper.HasBalance(app.Ctx, addr1, sdk.NewCoin(coretypes.MicroTokenDenom, afterBurnBal[0].Amount.Quo(sdk.NewInt(int64(2)))))
