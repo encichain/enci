@@ -29,7 +29,7 @@ const (
 )
 
 // Keys for store
-// stored as format - key -> value
+// stored as format - key -> encoding(value)
 // 0x01 				-> ProtocolBuffer(TaxRateLimits)
 // 0x02 | denom bytes	-> ProtocolBuffer(sdk.Int)
 // 0x03 				-> ProtocolBuffer(TaxProceeds{TaxProceeds: sdk.Coins})

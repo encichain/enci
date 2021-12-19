@@ -83,32 +83,47 @@ func ClientParseMsgAndComputeTax(clientCtx client.Context, msgs ...sdk.Msg) (tax
 
 func clientComputeTax(clientCtx client.Context, coins sdk.Coins) (sdk.Coins, error) {
 	taxRate, err := queryTaxRate(clientCtx)
-	tax := sdk.Coins{}
+	taxFinal := sdk.Coins{}
 	if err != nil {
 		return nil, err
 	}
+	if taxRate.Equal(sdk.ZeroDec()) {
+		return taxFinal, nil
+	}
+
+	taxLims, err := queryTaxRateLimits(clientCtx)
+	if err != nil {
+		return nil, err
+	}
+	// Set default tax rate if the queried taxRate does not satisfy TaxRateLimits
+	if taxRate.LT(taxLims.RateMin) || taxRate.GT(taxLims.TaxRateMax) {
+		taxRate = charitytypes.DefaultTaxRate
+	}
+
+	//Compute tax on each sdk.Coin
 	for _, coin := range coins {
-		taxAmt := sdk.NewDecFromInt(coin.Amount).Mul(taxRate).TruncateInt()
+		taxOwed := sdk.NewDecFromInt(coin.Amount).Mul(taxRate).TruncateInt()
+		if taxOwed.IsZero() {
+			continue
+		}
 
 		taxCap, err := queryTaxCap(clientCtx, coin.Denom)
 		if err != nil {
 			return nil, err
 		}
-		// Ensure tax due is not greater than tax cap
-		if taxAmt.GT(taxCap) {
-			taxAmt = taxCap
+		// Ensure tax owed is not greater than tax cap
+		if taxCap.IsNegative() {
+			taxCap = charitytypes.DefaultCap
 		}
-
-		if taxAmt.IsZero() {
-			continue
+		if taxOwed.GT(taxCap) || taxCap.IsZero() {
+			taxOwed = taxCap
 		}
-
-		tax = tax.Add(sdk.NewCoin(coin.Denom, taxAmt))
+		taxFinal = taxFinal.Add(sdk.NewCoin(coin.Denom, taxOwed))
 	}
-
-	return tax, nil
+	return taxFinal, nil
 }
 
+// queryTaxRate queries the set taxRate
 func queryTaxRate(clientCtx client.Context) (sdk.Dec, error) {
 	queryClient := charitytypes.NewQueryClient(clientCtx)
 
@@ -116,9 +131,19 @@ func queryTaxRate(clientCtx client.Context) (sdk.Dec, error) {
 	return res.TaxRate, err
 }
 
+// queryTaxCap queries the KVStore taxCaps
 func queryTaxCap(clientCtx client.Context, denom string) (sdk.Int, error) {
 	queryClient := charitytypes.NewQueryClient(clientCtx)
 
 	res, err := queryClient.TaxCap(context.Background(), &charitytypes.QueryTaxCapRequest{Denom: denom})
 	return res.Cap, err
+}
+
+// queryTaxRateLimits queries the set TaxRateLimits
+func queryTaxRateLimits(clientCtx client.Context) (charitytypes.TaxRateLimits, error) {
+	queryClient := charitytypes.NewQueryClient(clientCtx)
+
+	res, err := queryClient.TaxRateLimits(context.Background(), &charitytypes.QueryTaxRateLimitsRequest{})
+
+	return res.TaxRateLimits, err
 }

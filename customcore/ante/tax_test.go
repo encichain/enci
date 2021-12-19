@@ -331,3 +331,27 @@ func (suite *AnteTestSuite) TestCalculateTaxLim() {
 	tax := customante.ComputeTax(ctx, app.CharityKeeper, sdk.NewCoins(sdk.NewInt64Coin(coretypes.MicroTokenDenom, 100)))
 	suite.Require().Equal(defaultRateCoins, tax)
 }
+
+func (suite *AnteTestSuite) TestComputeFeeTaxCap() {
+	suite.SetupTest(false) // setup
+	app := suite.app
+	ctx := suite.ctx
+	require := suite.Require()
+	coins := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(5000000)))
+
+	// Zero tax cap
+	app.CharityKeeper.SetTaxCap(ctx, coretypes.MicroTokenDenom, sdk.ZeroInt())
+	tax := customante.ComputeTax(ctx, app.CharityKeeper, coins)
+	require.True(tax.IsZero())
+
+	// tax > taxCap
+	app.CharityKeeper.SetTaxCap(ctx, coretypes.MicroTokenDenom, sdk.NewInt(10))
+	tax = customante.ComputeTax(ctx, app.CharityKeeper, coins)
+	require.Equal(sdk.NewInt(10), tax[0].Amount)
+
+	// Negative taxCap - should not occur but can be handled in ComputeTax()
+	app.CharityKeeper.SetTaxCap(ctx, coretypes.MicroTokenDenom, sdk.NewInt(10).Neg())
+	tax = customante.ComputeTax(ctx, app.CharityKeeper, coins)
+	expTaxAmt := sdk.NewDecFromInt(coins[0].Amount).Mul(app.CharityKeeper.GetTaxRate(ctx)).TruncateInt()
+	require.Equal(expTaxAmt, tax[0].Amount)
+}

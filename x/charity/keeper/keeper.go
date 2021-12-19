@@ -250,7 +250,7 @@ func (k Keeper) GetCollectionPeriods(ctx sdk.Context) []types.CollectionPeriod {
 		taxProceeds := k.GetPeriodTaxProceeds(ctx, p)
 		payouts := k.GetPayouts(ctx, p)
 
-		// do not include CollectionPeriods that have empty tax proceeds and empty payouts
+		// do not include CollectionPeriods that have empty tax proceeds && empty payouts
 		if taxProceeds.IsZero() && (len(payouts) == 0) {
 			continue
 		}

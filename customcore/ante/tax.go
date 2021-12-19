@@ -172,10 +172,10 @@ func ComputeTax(ctx sdk.Context, ck CharityKeeper, coins sdk.Coins) sdk.Coins {
 
 		// Check if taxOwed is greater than denom taxcap
 		taxCap := ck.GetTaxCap(ctx, coin.Denom)
-		if taxCap.IsNegative() || taxCap.IsZero() {
+		if taxCap.IsNegative() {
 			taxCap = charitytypes.DefaultCap
 		}
-		if taxOwed.GT(taxCap) {
+		if taxOwed.GT(taxCap) || taxCap.IsZero() {
 			taxOwed = taxCap
 		}
 		taxFinal = taxFinal.Add(sdk.NewCoin(coin.Denom, taxOwed))
