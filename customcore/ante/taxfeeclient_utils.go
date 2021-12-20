@@ -103,9 +103,6 @@ func clientComputeTax(clientCtx client.Context, coins sdk.Coins) (sdk.Coins, err
 	//Compute tax on each sdk.Coin
 	for _, coin := range coins {
 		taxOwed := sdk.NewDecFromInt(coin.Amount).Mul(taxRate).TruncateInt()
-		if taxOwed.IsZero() {
-			continue
-		}
 
 		taxCap, err := queryTaxCap(clientCtx, coin.Denom)
 		if err != nil {
@@ -117,6 +114,9 @@ func clientComputeTax(clientCtx client.Context, coins sdk.Coins) (sdk.Coins, err
 		}
 		if taxOwed.GT(taxCap) || taxCap.IsZero() {
 			taxOwed = taxCap
+		}
+		if taxOwed.IsZero() {
+			continue
 		}
 		taxFinal = taxFinal.Add(sdk.NewCoin(coin.Denom, taxOwed))
 	}

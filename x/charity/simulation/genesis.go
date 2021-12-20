@@ -46,7 +46,7 @@ func GenCharities(r *rand.Rand) []types.Charity {
 func GenTaxCaps(r *rand.Rand) []types.TaxCap {
 	return []types.TaxCap{
 		{Denom: coretypes.MicroTokenDenom, Cap: sdk.NewInt(int64(r.Int63() % 10000000))},
-		{Denom: sdk.DefaultBondDenom, Cap: sdk.NewInt(int64(r.Int63()%1) + 1)},
+		{Denom: sdk.DefaultBondDenom, Cap: sdk.NewInt(int64(r.Intn(2)))},
 	}
 }
 

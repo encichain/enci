@@ -5,14 +5,35 @@ import (
 	"os"
 	"testing"
 
+	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
+	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/simapp"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
+	"github.com/tendermint/spm/cosmoscmd"
+	abci "github.com/tendermint/tendermint/abci/types"
 
+	"github.com/user/encichain/app"
 	enciapp "github.com/user/encichain/app"
 )
+
+type CmdSimApp interface {
+	cosmoscmd.App
+	GetBaseApp() *baseapp.BaseApp
+	AppCodec() codec.Codec
+	SimulationManager() *module.SimulationManager
+	ModuleAccountAddrs() map[string]bool
+	Name() string
+	LegacyAmino() *codec.LegacyAmino
+	BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock
+	EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.ResponseEndBlock
+	InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain
+}
 
 // Profile with:
 // /usr/local/go/bin/go test -benchmem -run=^$ github.com/user/encichain/app -bench ^BenchmarkFullAppSimulation$ -Commit=true -cpuprofile cpu.out
@@ -133,5 +154,63 @@ func BenchmarkInvariants(b *testing.B) {
 				)
 			}
 		})
+	}
+}
+
+// BenchmarkCmdSimulation run the starport chain simulation
+// Running using starport command:
+// `starport chain simulate -v --numBlocks 200 --blockSize 50`
+// Running as go benchmark test:
+// `go test -benchmem -run=^$ -bench ^BenchmarkCmdSimulation ./app -NumBlocks=200 -BlockSize 50 -Commit=true -Verbose=true -Enabled=true`
+func BenchmarkCmdSimulation(b *testing.B) {
+	simapp.FlagEnabledValue = true
+	simapp.FlagCommitValue = true
+
+	config, db, dir, logger, _, err := simapp.SetupSimulation("goleveldb-app-sim", "Simulation")
+	require.NoError(b, err, "simulation setup failed")
+
+	b.Cleanup(func() {
+		db.Close()
+		err = os.RemoveAll(dir)
+		require.NoError(b, err)
+	})
+
+	encoding := cosmoscmd.MakeEncodingConfig(app.ModuleBasics)
+
+	app := enciapp.NewEnciApp(
+		logger,
+		db,
+		nil,
+		true,
+		map[int64]bool{},
+		enciapp.DefaultNodeHome,
+		0,
+		encoding,
+		simapp.EmptyAppOptions{},
+	)
+
+	simApp, ok := app.(CmdSimApp)
+	require.True(b, ok, "can't use simapp")
+
+	// Run randomized simulations
+	_, simParams, simErr := simulation.SimulateFromSeed(
+		b,
+		os.Stdout,
+		simApp.GetBaseApp(),
+		simapp.AppStateFn(simApp.AppCodec(), simApp.SimulationManager()),
+		simtypes.RandomAccounts,
+		simapp.SimulationOperations(simApp, simApp.AppCodec(), config),
+		simApp.ModuleAccountAddrs(),
+		config,
+		simApp.AppCodec(),
+	)
+
+	// export state and simParams before the simulation error is checked
+	err = simapp.CheckExportSimulation(simApp, config, simParams)
+	require.NoError(b, err)
+	require.NoError(b, simErr)
+
+	if config.Commit {
+		simapp.PrintStats(db)
 	}
 }

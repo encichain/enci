@@ -57,7 +57,7 @@ func TestRandomizedGenState(t *testing.T) {
 	require.Equal(t, sdk.NewDecWithPrec(1, 2), charityGenesis.Params.TaxRate)
 	require.Equal(t, []types.TaxCap{
 		{Denom: coretypes.MicroTokenDenom, Cap: sdk.NewInt(1445515)},
-		{Denom: sdk.DefaultBondDenom, Cap: sdk.NewInt(1)},
+		{Denom: sdk.DefaultBondDenom, Cap: sdk.NewInt(0)},
 	}, charityGenesis.Params.TaxCaps)
 
 	require.Equal(t, sdk.NewDecWithPrec(22, 2), charityGenesis.Params.BurnRate)
