@@ -3,12 +3,14 @@ package ante
 import (
 	"context"
 
+	"github.com/spf13/pflag"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
+
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/spf13/pflag"
 	charitytypes "github.com/user/encichain/x/charity/types"
 )
 
@@ -19,6 +21,11 @@ func ComputeFeeTaxCli(clientCtx client.Context, flagset *pflag.FlagSet, msgs ...
 	gas = txF.Gas()
 
 	if txF.SimulateAndExecute() {
+		txF, err := prepareFactory(clientCtx, txF)
+		if err != nil {
+			return nil, gas, err
+		}
+
 		_, adjusted, err := tx.CalculateGas(clientCtx, txF, msgs...)
 		if err != nil {
 			return nil, gas, err
@@ -146,4 +153,34 @@ func queryTaxRateLimits(clientCtx client.Context) (charitytypes.TaxRateLimits, e
 	res, err := queryClient.TaxRateLimits(context.Background(), &charitytypes.QueryTaxRateLimitsRequest{})
 
 	return res.TaxRateLimits, err
+}
+
+// prepareFactory ensures the account defined by ctx.GetFromAddress() exists and
+// if the account number and/or the account sequence number are zero (not set),
+// they will be queried for and set on the provided Factory. A new Factory with
+// the updated fields will be returned.
+func prepareFactory(clientCtx client.Context, txf tx.Factory) (tx.Factory, error) {
+	from := clientCtx.GetFromAddress()
+
+	if err := txf.AccountRetriever().EnsureExists(clientCtx, from); err != nil {
+		return txf, err
+	}
+
+	initNum, initSeq := txf.AccountNumber(), txf.Sequence()
+	if initNum == 0 || initSeq == 0 {
+		num, seq, err := txf.AccountRetriever().GetAccountNumberSequence(clientCtx, from)
+		if err != nil {
+			return txf, err
+		}
+
+		if initNum == 0 {
+			txf = txf.WithAccountNumber(num)
+		}
+
+		if initSeq == 0 {
+			txf = txf.WithSequence(seq)
+		}
+	}
+
+	return txf, nil
 }
