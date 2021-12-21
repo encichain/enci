@@ -1,4 +1,4 @@
-package app_test
+package app
 
 import (
 	"encoding/json"
@@ -31,7 +31,7 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	enciapp "github.com/user/encichain/app"
+	charitytypes "github.com/user/encichain/x/charity/types"
 )
 
 // Get flags every time the simulator is run
@@ -73,8 +73,8 @@ func TestFullAppSimulation(t *testing.T) {
 		require.NoError(t, os.RemoveAll(dir))
 	}()
 
-	app := enciapp.NewEnciTestApp(logger, db, nil, true, map[int64]bool{},
-		enciapp.DefaultNodeHome, simapp.FlagPeriodValue, enciapp.MakeTestEncodingConfig(),
+	app := NewEnciTestApp(logger, db, nil, true, map[int64]bool{},
+		DefaultNodeHome, simapp.FlagPeriodValue, MakeTestEncodingConfig(),
 		simapp.EmptyAppOptions{}, fauxMerkleModeOpt)
 	require.Equal(t, "encichain", app.Name())
 
@@ -113,8 +113,8 @@ func TestAppImportExport(t *testing.T) {
 		require.NoError(t, os.RemoveAll(dir))
 	}()
 
-	app := enciapp.NewEnciTestApp(logger, db, nil, true, map[int64]bool{},
-		enciapp.DefaultNodeHome, simapp.FlagPeriodValue, enciapp.MakeTestEncodingConfig(),
+	app := NewEnciTestApp(logger, db, nil, true, map[int64]bool{},
+		DefaultNodeHome, simapp.FlagPeriodValue, MakeTestEncodingConfig(),
 		simapp.EmptyAppOptions{}, fauxMerkleModeOpt)
 	require.Equal(t, "encichain", app.Name())
 
@@ -155,12 +155,12 @@ func TestAppImportExport(t *testing.T) {
 		require.NoError(t, os.RemoveAll(newDir))
 	}()
 
-	newApp := enciapp.NewEnciTestApp(log.NewNopLogger(), newDB, nil, true, map[int64]bool{},
-		enciapp.DefaultNodeHome, simapp.FlagPeriodValue, enciapp.MakeTestEncodingConfig(),
+	newApp := NewEnciTestApp(log.NewNopLogger(), newDB, nil, true, map[int64]bool{},
+		DefaultNodeHome, simapp.FlagPeriodValue, MakeTestEncodingConfig(),
 		simapp.EmptyAppOptions{}, fauxMerkleModeOpt)
 	require.Equal(t, "encichain", app.Name())
 
-	var genesisState enciapp.GenesisState
+	var genesisState GenesisState
 	err = json.Unmarshal(exported.AppState, &genesisState)
 	require.NoError(t, err)
 
@@ -186,6 +186,7 @@ func TestAppImportExport(t *testing.T) {
 		{app.GetKey(govtypes.StoreKey), newApp.GetKey(govtypes.StoreKey), [][]byte{}},
 		{app.GetKey(evidencetypes.StoreKey), newApp.GetKey(evidencetypes.StoreKey), [][]byte{}},
 		{app.GetKey(capabilitytypes.StoreKey), newApp.GetKey(capabilitytypes.StoreKey), [][]byte{}},
+		{app.GetKey(charitytypes.StoreKey), newApp.GetKey(charitytypes.StoreKey), [][]byte{}},
 		{app.GetKey(authzkeeper.StoreKey), newApp.GetKey(authzkeeper.StoreKey), [][]byte{}},
 	}
 
@@ -213,8 +214,8 @@ func TestAppSimulationAfterImport(t *testing.T) {
 		require.NoError(t, os.RemoveAll(dir))
 	}()
 
-	app := enciapp.NewEnciTestApp(logger, db, nil, true, map[int64]bool{},
-		enciapp.DefaultNodeHome, simapp.FlagPeriodValue, enciapp.MakeTestEncodingConfig(),
+	app := NewEnciTestApp(logger, db, nil, true, map[int64]bool{},
+		DefaultNodeHome, simapp.FlagPeriodValue, MakeTestEncodingConfig(),
 		simapp.EmptyAppOptions{}, fauxMerkleModeOpt)
 	require.Equal(t, "encichain", app.Name())
 
@@ -260,8 +261,8 @@ func TestAppSimulationAfterImport(t *testing.T) {
 		require.NoError(t, os.RemoveAll(newDir))
 	}()
 
-	newApp := enciapp.NewEnciTestApp(log.NewNopLogger(), newDB, nil, true, map[int64]bool{},
-		enciapp.DefaultNodeHome, simapp.FlagPeriodValue, enciapp.MakeTestEncodingConfig(),
+	newApp := NewEnciTestApp(log.NewNopLogger(), newDB, nil, true, map[int64]bool{},
+		DefaultNodeHome, simapp.FlagPeriodValue, MakeTestEncodingConfig(),
 		simapp.EmptyAppOptions{}, fauxMerkleModeOpt)
 	require.Equal(t, "encichain", app.Name())
 
@@ -295,7 +296,7 @@ func TestAppStateDeterminism(t *testing.T) {
 	config.ExportParamsPath = ""
 	config.OnOperation = false
 	config.AllInvariants = false
-	config.ChainID = enciapp.SimAppChainID
+	config.ChainID = SimAppChainID
 
 	numSeeds := 3
 	numTimesToRunPerSeed := 5
@@ -313,8 +314,8 @@ func TestAppStateDeterminism(t *testing.T) {
 			}
 
 			db := dbm.NewMemDB()
-			app := enciapp.NewEnciTestApp(logger, db, nil, true, map[int64]bool{},
-				enciapp.DefaultNodeHome, simapp.FlagPeriodValue, enciapp.MakeTestEncodingConfig(),
+			app := NewEnciTestApp(logger, db, nil, true, map[int64]bool{},
+				DefaultNodeHome, simapp.FlagPeriodValue, MakeTestEncodingConfig(),
 				simapp.EmptyAppOptions{}, interBlockCacheOpt())
 			require.Equal(t, "encichain", app.Name())
 

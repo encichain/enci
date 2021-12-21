@@ -1,4 +1,4 @@
-package app_test
+package app
 
 import (
 	"fmt"
@@ -17,9 +17,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 	"github.com/tendermint/spm/cosmoscmd"
 	abci "github.com/tendermint/tendermint/abci/types"
-
-	"github.com/user/encichain/app"
-	enciapp "github.com/user/encichain/app"
 )
 
 type CmdSimApp interface {
@@ -56,8 +53,8 @@ func BenchmarkFullAppSimulation(b *testing.B) {
 		}
 	}()
 
-	app := enciapp.NewEnciTestApp(logger, db, nil, true, map[int64]bool{},
-		enciapp.DefaultNodeHome, simapp.FlagPeriodValue, enciapp.MakeTestEncodingConfig(),
+	app := NewEnciTestApp(logger, db, nil, true, map[int64]bool{},
+		DefaultNodeHome, simapp.FlagPeriodValue, MakeTestEncodingConfig(),
 		simapp.EmptyAppOptions{}, interBlockCacheOpt())
 
 	// run randomized simulation
@@ -108,8 +105,8 @@ func BenchmarkInvariants(b *testing.B) {
 		}
 	}()
 
-	app := enciapp.NewEnciTestApp(logger, db, nil, true, map[int64]bool{},
-		enciapp.DefaultNodeHome, simapp.FlagPeriodValue, enciapp.MakeTestEncodingConfig(),
+	app := NewEnciTestApp(logger, db, nil, true, map[int64]bool{},
+		DefaultNodeHome, simapp.FlagPeriodValue, MakeTestEncodingConfig(),
 		simapp.EmptyAppOptions{}, interBlockCacheOpt())
 
 	// run randomized simulation
@@ -175,15 +172,15 @@ func BenchmarkCmdSimulation(b *testing.B) {
 		require.NoError(b, err)
 	})
 
-	encoding := cosmoscmd.MakeEncodingConfig(app.ModuleBasics)
+	encoding := cosmoscmd.MakeEncodingConfig(ModuleBasics)
 
-	app := enciapp.NewEnciApp(
+	app := NewEnciApp(
 		logger,
 		db,
 		nil,
 		true,
 		map[int64]bool{},
-		enciapp.DefaultNodeHome,
+		DefaultNodeHome,
 		0,
 		encoding,
 		simapp.EmptyAppOptions{},
