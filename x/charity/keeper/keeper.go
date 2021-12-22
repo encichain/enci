@@ -167,8 +167,8 @@ func (k Keeper) GetTaxCaps(ctx sdk.Context) []types.TaxCap {
 	return taxCaps
 }
 
-// AddTaxProceeds adds collected tax to the TaxProceeds record for the current *Period*
-func (k Keeper) AddTaxProceeds(ctx sdk.Context, proceeds sdk.Coins) {
+// RecordTaxProceeds adds collected tax to the TaxProceeds record for the current *Period*
+func (k Keeper) RecordTaxProceeds(ctx sdk.Context, proceeds sdk.Coins) {
 	if proceeds.IsZero() {
 		return
 	}
@@ -256,8 +256,8 @@ func (k Keeper) GetCollectionPeriods(ctx sdk.Context) []types.CollectionPeriod {
 		}
 		collectionPeriod := types.CollectionPeriod{
 			Period:       uint64(p),
-			TaxCollected: k.GetPeriodTaxProceeds(ctx, p),
-			Payouts:      k.GetPayouts(ctx, p),
+			TaxCollected: taxProceeds,
+			Payouts:      payouts,
 		}
 		collectionPeriods = append(collectionPeriods, collectionPeriod)
 	}

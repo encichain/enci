@@ -87,7 +87,7 @@ func (dtd DeductTaxFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate
 			return ctx, err
 		}
 		// Record the tax proceeds to store
-		dtd.CharityKeeper.AddTaxProceeds(ctx, tax)
+		dtd.CharityKeeper.RecordTaxProceeds(ctx, tax)
 	}
 
 	events := sdk.Events{sdk.NewEvent(sdk.EventTypeTx,

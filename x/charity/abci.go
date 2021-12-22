@@ -43,10 +43,15 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 		// Disburse donations according to CharityTaxCollector balance
 		payouts, errs := k.DisburseDonations(ctx, charities)
 
-		// Set payouts to store under current *period*
-		k.SetPayouts(ctx, period, payouts)
-		// Set period tax proceeds to store
-		k.SetPeriodTaxProceeds(ctx, period, k.GetTaxProceeds(ctx))
+		// Set payouts to store under current *period*, if not empty
+		if len(payouts) > 0 {
+			k.SetPayouts(ctx, period, payouts)
+		}
+		// Set period tax proceeds to store, if not zero
+		taxProceeds := k.GetTaxProceeds(ctx)
+		if !taxProceeds.IsZero() {
+			k.SetPeriodTaxProceeds(ctx, period, k.GetTaxProceeds(ctx))
+		}
 		// Sync taxcaps
 		k.SyncTaxCaps(ctx)
 

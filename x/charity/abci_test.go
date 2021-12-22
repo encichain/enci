@@ -137,7 +137,7 @@ func TestEndBlocker(t *testing.T) {
 
 	// Set test TaxProceeds to store
 	proceeds := sdk.NewInt(int64(50000000))
-	app.CharityKeeper.AddTaxProceeds(app.Ctx, sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: proceeds}})
+	app.CharityKeeper.RecordTaxProceeds(app.Ctx, sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: proceeds}})
 	require.Equal(t, sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: proceeds}}, app.CharityKeeper.GetTaxProceeds(app.Ctx))
 
 	// Make sure store taxcap is set to default taxcap

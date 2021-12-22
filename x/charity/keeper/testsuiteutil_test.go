@@ -8,7 +8,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
@@ -17,7 +16,6 @@ import (
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	enciapp "github.com/user/encichain/app"
-	"github.com/user/encichain/x/charity/types"
 	charitytypes "github.com/user/encichain/x/charity/types"
 )
 
@@ -43,12 +41,12 @@ func (suite *CharityTestSuite) initKeepersWithmAccPerms() (authkeeper.AccountKee
 	}
 
 	authKeeper := authkeeper.NewAccountKeeper(
-		appCodec, app.GetKey(types.StoreKey), app.GetSubspace(types.ModuleName),
+		appCodec, app.GetKey(authtypes.StoreKey), app.GetSubspace(authtypes.ModuleName),
 		authtypes.ProtoBaseAccount, maccPerms,
 	)
-	bankkeeper := keeper.NewBaseKeeper(
-		appCodec, app.GetKey(types.StoreKey), authKeeper,
-		app.GetSubspace(types.ModuleName), blackListAddrs,
+	bankkeeper := bankkeeper.NewBaseKeeper(
+		appCodec, app.GetKey(banktypes.StoreKey), authKeeper,
+		app.GetSubspace(banktypes.ModuleName), blackListAddrs,
 	)
 
 	return authKeeper, bankkeeper

@@ -139,7 +139,7 @@ func TestTaxProceeds(t *testing.T) {
 	for i := int64(0); i < 10; i++ {
 		proceeds := sdk.NewCoins(sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(100+i)))
 		for j := 0; j < 3; j++ {
-			app.CharityKeeper.AddTaxProceeds(app.Ctx, proceeds)
+			app.CharityKeeper.RecordTaxProceeds(app.Ctx, proceeds)
 		}
 
 		require.Equal(t, proceeds.Add(proceeds...).Add(proceeds...), app.CharityKeeper.GetTaxProceeds(app.Ctx))
@@ -152,9 +152,9 @@ func TestTaxProceeds(t *testing.T) {
 	app.CharityKeeper.SetTaxProceeds(app.Ctx, proceeds)
 	require.Equal(t, proceeds, app.CharityKeeper.GetTaxProceeds(app.Ctx))
 
-	// Test AddTaxProceed single case
+	// Test RecordTaxProceeds single case
 	app.CharityKeeper.SetTaxProceeds(app.Ctx, proceeds)
-	app.CharityKeeper.AddTaxProceeds(app.Ctx, proceeds)
+	app.CharityKeeper.RecordTaxProceeds(app.Ctx, proceeds)
 	require.Equal(t, proceeds.Add(proceeds...), app.CharityKeeper.GetTaxProceeds(app.Ctx))
 	require.False(t, app.CharityKeeper.GetTaxProceeds(app.Ctx).IsZero())
 }
