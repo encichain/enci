@@ -21,9 +21,6 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 		charityBal := k.BankKeeper.SpendableCoins(ctx, k.AccountKeeper.GetModuleAddress(types.CharityCollectorName))
 		burnAmt := sdk.Coins{}
 
-		// Reset tax proceeds
-		defer k.SetTaxProceeds(ctx, sdk.Coins{})
-
 		// Calculate burn amount from CharityTaxCollector and send to burner account
 		if !charityBal.IsZero() {
 			burnAmt = k.CalculateBurnAmount(ctx, charityBal)
@@ -54,6 +51,9 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 		}
 		// Sync taxcaps
 		k.SyncTaxCaps(ctx)
+
+		// Reset tax proceeds
+		k.SetTaxProceeds(ctx, sdk.Coins{})
 
 		ctx.EventManager().EmitTypedEvent(
 			&types.EventPayout{
