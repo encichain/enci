@@ -19,7 +19,7 @@ import (
 	coretypes "github.com/user/encichain/types"
 )
 
-func setupKeeper(t testing.TB) (*Keeper, sdk.Context) {
+func setupCharityKeeper(t testing.TB) (*Keeper, sdk.Context) {
 	storeKey := sdk.NewKVStoreKey(types.StoreKey)
 	memStoreKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)
 
@@ -40,6 +40,10 @@ func setupKeeper(t testing.TB) (*Keeper, sdk.Context) {
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
+
+	// Initialize params
+	keeper.SetParams(ctx, types.DefaultParams())
+
 	return keeper, ctx
 }
 

@@ -140,9 +140,6 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	// Return Quierier with AppModule Keeper
 	quirier := keeper.NewQuerier(am.keeper)
 	types.RegisterQueryServer(cfg.QueryServer(), quirier)
-
-	m := keeper.NewMigrator(am.keeper)
-	cfg.RegisterMigration(types.ModuleName, 1, m.Migrate1to2)
 }
 
 // RegisterInvariants registers the capability module's invariants.

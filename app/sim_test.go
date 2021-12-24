@@ -76,7 +76,7 @@ func TestFullAppSimulation(t *testing.T) {
 	app := NewEnciTestApp(logger, db, nil, true, map[int64]bool{},
 		DefaultNodeHome, simapp.FlagPeriodValue, MakeTestEncodingConfig(),
 		simapp.EmptyAppOptions{}, fauxMerkleModeOpt)
-	require.Equal(t, "encichain", app.Name())
+	require.Equal(t, "enci", app.Name())
 
 	// run randomized simulation
 	_, simParams, simErr := simulation.SimulateFromSeed(
@@ -116,7 +116,7 @@ func TestAppImportExport(t *testing.T) {
 	app := NewEnciTestApp(logger, db, nil, true, map[int64]bool{},
 		DefaultNodeHome, simapp.FlagPeriodValue, MakeTestEncodingConfig(),
 		simapp.EmptyAppOptions{}, fauxMerkleModeOpt)
-	require.Equal(t, "encichain", app.Name())
+	require.Equal(t, "enci", app.Name())
 
 	// Run randomized simulation
 	_, simParams, simErr := simulation.SimulateFromSeed(
@@ -158,7 +158,7 @@ func TestAppImportExport(t *testing.T) {
 	newApp := NewEnciTestApp(log.NewNopLogger(), newDB, nil, true, map[int64]bool{},
 		DefaultNodeHome, simapp.FlagPeriodValue, MakeTestEncodingConfig(),
 		simapp.EmptyAppOptions{}, fauxMerkleModeOpt)
-	require.Equal(t, "encichain", app.Name())
+	require.Equal(t, "enci", app.Name())
 
 	var genesisState GenesisState
 	err = json.Unmarshal(exported.AppState, &genesisState)
@@ -217,7 +217,7 @@ func TestAppSimulationAfterImport(t *testing.T) {
 	app := NewEnciTestApp(logger, db, nil, true, map[int64]bool{},
 		DefaultNodeHome, simapp.FlagPeriodValue, MakeTestEncodingConfig(),
 		simapp.EmptyAppOptions{}, fauxMerkleModeOpt)
-	require.Equal(t, "encichain", app.Name())
+	require.Equal(t, "enci", app.Name())
 
 	// Run randomized simulation
 	stopEarly, simParams, simErr := simulation.SimulateFromSeed(
@@ -264,7 +264,7 @@ func TestAppSimulationAfterImport(t *testing.T) {
 	newApp := NewEnciTestApp(log.NewNopLogger(), newDB, nil, true, map[int64]bool{},
 		DefaultNodeHome, simapp.FlagPeriodValue, MakeTestEncodingConfig(),
 		simapp.EmptyAppOptions{}, fauxMerkleModeOpt)
-	require.Equal(t, "encichain", app.Name())
+	require.Equal(t, "enci", app.Name())
 
 	newApp.InitChain(abci.RequestInitChain{
 		AppStateBytes: exported.AppState,
@@ -317,7 +317,7 @@ func TestAppStateDeterminism(t *testing.T) {
 			app := NewEnciTestApp(logger, db, nil, true, map[int64]bool{},
 				DefaultNodeHome, simapp.FlagPeriodValue, MakeTestEncodingConfig(),
 				simapp.EmptyAppOptions{}, interBlockCacheOpt())
-			require.Equal(t, "encichain", app.Name())
+			require.Equal(t, "enci", app.Name())
 
 			fmt.Printf(
 				"running non-determinism simulation; seed %d: %d/%d, attempt: %d/%d\n",
