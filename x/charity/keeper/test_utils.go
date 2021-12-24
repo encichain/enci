@@ -11,10 +11,10 @@ import (
 	//bank "github.com/cosmos/cosmos-sdk/x/bank"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	params "github.com/cosmos/cosmos-sdk/x/params"
-	custombank "github.com/user/encichain/customcore/bank"
-	coretypes "github.com/user/encichain/types"
+	custombank "github.com/encichain/enci/customcore/bank"
+	coretypes "github.com/encichain/enci/types"
 
-	//charity "github.com/user/encichain/x/charity"
+	//charity "github.com/encichain/enci/x/charity"
 
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
@@ -43,11 +43,11 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	//charitykeeper "github.com/user/encichain/x/charity/keeper"
+	//charitykeeper "github.com/encichain/enci/x/charity/keeper"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/cosmos/cosmos-sdk/x/params/types/proposal"
-	charitytypes "github.com/user/encichain/x/charity/types"
+	charitytypes "github.com/encichain/enci/x/charity/types"
 )
 
 const faucetAccount = "faucet"

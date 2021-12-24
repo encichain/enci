@@ -1,4 +1,4 @@
-module github.com/user/encichain
+module github.com/encichain/enci
 
 go 1.16
 

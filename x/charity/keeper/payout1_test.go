@@ -9,13 +9,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	enciapp "github.com/user/encichain/app"
-	coretypes "github.com/user/encichain/types"
+	enciapp "github.com/encichain/enci/app"
+	coretypes "github.com/encichain/enci/types"
 
-	"github.com/user/encichain/x/charity/types"
+	"github.com/encichain/enci/x/charity/types"
 	//"go.uber.org/goleak"
 	"github.com/cosmos/cosmos-sdk/simapp"
-	"github.com/user/encichain/x/charity/keeper"
+	"github.com/encichain/enci/x/charity/keeper"
 )
 
 func TestPayoutFunctions(t *testing.T) {

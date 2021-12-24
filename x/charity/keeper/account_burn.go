@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/user/encichain/x/charity/types"
+	"github.com/encichain/enci/x/charity/types"
 )
 
 // BurnCoinsFromBurner burns all coins from the Burner account

@@ -20,12 +20,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
-	"github.com/user/encichain/x/charity/client/cli"
-	"github.com/user/encichain/x/charity/keeper"
-	"github.com/user/encichain/x/charity/types"
+	"github.com/encichain/enci/x/charity/client/cli"
+	"github.com/encichain/enci/x/charity/keeper"
+	"github.com/encichain/enci/x/charity/types"
 
 	// this line is used by starport scaffolding # ibc/module/import
-	"github.com/user/encichain/x/charity/simulation"
+	"github.com/encichain/enci/x/charity/simulation"
 )
 
 var (

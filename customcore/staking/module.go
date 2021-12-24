@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/staking/types"
-	coretypes "github.com/user/encichain/types"
+	coretypes "github.com/encichain/enci/types"
 )
 
 var (

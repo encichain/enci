@@ -5,7 +5,7 @@ import "charity/charity.proto";
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
-option go_package = "github.com/user/encichain/x/charity/types";
+option go_package = "github.com/encichain/enci/x/charity/types";
 
 // EventPayout defines the Payout Event
 message EventPayout {

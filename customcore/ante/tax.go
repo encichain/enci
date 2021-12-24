@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	charitytypes "github.com/user/encichain/x/charity/types"
+	charitytypes "github.com/encichain/enci/x/charity/types"
 )
 
 // DeductTaxFeeDecorator deducts charity tax from the first signer of the tx

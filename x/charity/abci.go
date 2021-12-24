@@ -6,9 +6,9 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	coretypes "github.com/user/encichain/types"
-	"github.com/user/encichain/x/charity/keeper"
-	"github.com/user/encichain/x/charity/types"
+	coretypes "github.com/encichain/enci/types"
+	"github.com/encichain/enci/x/charity/keeper"
+	"github.com/encichain/enci/x/charity/types"
 )
 
 // EndBlocker is called at the end of every block

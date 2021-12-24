@@ -19,10 +19,10 @@ import (
 	cosmosante "github.com/cosmos/cosmos-sdk/x/auth/ante"
 	xauthsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	enciapp "github.com/user/encichain/app"
-	"github.com/user/encichain/customcore/ante"
-	coretypes "github.com/user/encichain/types"
-	charitytypes "github.com/user/encichain/x/charity/types"
+	enciapp "github.com/encichain/enci/app"
+	"github.com/encichain/enci/customcore/ante"
+	coretypes "github.com/encichain/enci/types"
+	charitytypes "github.com/encichain/enci/x/charity/types"
 )
 
 // TestAccount represents an account used in the tests in x/auth/ante.

@@ -8,10 +8,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramsutils "github.com/cosmos/cosmos-sdk/x/params/client/utils"
 	paramproposal "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
+	coretypes "github.com/encichain/enci/types"
 	"github.com/stretchr/testify/require"
-	coretypes "github.com/user/encichain/types"
 
-	"github.com/user/encichain/x/charity/types"
+	"github.com/encichain/enci/x/charity/types"
 )
 
 func TestParamsFuncs(t *testing.T) {

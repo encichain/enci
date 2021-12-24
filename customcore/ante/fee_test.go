@@ -7,9 +7,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	customante "github.com/user/encichain/customcore/ante"
-	coretypes "github.com/user/encichain/types"
-	"github.com/user/encichain/x/charity/types"
+	customante "github.com/encichain/enci/customcore/ante"
+	coretypes "github.com/encichain/enci/types"
+	"github.com/encichain/enci/x/charity/types"
 )
 
 func (suite *AnteTestSuite) TestDeductFees() {

@@ -9,10 +9,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/kv"
 
-	app "github.com/user/encichain/app"
-	coretypes "github.com/user/encichain/types"
-	"github.com/user/encichain/x/charity/simulation"
-	"github.com/user/encichain/x/charity/types"
+	app "github.com/encichain/enci/app"
+	coretypes "github.com/encichain/enci/types"
+	"github.com/encichain/enci/x/charity/simulation"
+	"github.com/encichain/enci/x/charity/types"
 )
 
 func TestDecodeDistributionStore(t *testing.T) {

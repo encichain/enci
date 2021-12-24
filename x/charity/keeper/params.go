@@ -2,7 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/user/encichain/x/charity/types"
+	"github.com/encichain/enci/x/charity/types"
 )
 
 // GetAllParams returns total param set

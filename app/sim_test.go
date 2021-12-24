@@ -31,7 +31,7 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	charitytypes "github.com/user/encichain/x/charity/types"
+	charitytypes "github.com/encichain/enci/x/charity/types"
 )
 
 // Get flags every time the simulator is run
@@ -59,7 +59,7 @@ func interBlockCacheOpt() func(*baseapp.BaseApp) {
 	return baseapp.SetInterBlockCache(store.NewCommitKVStoreCacheManager())
 }
 
-//go test -mod=readonly github.com/user/encichain/app -run TestAppStateDeterminism -Enabled=true -NumBlocks=100 -BlockSize=200 -Commit=true -Period=0 -v -timeout 24h
+//go test -mod=readonly github.com/encichain/enci/app -run TestAppStateDeterminism -Enabled=true -NumBlocks=100 -BlockSize=200 -Commit=true -Period=0 -v -timeout 24h
 
 func TestFullAppSimulation(t *testing.T) {
 	config, db, dir, logger, skip, err := simapp.SetupSimulation("leveldb-app-sim", "Simulation")

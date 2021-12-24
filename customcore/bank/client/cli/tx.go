@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/user/encichain/customcore/ante"
+	"github.com/encichain/enci/customcore/ante"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.

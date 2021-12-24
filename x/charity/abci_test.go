@@ -5,16 +5,16 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	coretypes "github.com/encichain/enci/types"
+	charity "github.com/encichain/enci/x/charity"
+	"github.com/encichain/enci/x/charity/keeper"
+	"github.com/encichain/enci/x/charity/types"
 	"github.com/stretchr/testify/require"
-	coretypes "github.com/user/encichain/types"
-	charity "github.com/user/encichain/x/charity"
-	"github.com/user/encichain/x/charity/keeper"
-	"github.com/user/encichain/x/charity/types"
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	coreapp "github.com/encichain/enci/app"
 	abcitypes "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	coreapp "github.com/user/encichain/app"
 )
 
 // module test

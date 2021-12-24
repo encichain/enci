@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/user/encichain/x/charity/simulation"
+	"github.com/encichain/enci/x/charity/simulation"
 )
 
 func TestParamChanges(t *testing.T) {

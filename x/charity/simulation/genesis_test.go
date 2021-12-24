@@ -12,9 +12,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	coretypes "github.com/user/encichain/types"
-	"github.com/user/encichain/x/charity/simulation"
-	"github.com/user/encichain/x/charity/types"
+	coretypes "github.com/encichain/enci/types"
+	"github.com/encichain/enci/x/charity/simulation"
+	"github.com/encichain/enci/x/charity/types"
 )
 
 // TestGenCharities Tests for determinism

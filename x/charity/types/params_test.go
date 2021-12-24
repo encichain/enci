@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	coretypes "github.com/encichain/enci/types"
 	"github.com/stretchr/testify/require"
-	coretypes "github.com/user/encichain/types"
 )
 
 func TestParams(t *testing.T) {

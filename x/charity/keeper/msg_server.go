@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/user/encichain/x/charity/types"
+	"github.com/encichain/enci/x/charity/types"
 )
 
 type msgServer struct {

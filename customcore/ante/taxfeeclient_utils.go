@@ -11,7 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/authz"
 
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	charitytypes "github.com/user/encichain/x/charity/types"
+	charitytypes "github.com/encichain/enci/x/charity/types"
 )
 
 // Compute fees and tax with CLI options

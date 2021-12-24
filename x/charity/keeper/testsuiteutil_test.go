@@ -13,10 +13,10 @@ import (
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	enciapp "github.com/encichain/enci/app"
+	charitytypes "github.com/encichain/enci/x/charity/types"
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	enciapp "github.com/user/encichain/app"
-	charitytypes "github.com/user/encichain/x/charity/types"
 )
 
 type CharityTestSuite struct {

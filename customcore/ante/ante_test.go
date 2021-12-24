@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/cosmos/cosmos-sdk/simapp"
-	coretypes "github.com/user/encichain/types"
+	coretypes "github.com/encichain/enci/types"
 
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 

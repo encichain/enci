@@ -72,17 +72,17 @@ import (
 	ibcporttypes "github.com/cosmos/ibc-go/modules/core/05-port/types"
 	ibchost "github.com/cosmos/ibc-go/modules/core/24-host"
 	ibckeeper "github.com/cosmos/ibc-go/modules/core/keeper"
+	customante "github.com/encichain/enci/customcore/ante"
+	charitymodule "github.com/encichain/enci/x/charity"
+	charitykeeper "github.com/encichain/enci/x/charity/keeper"
+	charitytypes "github.com/encichain/enci/x/charity/types"
 	"github.com/spf13/cast"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
-	customante "github.com/user/encichain/customcore/ante"
-	charitymodule "github.com/user/encichain/x/charity"
-	charitykeeper "github.com/user/encichain/x/charity/keeper"
-	charitytypes "github.com/user/encichain/x/charity/types"
 
-	custombank "github.com/user/encichain/customcore/bank"
+	custombank "github.com/encichain/enci/customcore/bank"
 )
 
 const (

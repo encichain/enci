@@ -5,8 +5,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	customante "github.com/user/encichain/customcore/ante"
-	coretypes "github.com/user/encichain/types"
+	customante "github.com/encichain/enci/customcore/ante"
+	coretypes "github.com/encichain/enci/types"
 )
 
 func (suite *AnteTestSuite) TestEnsureMempoolFeeTax() {

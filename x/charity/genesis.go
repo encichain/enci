@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	coretypes "github.com/user/encichain/types"
-	"github.com/user/encichain/x/charity/keeper"
-	"github.com/user/encichain/x/charity/types"
+	coretypes "github.com/encichain/enci/types"
+	"github.com/encichain/enci/x/charity/keeper"
+	"github.com/encichain/enci/x/charity/types"
 	//bankKeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 )
 

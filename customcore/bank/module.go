@@ -10,8 +10,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	"github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	customcli "github.com/user/encichain/customcore/bank/client/cli"
-	customsim "github.com/user/encichain/customcore/bank/simulation"
+	customcli "github.com/encichain/enci/customcore/bank/client/cli"
+	customsim "github.com/encichain/enci/customcore/bank/simulation"
 )
 
 var (

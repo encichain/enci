@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
+	coretypes "github.com/encichain/enci/types"
 	"github.com/tendermint/tendermint/crypto"
-	coretypes "github.com/user/encichain/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"

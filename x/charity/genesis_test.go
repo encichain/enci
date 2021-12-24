@@ -8,13 +8,13 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	coretypes "github.com/user/encichain/types"
-	"github.com/user/encichain/x/charity"
-	"github.com/user/encichain/x/charity/keeper"
-	"github.com/user/encichain/x/charity/types"
+	coretypes "github.com/encichain/enci/types"
+	"github.com/encichain/enci/x/charity"
+	"github.com/encichain/enci/x/charity/keeper"
+	"github.com/encichain/enci/x/charity/types"
 
 	//bankKeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	coreapp "github.com/user/encichain/app"
+	coreapp "github.com/encichain/enci/app"
 )
 
 type GenesisTestSuite struct {

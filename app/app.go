@@ -92,19 +92,19 @@ import (
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	"github.com/user/encichain/docs"
+	"github.com/encichain/enci/docs"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
+	charitymodule "github.com/encichain/enci/x/charity"
 	"github.com/tendermint/spm/cosmoscmd"
-	charitymodule "github.com/user/encichain/x/charity"
 
 	//storetypes "github.com/cosmos/cosmos-sdk/store/types"
-	customante "github.com/user/encichain/customcore/ante"
-	custombank "github.com/user/encichain/customcore/bank"
-	customgov "github.com/user/encichain/customcore/gov"
-	customstaking "github.com/user/encichain/customcore/staking"
-	charitykeeper "github.com/user/encichain/x/charity/keeper"
-	charitytypes "github.com/user/encichain/x/charity/types"
+	customante "github.com/encichain/enci/customcore/ante"
+	custombank "github.com/encichain/enci/customcore/bank"
+	customgov "github.com/encichain/enci/customcore/gov"
+	customstaking "github.com/encichain/enci/customcore/staking"
+	charitykeeper "github.com/encichain/enci/x/charity/keeper"
+	charitytypes "github.com/encichain/enci/x/charity/types"
 )
 
 const (
