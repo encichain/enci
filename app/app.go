@@ -189,7 +189,7 @@ func init() {
 		panic(err)
 	}
 
-	DefaultNodeHome = filepath.Join(userHomeDir, ".encichain")
+	DefaultNodeHome = filepath.Join(userHomeDir, "."+AppName)
 }
 
 // EnciApp extends an ABCI application, but with most of its parameters exported.

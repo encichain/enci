@@ -1,5 +1,5 @@
 syntax = "proto3";
-package user.encichain.charity;
+package enci.charity;
 
 option go_package = "github.com/encichain/enci/x/charity/types";
 

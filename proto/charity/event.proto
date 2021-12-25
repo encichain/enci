@@ -1,5 +1,5 @@
 syntax = "proto3";
-package user.encichain.charity;
+package enci.charity;
 
 import "charity/charity.proto";
 import "gogoproto/gogo.proto";
