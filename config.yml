@@ -1,19 +1,22 @@
 accounts:
   - name: alice
-    coins: ["20000000000uenci", "200000000stake"]
+    coins: ["200000000000000uenci"]
   - name: bob
-    coins: ["10000000000uenci", "100000000stake"]
+    coins: ["10000000000uenci"]
   - name: foundation
     coins: ["1uenci"]
     address: enci1a5jqux9wu4e8zfxxlv4fxh8t697rdc636n3pyk
 validator:
   name: alice
-  staked: "1000000uenci"
+  staked: "10000000000000uenci"
 client:
-  vuex:
-    path: "vue/src/store"
   openapi:
     path: "docs/static/openapi.yml"
 faucet:
   name: bob
   coins: ["5000000uenci", "100000stake"]
+genesis:
+  app_state:
+    mint:
+      params:
+        mint_denom: "uenci"
