@@ -1,12 +1,12 @@
 syntax = "proto3";
-package enci.charity;
+package enci.charity.v1beta1;
 
 import "google/api/annotations.proto";
 //import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 // this line is used by starport scaffolding # 1
 
-import "charity/charity.proto";
+import "enci/charity/v1beta1/charity.proto";
 import "cosmos/base/v1beta1/coin.proto";
 option go_package = "github.com/encichain/enci/x/charity/types";
 

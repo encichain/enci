@@ -1,7 +1,7 @@
 syntax = "proto3";
-package enci.charity;
+package enci.charity.v1beta1;
 
-import "charity/charity.proto";
+import "enci/charity/v1beta1/charity.proto";
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
