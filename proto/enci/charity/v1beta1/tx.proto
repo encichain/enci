@@ -1,6 +1,5 @@
 syntax = "proto3";
-package enci.charity;
-
+package enci.charity.v1beta1;
 // this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "github.com/encichain/enci/x/charity/types";

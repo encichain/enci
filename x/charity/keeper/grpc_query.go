@@ -90,20 +90,10 @@ func (q Querier) TaxProceeds(context context.Context, req *types.QueryTaxProceed
 	return &types.QueryTaxProceedsResponse{TaxProceeds: q.GetTaxProceeds(ctx)}, nil
 }
 
-// CollectionPeriods returns all CollectionPeriod
+// CollectionPeriods returns all CollectionPeriod excluding empty CollectionPeriods
 func (q Querier) CollectionPeriods(context context.Context, req *types.QueryAllCollectionPeriodsRequest) (*types.QueryAllCollectionPeriodsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(context)
-	var collectionPeriods []types.CollectionPeriod
-
-	// Iterate through existing *period*s and create CollectionPeriod per period
-	for p := int64(0); p < q.GetCurrentPeriod(ctx); p++ {
-		collectionPeriod := types.CollectionPeriod{
-			Period:       uint64(p),
-			TaxCollected: q.GetPeriodTaxProceeds(ctx, p),
-			Payouts:      q.GetPayouts(ctx, p),
-		}
-		collectionPeriods = append(collectionPeriods, collectionPeriod)
-	}
+	collectionPeriods := q.GetCollectionPeriods(ctx)
 
 	return &types.QueryAllCollectionPeriodsResponse{CollectionPeriods: collectionPeriods}, nil
 }
