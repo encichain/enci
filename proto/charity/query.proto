@@ -16,52 +16,52 @@ service Query {
 
     // Params returns all params
     rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-        option (google.api.http).get = "/charity/charity/params";
+        option (google.api.http).get = "/enci/charity/v1beta1/params";
     }
 
     // TaxRate returns the set tax rate
     rpc TaxRate(QueryTaxRateRequest) returns (QueryTaxRateResponse) {
-        option (google.api.http).get = "/encichain/charity/taxrate";
+        option (google.api.http).get = "/enci/charity/v1beta1/taxrate";
     }
 
     // Charities returns the set charities
     rpc Charities(QueryCharitiesRequest) returns (QueryCharitiesResponse) {
-        option (google.api.http).get = "/encichain/charity/charities";
+        option (google.api.http).get = "/enci/charity/v1beta1/charities";
     } 
 
     // TaxCaps returns the tax caps
     rpc TaxCaps(QueryTaxCapsRequest) returns (QueryTaxCapsResponse) {
-        option (google.api.http).get = "/encichain/charity/taxcaps";
+        option (google.api.http).get = "/enci/charity/v1beta1/taxcaps";
     }
 
     // BurnRate returns the set charity burn rate
     rpc BurnRate(QueryBurnRateRequest) returns (QueryBurnRateResponse) {
-        option (google.api.http).get = "/encichain/charity/burnrate";
+        option (google.api.http).get = "/enci/charity/v1beta1/burnrate";
     }
 
     // TaxCap returns the tax cap based on denom
     rpc TaxCap(QueryTaxCapRequest) returns (QueryTaxCapResponse) {
-        option (google.api.http).get = "/encichain/charity/taxcaps/{denom}";
+        option (google.api.http).get = "/enci/charity/v1beta1/taxcaps/{denom}";
     }
 
     // TaxRateLimits returns the tax rate limits
     rpc TaxRateLimits(QueryTaxRateLimitsRequest) returns (QueryTaxRateLimitsResponse) {
-        option (google.api.http).get = "/encichain/charity/taxratelimits";
+        option (google.api.http).get = "/enci/charity/v1beta1/taxratelimits";
     }
 
     // TaxProceeds returns the tax proceeds for the current period
     rpc TaxProceeds(QueryTaxProceedsRequest) returns (QueryTaxProceedsResponse) {
-        option (google.api.http).get = "/encichain/charity/taxproceeds";
+        option (google.api.http).get = "/enci/charity/v1beta1/taxproceeds";
     }
 
     // CollectionPeriods returns the list of collection periods 
     rpc CollectionPeriods(QueryAllCollectionPeriodsRequest) returns (QueryAllCollectionPeriodsResponse) {
-        option (google.api.http).get = "/encichain/charity/collectionperiods";
+        option (google.api.http).get = "/enci/charity/v1beta1/collectionperiods";
     }
     
     // CollectionPeriod returns a single collection period based on *period*
     rpc CollectionPeriod(QueryCollectionPeriodRequest) returns (QueryCollectionPeriodResponse) {
-        option (google.api.http).get = "/encichain/charity/collectionperiods/{period}";
+        option (google.api.http).get = "/enci/charity/v1beta1/collectionperiods/{period}";
     }
 
 }

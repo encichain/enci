@@ -766,25 +766,25 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 0, 2, 1}, []string{"charity", "params"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"enci", "charity", "v1beta1", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_TaxRate_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"encichain", "charity", "taxrate"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_TaxRate_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"enci", "charity", "v1beta1", "taxrate"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Charities_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"encichain", "charity", "charities"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Charities_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"enci", "charity", "v1beta1", "charities"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_TaxCaps_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"encichain", "charity", "taxcaps"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_TaxCaps_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"enci", "charity", "v1beta1", "taxcaps"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_BurnRate_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"encichain", "charity", "burnrate"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_BurnRate_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"enci", "charity", "v1beta1", "burnrate"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_TaxCap_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"encichain", "charity", "taxcaps", "denom"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_TaxCap_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"enci", "charity", "v1beta1", "taxcaps", "denom"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_TaxRateLimits_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"encichain", "charity", "taxratelimits"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_TaxRateLimits_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"enci", "charity", "v1beta1", "taxratelimits"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_TaxProceeds_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"encichain", "charity", "taxproceeds"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_TaxProceeds_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"enci", "charity", "v1beta1", "taxproceeds"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_CollectionPeriods_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"encichain", "charity", "collectionperiods"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_CollectionPeriods_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"enci", "charity", "v1beta1", "collectionperiods"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_CollectionPeriod_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"encichain", "charity", "collectionperiods", "period"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_CollectionPeriod_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"enci", "charity", "v1beta1", "collectionperiods", "period"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (
