@@ -66,8 +66,8 @@ func (k Keeper) IsValidCharity(ctx sdk.Context, charity types.Charity) error {
 	if err != nil {
 		return fmt.Errorf("invalid address")
 	}
-	acc := k.AccountKeeper.GetAccount(ctx, addr)
-	if acc == nil {
+	hasAcc := k.AccountKeeper.HasAccount(ctx, addr)
+	if !hasAcc {
 		return fmt.Errorf("account does not exist for the provided address")
 	}
 

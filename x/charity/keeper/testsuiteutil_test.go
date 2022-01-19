@@ -29,7 +29,7 @@ type CharityTestSuite struct {
 func (suite *CharityTestSuite) initKeepersWithmAccPerms() (authkeeper.AccountKeeper, bankkeeper.BaseKeeper) {
 	app := suite.app
 	maccPerms := enciapp.GetMaccPerms()
-	appCodec := enciapp.MakeTestEncodingConfig().Codec
+	appCodec := enciapp.MakeTestEncodingConfig().Marshaler
 	blackListAddrs := map[string]bool{
 		authtypes.FeeCollectorName:        true,
 		stakingtypes.NotBondedPoolName:    true,

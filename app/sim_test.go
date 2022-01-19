@@ -60,7 +60,6 @@ func interBlockCacheOpt() func(*baseapp.BaseApp) {
 }
 
 //go test -mod=readonly github.com/encichain/enci/app -run TestAppStateDeterminism -Enabled=true -NumBlocks=100 -BlockSize=200 -Commit=true -Period=0 -v -timeout 24h
-
 func TestFullAppSimulation(t *testing.T) {
 	config, db, dir, logger, skip, err := simapp.SetupSimulation("leveldb-app-sim", "Simulation")
 	if skip {
@@ -101,6 +100,7 @@ func TestFullAppSimulation(t *testing.T) {
 	}
 }
 
+//go test -mod=readonly github.com/encichain/enci/app -run TestAppImportExport -Enabled=true -NumBlocks=100 -BlockSize=200 -Commit=true -Verbose -PrintAllInvariants -Period=0 -v -timeout 24h
 func TestAppImportExport(t *testing.T) {
 	config, db, dir, logger, skip, err := simapp.SetupSimulation("leveldb-app-sim", "Simulation")
 	if skip {
@@ -202,6 +202,7 @@ func TestAppImportExport(t *testing.T) {
 	}
 }
 
+// go test -mod=readonly github.com/encichain/enci/app -run TestAppSimulationAfterImport -Enabled=true -NumBlocks=100 -BlockSize=200 -Commit=true  -Period=0 -v -timeout 24h
 func TestAppSimulationAfterImport(t *testing.T) {
 	config, db, dir, logger, skip, err := simapp.SetupSimulation("leveldb-app-sim", "Simulation")
 	if skip {
@@ -286,6 +287,7 @@ func TestAppSimulationAfterImport(t *testing.T) {
 
 // TODO: Make another test for the fuzzer itself, which just has noOp txs
 // and doesn't depend on the application.
+//go test -mod=readonly github.com/encichain/enci/app -run TestAppStateDeterminism -Enabled=true -NumBlocks=100 -BlockSize=200 -Commit=true -Verbose -PrintAllInvariants -Period=0 -v -timeout 24h
 func TestAppStateDeterminism(t *testing.T) {
 	if !simapp.FlagEnabledValue {
 		t.Skip("skipping application simulation")

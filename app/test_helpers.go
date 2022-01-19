@@ -21,6 +21,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/vesting"
+	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
 	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
 	authzmodule "github.com/cosmos/cosmos-sdk/x/authz/module"
@@ -123,7 +124,7 @@ func NewEnciTestApp(
 	sdk.GetConfig().SetBech32PrefixForAccount("enci", "encipub")
 	sdk.GetConfig().SetBech32PrefixForValidator("encivaloper", "encivaloperpub")
 	sdk.GetConfig().SetBech32PrefixForConsensusNode("encivalcons", "encivalconspub")
-	appCodec := encodingConfig.Codec
+	appCodec := encodingConfig.Marshaler
 	legacyAmino := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
 
@@ -315,11 +316,30 @@ func NewEnciTestApp(
 	// NOTE: capability module's beginblocker must come before any modules using capabilities (e.g. IBC)
 
 	app.mm.SetOrderBeginBlockers(
-		upgradetypes.ModuleName, capabilitytypes.ModuleName, minttypes.ModuleName, distrtypes.ModuleName, slashingtypes.ModuleName,
-		evidencetypes.ModuleName, stakingtypes.ModuleName, ibchost.ModuleName,
+		upgradetypes.ModuleName, capabilitytypes.ModuleName,
+		minttypes.ModuleName, distrtypes.ModuleName,
+		slashingtypes.ModuleName, evidencetypes.ModuleName,
+		stakingtypes.ModuleName, ibchost.ModuleName,
+		authtypes.ModuleName, banktypes.ModuleName,
+		govtypes.ModuleName, crisistypes.ModuleName,
+		genutiltypes.ModuleName, charitytypes.ModuleName,
+		authz.ModuleName, feegrant.ModuleName,
+		paramstypes.ModuleName, ibctransfertypes.ModuleName,
+		vestingtypes.ModuleName, ibchost.ModuleName,
 	)
 
-	app.mm.SetOrderEndBlockers(crisistypes.ModuleName, govtypes.ModuleName, stakingtypes.ModuleName, charitytypes.ModuleName)
+	app.mm.SetOrderEndBlockers(
+		crisistypes.ModuleName, govtypes.ModuleName,
+		stakingtypes.ModuleName, charitytypes.ModuleName, // Modules after this line do not have EndBlock functions
+		capabilitytypes.ModuleName, authtypes.ModuleName,
+		banktypes.ModuleName, distrtypes.ModuleName,
+		slashingtypes.ModuleName, minttypes.ModuleName,
+		genutiltypes.ModuleName, evidencetypes.ModuleName,
+		authz.ModuleName, feegrant.ModuleName,
+		paramstypes.ModuleName, ibctransfertypes.ModuleName,
+		upgradetypes.ModuleName, vestingtypes.ModuleName,
+		ibchost.ModuleName,
+	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
@@ -344,7 +364,13 @@ func NewEnciTestApp(
 		charitytypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
+		paramstypes.ModuleName,
+		upgradetypes.ModuleName,
+		vestingtypes.ModuleName,
 	)
+
+	// Uncomment if you want to set a custom migration order here.
+	// app.mm.SetOrderMigrations(custom order)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
@@ -442,7 +468,7 @@ func setup(withGenesis bool, invCheckPeriod uint) (*EnciApp, GenesisState) {
 	encCdc := MakeTestEncodingConfig()
 	app := NewEnciTestApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, invCheckPeriod, encCdc, simapp.EmptyAppOptions{})
 	if withGenesis {
-		return app, NewDefaultGenesisState(encCdc.Codec)
+		return app, NewDefaultGenesisState(encCdc.Marshaler)
 	}
 	return app, GenesisState{}
 }

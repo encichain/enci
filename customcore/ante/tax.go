@@ -37,9 +37,14 @@ func (dtd DeductTaxFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate
 	if !ok {
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
 	}
+	//Ensure fee collector module account has been set
+	if addr := dtd.ak.GetModuleAddress(types.FeeCollectorName); addr == nil {
+		return ctx, fmt.Errorf("fee collector module account (%s) has not been set", types.FeeCollectorName)
+	}
+
 	// Ensure charity tax collector module account has been set
 	if addr := dtd.ak.GetModuleAddress(charitytypes.CharityCollectorName); addr == nil {
-		panic(fmt.Sprintf("%s module account has not been set", charitytypes.CharityCollectorName))
+		return ctx, fmt.Errorf("charity tax module account (%s) has not been set", charitytypes.CharityCollectorName)
 	}
 
 	tax := ParseMsgAndComputeTax(ctx, dtd.CharityKeeper, tx.GetMsgs()...)

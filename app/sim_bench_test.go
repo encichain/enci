@@ -84,6 +84,7 @@ func BenchmarkFullAppSimulation(b *testing.B) {
 	}
 }
 
+//go test -mod=readonly github.com/encichain/enci/app -benchmem -bench=BenchmarkInvariants -run=^$ -Enabled=true -NumBlocks=300 -BlockSize=100 -Period=1 -Commit=true -v -timeout 24h
 func BenchmarkInvariants(b *testing.B) {
 	b.ReportAllocs()
 	config, db, dir, logger, skip, err := simapp.SetupSimulation("leveldb-app-invariant-bench", "Simulation")

@@ -16,7 +16,7 @@ import (
 )
 
 func TestDecodeDistributionStore(t *testing.T) {
-	cdc := app.MakeTestEncodingConfig().Codec
+	cdc := app.MakeTestEncodingConfig().Marshaler
 	dec := simulation.NewDecodeStore(cdc)
 	coins := sdk.NewCoins(sdk.NewInt64Coin(coretypes.MicroTokenDenom, 705000))
 

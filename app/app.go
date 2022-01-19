@@ -74,6 +74,7 @@ import (
 	ibchost "github.com/cosmos/ibc-go/modules/core/24-host"
 	ibckeeper "github.com/cosmos/ibc-go/modules/core/keeper"
 
+	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -451,11 +452,30 @@ func NewEnciApp(
 	// NOTE: capability module's beginblocker must come before any modules using capabilities (e.g. IBC)
 
 	app.mm.SetOrderBeginBlockers(
-		upgradetypes.ModuleName, capabilitytypes.ModuleName, minttypes.ModuleName, distrtypes.ModuleName, slashingtypes.ModuleName,
-		evidencetypes.ModuleName, stakingtypes.ModuleName, ibchost.ModuleName,
+		upgradetypes.ModuleName, capabilitytypes.ModuleName,
+		minttypes.ModuleName, distrtypes.ModuleName,
+		slashingtypes.ModuleName, evidencetypes.ModuleName,
+		stakingtypes.ModuleName, ibchost.ModuleName,
+		authtypes.ModuleName, banktypes.ModuleName,
+		govtypes.ModuleName, crisistypes.ModuleName,
+		genutiltypes.ModuleName, charitytypes.ModuleName,
+		authz.ModuleName, feegrant.ModuleName,
+		paramstypes.ModuleName, ibctransfertypes.ModuleName,
+		vestingtypes.ModuleName, ibchost.ModuleName,
 	)
 
-	app.mm.SetOrderEndBlockers(crisistypes.ModuleName, govtypes.ModuleName, stakingtypes.ModuleName, charitytypes.ModuleName)
+	app.mm.SetOrderEndBlockers(
+		crisistypes.ModuleName, govtypes.ModuleName,
+		stakingtypes.ModuleName, charitytypes.ModuleName, // Modules after this line do not have EndBlock functions
+		capabilitytypes.ModuleName, authtypes.ModuleName,
+		banktypes.ModuleName, distrtypes.ModuleName,
+		slashingtypes.ModuleName, minttypes.ModuleName,
+		genutiltypes.ModuleName, evidencetypes.ModuleName,
+		authz.ModuleName, feegrant.ModuleName,
+		paramstypes.ModuleName, ibctransfertypes.ModuleName,
+		upgradetypes.ModuleName, vestingtypes.ModuleName,
+		ibchost.ModuleName,
+	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
@@ -480,7 +500,13 @@ func NewEnciApp(
 		charitytypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
+		paramstypes.ModuleName,
+		upgradetypes.ModuleName,
+		vestingtypes.ModuleName,
 	)
+
+	// Uncomment if you want to set a custom migration order here.
+	// app.mm.SetOrderMigrations(custom order)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
