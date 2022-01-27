@@ -12,10 +12,10 @@ const (
 	BlocksPerWeek   = BlocksPerDay * 7
 	BlocksPerMonth  = BlocksPerDay * 30
 	BlocksPerYear   = BlocksPerDay * 365
-	BlocksPerPeriod = uint64(100)
+	BlocksPerEpoch  = uint64(100)
 )
 
-// IsLastBlockPeriod returns bool representing if current block is the last block of a CollectionPeriod
-func IsLastBlockPeriod(ctx sdk.Context) bool {
-	return (ctx.BlockHeight()+1)%int64(BlocksPerPeriod) == 0
+// IsLastBlockEpoch returns bool representing if current block is the last block of a CollectionEpoch
+func IsLastBlockEpoch(ctx sdk.Context) bool {
+	return (ctx.BlockHeight()+1)%int64(BlocksPerEpoch) == 0
 }

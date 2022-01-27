@@ -84,37 +84,37 @@ func (q Querier) TaxRateLimits(context context.Context, req *types.QueryTaxRateL
 	return &types.QueryTaxRateLimitsResponse{TaxRateLimits: q.GetTaxRateLimits(ctx)}, nil
 }
 
-// TaxProceeds returns the current tax proceeds collected for the current period
+// TaxProceeds returns the current tax proceeds collected for the current epoch
 func (q Querier) TaxProceeds(context context.Context, req *types.QueryTaxProceedsRequest) (*types.QueryTaxProceedsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(context)
 	return &types.QueryTaxProceedsResponse{TaxProceeds: q.GetTaxProceeds(ctx)}, nil
 }
 
-// CollectionPeriods returns all CollectionPeriod excluding empty CollectionPeriods
-func (q Querier) CollectionPeriods(context context.Context, req *types.QueryAllCollectionPeriodsRequest) (*types.QueryAllCollectionPeriodsResponse, error) {
+// CollectionEpochs returns all CollectionEpoch excluding empty CollectionEpochs
+func (q Querier) CollectionEpochs(context context.Context, req *types.QueryAllCollectionEpochsRequest) (*types.QueryAllCollectionEpochsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(context)
-	collectionPeriods := q.GetCollectionPeriods(ctx)
+	collectionEpochs := q.GetCollectionEpochs(ctx)
 
-	return &types.QueryAllCollectionPeriodsResponse{CollectionPeriods: collectionPeriods}, nil
+	return &types.QueryAllCollectionEpochsResponse{CollectionEpochs: collectionEpochs}, nil
 }
 
-// CollectionPeriod returns a CollectionPeriod based on *period*
-func (q Querier) CollectionPeriod(context context.Context, req *types.QueryCollectionPeriodRequest) (*types.QueryCollectionPeriodResponse, error) {
+// CollectionEpoch returns a CollectionEpoch based on *epoch*
+func (q Querier) CollectionEpoch(context context.Context, req *types.QueryCollectionEpochRequest) (*types.QueryCollectionEpochResponse, error) {
 	ctx := sdk.UnwrapSDKContext(context)
 
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "request cannot be nil")
 	}
 
-	if req.Period >= uint64(q.GetCurrentPeriod(ctx)) {
-		return nil, status.Error(codes.InvalidArgument, "period must be valid")
+	if req.Epoch >= uint64(q.GetCurrentEpoch(ctx)) {
+		return nil, status.Error(codes.InvalidArgument, "epoch must be valid")
 	}
 
-	collectionPeriod := types.CollectionPeriod{
-		Period:       req.Period,
-		TaxCollected: q.GetPeriodTaxProceeds(ctx, int64(req.Period)),
-		Payouts:      q.GetPayouts(ctx, int64(req.Period)),
+	collectionEpoch := types.CollectionEpoch{
+		Epoch:        req.Epoch,
+		TaxCollected: q.GetEpochTaxProceeds(ctx, int64(req.Epoch)),
+		Payouts:      q.GetPayouts(ctx, int64(req.Epoch)),
 	}
 
-	return &types.QueryCollectionPeriodResponse{CollectionPeriod: collectionPeriod}, nil
+	return &types.QueryCollectionEpochResponse{CollectionEpoch: collectionEpoch}, nil
 }

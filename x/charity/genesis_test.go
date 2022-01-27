@@ -27,9 +27,9 @@ type GenesisTestSuite struct {
 func (suite *GenesisTestSuite) TestExportGenesis() {
 	suite.app = coreapp.Setup(false)
 	app := suite.app
-	//ctx := app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerPeriod) * 30)
+	//ctx := app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerEpoch) * 30)
 	suite.ctx = app.BaseApp.NewContext(false, tmproto.Header{})
-	ctx := suite.ctx.WithBlockHeight(int64(coretypes.BlocksPerPeriod) * 30)
+	ctx := suite.ctx.WithBlockHeight(int64(coretypes.BlocksPerEpoch) * 30)
 	params := types.Params{
 		Charities: []types.Charity{
 			{CharityName: "foo", AccAddress: "enci1aag23fr2qjxan9aktyfsywp3udxg036c9zxv55", Checksum: keeper.CreateCharitySha256("foo", "enci1aag23fr2qjxan9aktyfsywp3udxg036c9zxv55")},
@@ -45,9 +45,9 @@ func (suite *GenesisTestSuite) TestExportGenesis() {
 		TaxRateMax:  sdk.NewDecWithPrec(10, 2),
 		BurnRateMax: sdk.NewDecWithPrec(40, 2),
 	}
-	collectionPeriods := []types.CollectionPeriod{}
+	collectionEpochs := []types.CollectionEpoch{}
 
-	newGenesis := types.NewGenesisState(params, taxRateLimits, taxCaps, taxProceeds, collectionPeriods)
+	newGenesis := types.NewGenesisState(params, taxRateLimits, taxCaps, taxProceeds, collectionEpochs)
 	charity.InitGenesis(ctx, app.CharityKeeper, *newGenesis)
 
 	exportGenesis := charity.ExportGenesis(ctx, app.CharityKeeper)
@@ -55,7 +55,7 @@ func (suite *GenesisTestSuite) TestExportGenesis() {
 	// create new app that does not share persistent or in-memory state
 	// and initialize app from exported genesis state above.()
 	newApp := coreapp.Setup(false)
-	newCtx := newApp.BaseApp.NewContext(false, tmproto.Header{}).WithBlockHeight(int64(coretypes.BlocksPerPeriod) * 30)
+	newCtx := newApp.BaseApp.NewContext(false, tmproto.Header{}).WithBlockHeight(int64(coretypes.BlocksPerEpoch) * 30)
 	charity.InitGenesis(newCtx, newApp.CharityKeeper, *exportGenesis)
 	secondExpGen := charity.ExportGenesis(newCtx, newApp.CharityKeeper)
 

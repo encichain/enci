@@ -39,8 +39,8 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdQueryBurnRate(),
 		CmdQueryTaxRateLimits(),
 		CmdQueryTaxProceeds(),
-		CmdQueryCollectionPeriods(),
-		CmdQueryCollectionPeriod(),
+		CmdQueryCollectionEpochs(),
+		CmdQueryCollectionEpoch(),
 		//CmdQueryChecksum(),
 	)
 
@@ -183,7 +183,7 @@ func CmdQueryBurnRate() *cobra.Command {
 		Args:  cobra.NoArgs,
 		Short: "Query the charity burn rate",
 		Long: `Query the charity burn rate. Returned is a decimal, representing the percent
-				of the charity tax proceeds that is burned at the end of each period`,
+				of the charity tax proceeds that is burned at the end of each epoch`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -229,13 +229,13 @@ func CmdQueryTaxRateLimits() *cobra.Command {
 	return cmd
 }
 
-// CmdQueryTaxProceeds implements the query taxproceeds command and returns the tax collected for the current CollectionPeriod
+// CmdQueryTaxProceeds implements the query taxproceeds command and returns the tax collected for the current CollectionEpoch
 func CmdQueryTaxProceeds() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "taxproceeds",
 		Args:  cobra.NoArgs,
-		Short: "Query the tax collected for the current collection period",
-		Long:  "Query the tax collected for the current collection period. This represents the proceeds from the charity tax.",
+		Short: "Query the tax collected for the current collection epoch",
+		Long:  "Query the tax collected for the current collection epoch. This represents the proceeds from the charity tax.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -255,17 +255,17 @@ func CmdQueryTaxProceeds() *cobra.Command {
 	return cmd
 }
 
-// CmdQueryCollectionPeriods implements the query collectionperiods command and returns all CollectionPeriods
-func CmdQueryCollectionPeriods() *cobra.Command {
+// CmdQueryCollectionEpochs implements the query collectionepochs command and returns all CollectionEpochs
+func CmdQueryCollectionEpochs() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "collection-periods",
+		Use:   "collection-epochs",
 		Args:  cobra.NoArgs,
-		Short: "Query all collection periods",
+		Short: "Query all collection epochs",
 		Long: strings.TrimSpace(`
-		Query all collection periods.
-		This returns the data from all previous collection periods.
+		Query all collection epochs.
+		This returns the data from all previous collection epochs.
 	
-		$ encid query charity collection-periods
+		$ encid query charity collection-epochs
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -274,7 +274,7 @@ func CmdQueryCollectionPeriods() *cobra.Command {
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.CollectionPeriods(context.Background(), &types.QueryAllCollectionPeriodsRequest{})
+			res, err := queryClient.CollectionEpochs(context.Background(), &types.QueryAllCollectionEpochsRequest{})
 			if err != nil {
 				return err
 			}
@@ -286,16 +286,16 @@ func CmdQueryCollectionPeriods() *cobra.Command {
 	return cmd
 }
 
-// CmdQueryCollectionPeriods implements the query collectionperiod command and returns a CollectionPeriod based on period
-func CmdQueryCollectionPeriod() *cobra.Command {
+// CmdQueryCollectionEpochs implements the query collectionepoch command and returns a CollectionEpoch based on epoch
+func CmdQueryCollectionEpoch() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "collection-period [period]",
+		Use:   "collection-epoch [epoch]",
 		Args:  cobra.ExactArgs(1),
-		Short: "Query a collection period based on period",
+		Short: "Query a collection epoch based on epoch",
 		Long: strings.TrimSpace(`
-		Query a collection period.
+		Query a collection epoch.
 	
-		$ encid query charity collection-period 0
+		$ encid query charity collection-epoch 0
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -304,12 +304,12 @@ func CmdQueryCollectionPeriod() *cobra.Command {
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			period, err := strconv.Atoi(args[0])
+			epoch, err := strconv.Atoi(args[0])
 			if err != nil {
 				return err
 			}
 
-			res, err := queryClient.CollectionPeriod(context.Background(), &types.QueryCollectionPeriodRequest{Period: uint64(period)})
+			res, err := queryClient.CollectionEpoch(context.Background(), &types.QueryCollectionEpochRequest{Epoch: uint64(epoch)})
 			if err != nil {
 				return err
 			}

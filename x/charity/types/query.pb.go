@@ -677,22 +677,22 @@ func (m *QueryTaxRateLimitsResponse) GetTaxRateLimits() TaxRateLimits {
 	return TaxRateLimits{}
 }
 
-// QueryAllCollectionPeriodsRequest is the request type for the QueryAllCollectionPeriods Request gRPC method
-type QueryAllCollectionPeriodsRequest struct {
+// QueryAllCollectionEpochsRequest is the request type for the QueryAllCollectionEpochs Request gRPC method
+type QueryAllCollectionEpochsRequest struct {
 }
 
-func (m *QueryAllCollectionPeriodsRequest) Reset()         { *m = QueryAllCollectionPeriodsRequest{} }
-func (m *QueryAllCollectionPeriodsRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryAllCollectionPeriodsRequest) ProtoMessage()    {}
-func (*QueryAllCollectionPeriodsRequest) Descriptor() ([]byte, []int) {
+func (m *QueryAllCollectionEpochsRequest) Reset()         { *m = QueryAllCollectionEpochsRequest{} }
+func (m *QueryAllCollectionEpochsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryAllCollectionEpochsRequest) ProtoMessage()    {}
+func (*QueryAllCollectionEpochsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5a81d6118f722a7, []int{16}
 }
-func (m *QueryAllCollectionPeriodsRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryAllCollectionEpochsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryAllCollectionPeriodsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryAllCollectionEpochsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryAllCollectionPeriodsRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryAllCollectionEpochsRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -702,35 +702,35 @@ func (m *QueryAllCollectionPeriodsRequest) XXX_Marshal(b []byte, deterministic b
 		return b[:n], nil
 	}
 }
-func (m *QueryAllCollectionPeriodsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAllCollectionPeriodsRequest.Merge(m, src)
+func (m *QueryAllCollectionEpochsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllCollectionEpochsRequest.Merge(m, src)
 }
-func (m *QueryAllCollectionPeriodsRequest) XXX_Size() int {
+func (m *QueryAllCollectionEpochsRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryAllCollectionPeriodsRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAllCollectionPeriodsRequest.DiscardUnknown(m)
+func (m *QueryAllCollectionEpochsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllCollectionEpochsRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryAllCollectionPeriodsRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryAllCollectionEpochsRequest proto.InternalMessageInfo
 
-// QueryAllCollectionPeriodsResponse is the response type for the QueryAllCollectionPeriods Request gRPC method
-type QueryAllCollectionPeriodsResponse struct {
-	CollectionPeriods []CollectionPeriod `protobuf:"bytes,1,rep,name=collection_periods,json=collectionPeriods,proto3" json:"collection_periods"`
+// QueryAllCollectionEpochsResponse is the response type for the QueryAllCollectionEpochs Request gRPC method
+type QueryAllCollectionEpochsResponse struct {
+	CollectionEpochs []CollectionEpoch `protobuf:"bytes,1,rep,name=collection_epochs,json=collectionEpochs,proto3" json:"collection_epochs"`
 }
 
-func (m *QueryAllCollectionPeriodsResponse) Reset()         { *m = QueryAllCollectionPeriodsResponse{} }
-func (m *QueryAllCollectionPeriodsResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryAllCollectionPeriodsResponse) ProtoMessage()    {}
-func (*QueryAllCollectionPeriodsResponse) Descriptor() ([]byte, []int) {
+func (m *QueryAllCollectionEpochsResponse) Reset()         { *m = QueryAllCollectionEpochsResponse{} }
+func (m *QueryAllCollectionEpochsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryAllCollectionEpochsResponse) ProtoMessage()    {}
+func (*QueryAllCollectionEpochsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5a81d6118f722a7, []int{17}
 }
-func (m *QueryAllCollectionPeriodsResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryAllCollectionEpochsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryAllCollectionPeriodsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryAllCollectionEpochsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryAllCollectionPeriodsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryAllCollectionEpochsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -740,43 +740,43 @@ func (m *QueryAllCollectionPeriodsResponse) XXX_Marshal(b []byte, deterministic 
 		return b[:n], nil
 	}
 }
-func (m *QueryAllCollectionPeriodsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAllCollectionPeriodsResponse.Merge(m, src)
+func (m *QueryAllCollectionEpochsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllCollectionEpochsResponse.Merge(m, src)
 }
-func (m *QueryAllCollectionPeriodsResponse) XXX_Size() int {
+func (m *QueryAllCollectionEpochsResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryAllCollectionPeriodsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAllCollectionPeriodsResponse.DiscardUnknown(m)
+func (m *QueryAllCollectionEpochsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllCollectionEpochsResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryAllCollectionPeriodsResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryAllCollectionEpochsResponse proto.InternalMessageInfo
 
-func (m *QueryAllCollectionPeriodsResponse) GetCollectionPeriods() []CollectionPeriod {
+func (m *QueryAllCollectionEpochsResponse) GetCollectionEpochs() []CollectionEpoch {
 	if m != nil {
-		return m.CollectionPeriods
+		return m.CollectionEpochs
 	}
 	return nil
 }
 
-//QueryCollectionPeriodRequest is the request type for the Query CollectionPeriod Request RPC method
-// Queries a single CollectionPeriod based on *period*
-type QueryCollectionPeriodRequest struct {
-	Period uint64 `protobuf:"varint,1,opt,name=period,proto3" json:"period,omitempty"`
+//QueryCollectionEpochRequest is the request type for the Query CollectionEpoch Request RPC method
+// Queries a single CollectionEpoch based on *epoch*
+type QueryCollectionEpochRequest struct {
+	Epoch uint64 `protobuf:"varint,1,opt,name=epoch,proto3" json:"epoch,omitempty"`
 }
 
-func (m *QueryCollectionPeriodRequest) Reset()         { *m = QueryCollectionPeriodRequest{} }
-func (m *QueryCollectionPeriodRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryCollectionPeriodRequest) ProtoMessage()    {}
-func (*QueryCollectionPeriodRequest) Descriptor() ([]byte, []int) {
+func (m *QueryCollectionEpochRequest) Reset()         { *m = QueryCollectionEpochRequest{} }
+func (m *QueryCollectionEpochRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryCollectionEpochRequest) ProtoMessage()    {}
+func (*QueryCollectionEpochRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5a81d6118f722a7, []int{18}
 }
-func (m *QueryCollectionPeriodRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryCollectionEpochRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryCollectionPeriodRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryCollectionEpochRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryCollectionPeriodRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryCollectionEpochRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -786,43 +786,43 @@ func (m *QueryCollectionPeriodRequest) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
-func (m *QueryCollectionPeriodRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryCollectionPeriodRequest.Merge(m, src)
+func (m *QueryCollectionEpochRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryCollectionEpochRequest.Merge(m, src)
 }
-func (m *QueryCollectionPeriodRequest) XXX_Size() int {
+func (m *QueryCollectionEpochRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryCollectionPeriodRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryCollectionPeriodRequest.DiscardUnknown(m)
+func (m *QueryCollectionEpochRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryCollectionEpochRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryCollectionPeriodRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryCollectionEpochRequest proto.InternalMessageInfo
 
-func (m *QueryCollectionPeriodRequest) GetPeriod() uint64 {
+func (m *QueryCollectionEpochRequest) GetEpoch() uint64 {
 	if m != nil {
-		return m.Period
+		return m.Epoch
 	}
 	return 0
 }
 
-//QueryCollectionPeriodResponse is the response type for the Query CollectionPeriod Request RPC method
-// Responds with a single CollectionPeriod based on *period*
-type QueryCollectionPeriodResponse struct {
-	CollectionPeriod CollectionPeriod `protobuf:"bytes,1,opt,name=collection_period,json=collectionPeriod,proto3" json:"collection_period"`
+//QueryCollectionEpochResponse is the response type for the Query CollectionEpoch Request RPC method
+// Responds with a single CollectionEpoch based on *epoch*
+type QueryCollectionEpochResponse struct {
+	CollectionEpoch CollectionEpoch `protobuf:"bytes,1,opt,name=collection_epoch,json=collectionEpoch,proto3" json:"collection_epoch"`
 }
 
-func (m *QueryCollectionPeriodResponse) Reset()         { *m = QueryCollectionPeriodResponse{} }
-func (m *QueryCollectionPeriodResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryCollectionPeriodResponse) ProtoMessage()    {}
-func (*QueryCollectionPeriodResponse) Descriptor() ([]byte, []int) {
+func (m *QueryCollectionEpochResponse) Reset()         { *m = QueryCollectionEpochResponse{} }
+func (m *QueryCollectionEpochResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryCollectionEpochResponse) ProtoMessage()    {}
+func (*QueryCollectionEpochResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e5a81d6118f722a7, []int{19}
 }
-func (m *QueryCollectionPeriodResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryCollectionEpochResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryCollectionPeriodResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryCollectionEpochResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryCollectionPeriodResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryCollectionEpochResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -832,23 +832,23 @@ func (m *QueryCollectionPeriodResponse) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-func (m *QueryCollectionPeriodResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryCollectionPeriodResponse.Merge(m, src)
+func (m *QueryCollectionEpochResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryCollectionEpochResponse.Merge(m, src)
 }
-func (m *QueryCollectionPeriodResponse) XXX_Size() int {
+func (m *QueryCollectionEpochResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryCollectionPeriodResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryCollectionPeriodResponse.DiscardUnknown(m)
+func (m *QueryCollectionEpochResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryCollectionEpochResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryCollectionPeriodResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryCollectionEpochResponse proto.InternalMessageInfo
 
-func (m *QueryCollectionPeriodResponse) GetCollectionPeriod() CollectionPeriod {
+func (m *QueryCollectionEpochResponse) GetCollectionEpoch() CollectionEpoch {
 	if m != nil {
-		return m.CollectionPeriod
+		return m.CollectionEpoch
 	}
-	return CollectionPeriod{}
+	return CollectionEpoch{}
 }
 
 func init() {
@@ -868,77 +868,77 @@ func init() {
 	proto.RegisterType((*QueryTaxProceedsResponse)(nil), "enci.charity.v1beta1.QueryTaxProceedsResponse")
 	proto.RegisterType((*QueryTaxRateLimitsRequest)(nil), "enci.charity.v1beta1.QueryTaxRateLimitsRequest")
 	proto.RegisterType((*QueryTaxRateLimitsResponse)(nil), "enci.charity.v1beta1.QueryTaxRateLimitsResponse")
-	proto.RegisterType((*QueryAllCollectionPeriodsRequest)(nil), "enci.charity.v1beta1.QueryAllCollectionPeriodsRequest")
-	proto.RegisterType((*QueryAllCollectionPeriodsResponse)(nil), "enci.charity.v1beta1.QueryAllCollectionPeriodsResponse")
-	proto.RegisterType((*QueryCollectionPeriodRequest)(nil), "enci.charity.v1beta1.QueryCollectionPeriodRequest")
-	proto.RegisterType((*QueryCollectionPeriodResponse)(nil), "enci.charity.v1beta1.QueryCollectionPeriodResponse")
+	proto.RegisterType((*QueryAllCollectionEpochsRequest)(nil), "enci.charity.v1beta1.QueryAllCollectionEpochsRequest")
+	proto.RegisterType((*QueryAllCollectionEpochsResponse)(nil), "enci.charity.v1beta1.QueryAllCollectionEpochsResponse")
+	proto.RegisterType((*QueryCollectionEpochRequest)(nil), "enci.charity.v1beta1.QueryCollectionEpochRequest")
+	proto.RegisterType((*QueryCollectionEpochResponse)(nil), "enci.charity.v1beta1.QueryCollectionEpochResponse")
 }
 
 func init() { proto.RegisterFile("enci/charity/v1beta1/query.proto", fileDescriptor_e5a81d6118f722a7) }
 
 var fileDescriptor_e5a81d6118f722a7 = []byte{
-	// 974 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x96, 0xcf, 0x6f, 0xe3, 0x44,
-	0x14, 0xc7, 0x6b, 0x76, 0x37, 0x6d, 0x5f, 0x58, 0xb1, 0x1d, 0xb2, 0xdd, 0xd6, 0xb4, 0x4e, 0xea,
-	0xd2, 0x1f, 0xd9, 0x52, 0xbb, 0x9b, 0x95, 0x16, 0x84, 0x84, 0x04, 0x09, 0x97, 0x15, 0x1c, 0xda,
-	0x08, 0xb4, 0x02, 0x0e, 0xd5, 0xc4, 0x1d, 0xa5, 0x16, 0x89, 0xc7, 0x6b, 0x4f, 0x50, 0xcb, 0x6a,
-	0x25, 0x04, 0x07, 0x24, 0x40, 0x02, 0x89, 0x03, 0x47, 0xee, 0xdc, 0xf9, 0x1f, 0xf6, 0xb8, 0x12,
-	0x17, 0xc4, 0xa1, 0xa0, 0x96, 0x3f, 0x83, 0x03, 0xf2, 0xcc, 0xb3, 0x93, 0x38, 0x8e, 0xeb, 0xc2,
-	0x29, 0xce, 0xcc, 0x7b, 0xef, 0xfb, 0xf1, 0x9b, 0x99, 0xef, 0x18, 0x6a, 0xcc, 0x73, 0x5c, 0xdb,
-	0x39, 0xa6, 0x81, 0x2b, 0x4e, 0xed, 0xcf, 0xee, 0x75, 0x98, 0xa0, 0xf7, 0xec, 0xc7, 0x03, 0x16,
-	0x9c, 0x5a, 0x7e, 0xc0, 0x05, 0x27, 0x95, 0x28, 0xc2, 0xc2, 0x08, 0x0b, 0x23, 0xf4, 0x95, 0x2e,
-	0xe7, 0xdd, 0x1e, 0xb3, 0xa9, 0xef, 0xda, 0xd4, 0xf3, 0xb8, 0xa0, 0xc2, 0xe5, 0x5e, 0xa8, 0x72,
-	0xf4, 0x4a, 0x97, 0x77, 0xb9, 0x7c, 0xb4, 0xa3, 0x27, 0x1c, 0x35, 0x33, 0xb5, 0xe2, 0xca, 0x2a,
-	0xc6, 0x70, 0x78, 0xd8, 0xe7, 0xa1, 0xdd, 0xa1, 0x21, 0x1b, 0x86, 0x70, 0xd7, 0x53, 0xf3, 0xe6,
-	0x6d, 0x78, 0xf9, 0x20, 0x82, 0xfb, 0x80, 0x9e, 0xb4, 0xa9, 0x60, 0x6d, 0xf6, 0x78, 0xc0, 0x42,
-	0x61, 0x52, 0xa8, 0x8c, 0x0f, 0x87, 0x3e, 0xf7, 0x42, 0x46, 0x1e, 0xc2, 0x9c, 0xa0, 0x27, 0x87,
-	0x01, 0x15, 0x6c, 0x49, 0xab, 0x69, 0xdb, 0xf3, 0x4d, 0xeb, 0xd9, 0x59, 0x75, 0xe6, 0x8f, 0xb3,
-	0xea, 0x66, 0xd7, 0x15, 0xc7, 0x83, 0x8e, 0xe5, 0xf0, 0xbe, 0x8d, 0x9a, 0xea, 0x67, 0x37, 0x3c,
-	0xfa, 0xd4, 0x16, 0xa7, 0x3e, 0x0b, 0xad, 0x77, 0x99, 0xd3, 0x9e, 0x15, 0xaa, 0xa4, 0x59, 0x01,
-	0x22, 0x25, 0xf6, 0x69, 0x40, 0xfb, 0x61, 0x2c, 0x7c, 0x80, 0x3c, 0xf1, 0x28, 0xea, 0xbe, 0x09,
-	0x25, 0x5f, 0x8e, 0x48, 0xd5, 0x72, 0x63, 0xc5, 0xca, 0xea, 0xa2, 0xa5, 0xb2, 0x9a, 0xd7, 0x23,
-	0xa6, 0x36, 0x66, 0x98, 0x77, 0xe0, 0xb6, 0x2c, 0xd9, 0x92, 0xc1, 0x2e, 0x4b, 0xb4, 0x1e, 0xc1,
-	0x62, 0x7a, 0x02, 0xe5, 0xde, 0x82, 0x59, 0x2c, 0xbd, 0xa4, 0xd5, 0xae, 0x6d, 0x97, 0x1b, 0xab,
-	0xd9, 0x7a, 0x2a, 0xf3, 0x14, 0x05, 0xe3, 0x9c, 0xd1, 0xa6, 0xb6, 0xa8, 0x9f, 0xe8, 0x7d, 0x38,
-	0x6c, 0xaa, 0x1a, 0x4e, 0xd4, 0x64, 0x53, 0x1d, 0xea, 0x87, 0x28, 0x37, 0xe5, 0xf5, 0x54, 0x62,
-	0xac, 0x26, 0x54, 0x19, 0x73, 0x11, 0xcb, 0x36, 0x07, 0x81, 0x37, 0xba, 0x86, 0x47, 0xf8, 0xde,
-	0xc3, 0x71, 0xd4, 0x7b, 0x0f, 0xe6, 0x3b, 0x83, 0xc0, 0xfb, 0x3f, 0xab, 0x38, 0xd7, 0xc1, 0xa2,
-	0xe6, 0x5d, 0x5c, 0x46, 0xc5, 0x86, 0xda, 0xa4, 0x02, 0x37, 0x8e, 0x98, 0xc7, 0xfb, 0xaa, 0x7c,
-	0x5b, 0xfd, 0x31, 0x1f, 0x8d, 0xf5, 0x25, 0xe1, 0x79, 0x1b, 0xae, 0xb5, 0xa8, 0xff, 0x1f, 0x48,
-	0x1e, 0x7a, 0xa2, 0x1d, 0xa5, 0x9a, 0xcb, 0x70, 0x27, 0x2e, 0xbc, 0x1f, 0x70, 0x87, 0xb1, 0xa3,
-	0xa4, 0xe9, 0xdf, 0x68, 0xb0, 0x34, 0x39, 0x87, 0xca, 0x1e, 0xbc, 0x18, 0x75, 0xde, 0xc7, 0x71,
-	0xec, 0xfe, 0xb2, 0xa5, 0x94, 0xac, 0xe8, 0xd0, 0x0c, 0xd7, 0x9a, 0xbb, 0x5e, 0x73, 0x2f, 0xa2,
-	0xfb, 0xe5, 0xcf, 0xea, 0x76, 0x01, 0xba, 0x28, 0x21, 0x6c, 0x97, 0xc5, 0x50, 0xd7, 0x7c, 0x05,
-	0x96, 0x47, 0x8f, 0xd5, 0xfb, 0x6e, 0xdf, 0x15, 0x09, 0x29, 0x07, 0x3d, 0x6b, 0x12, 0x51, 0x0f,
-	0xe0, 0xa5, 0xf8, 0xe4, 0x1d, 0xf6, 0xe4, 0x14, 0x1e, 0x85, 0xf5, 0xa9, 0x7b, 0x65, 0x58, 0x05,
-	0xb7, 0xcc, 0x4d, 0x31, 0x3a, 0x68, 0x9a, 0x50, 0x93, 0x82, 0xef, 0xf4, 0x7a, 0x2d, 0xde, 0xeb,
-	0x31, 0x27, 0xb2, 0x9c, 0x7d, 0x16, 0xb8, 0x7c, 0xd8, 0xbe, 0x2f, 0x34, 0x58, 0xcb, 0x09, 0x42,
-	0xb8, 0x4f, 0x80, 0x38, 0xc9, 0xe4, 0xa1, 0xaf, 0x66, 0xb1, 0x9b, 0x9b, 0x53, 0x8e, 0x4e, 0xaa,
-	0x18, 0x22, 0x2e, 0x38, 0x69, 0x11, 0xf3, 0x01, 0xac, 0xa8, 0x63, 0x9a, 0x9a, 0x89, 0xf7, 0xda,
-	0x22, 0x94, 0x94, 0xa2, 0x6c, 0xc8, 0xf5, 0x36, 0xfe, 0x33, 0x3f, 0x87, 0xd5, 0x29, 0x79, 0x48,
-	0xfd, 0x11, 0x2c, 0x4c, 0x50, 0x63, 0x53, 0xaf, 0x06, 0x7d, 0x2b, 0x0d, 0xdd, 0xf8, 0xa7, 0x0c,
-	0x37, 0xa4, 0x38, 0xf9, 0x4a, 0x83, 0x92, 0xb2, 0x25, 0xb2, 0x9d, 0x5d, 0x74, 0xd2, 0x05, 0xf5,
-	0x7a, 0x81, 0x48, 0xf5, 0x12, 0xe6, 0xab, 0x5f, 0xfe, 0xf6, 0xf7, 0x8f, 0x2f, 0x18, 0x64, 0xc5,
-	0xce, 0xbc, 0x0d, 0x94, 0x07, 0x92, 0xaf, 0x35, 0x98, 0xc5, 0x1d, 0x41, 0xf2, 0x8a, 0x8f, 0x5f,
-	0x03, 0xfa, 0xdd, 0x22, 0xa1, 0x08, 0xb2, 0x21, 0x41, 0xaa, 0x64, 0x35, 0x1b, 0x44, 0xd0, 0x93,
-	0x68, 0xef, 0x92, 0xef, 0x35, 0x98, 0x4f, 0x0c, 0x97, 0xec, 0xe4, 0x08, 0xa4, 0xfd, 0x5a, 0x7f,
-	0xad, 0x58, 0x30, 0xf2, 0x6c, 0x49, 0x9e, 0x35, 0x52, 0xb5, 0x73, 0xae, 0xc9, 0x88, 0x01, 0x7b,
-	0x13, 0x79, 0xe9, 0x65, 0xbd, 0x19, 0x71, 0xf3, 0xcb, 0x7a, 0x33, 0xea, 0xf0, 0x05, 0x7a, 0x13,
-	0x99, 0x3f, 0xf9, 0x56, 0x83, 0xb9, 0xd8, 0xad, 0x49, 0x5e, 0xfd, 0x94, 0xd5, 0xeb, 0x3b, 0x85,
-	0x62, 0x11, 0x66, 0x53, 0xc2, 0xd4, 0x88, 0x91, 0x0d, 0x13, 0x39, 0xbb, 0x5c, 0xa9, 0xef, 0x34,
-	0x28, 0xa9, 0x17, 0xc9, 0xdd, 0xb9, 0x63, 0xc6, 0xaf, 0xd7, 0x0b, 0x44, 0x22, 0xc7, 0xae, 0xe4,
-	0xd8, 0x22, 0x1b, 0xb9, 0x4d, 0xb1, 0x9f, 0xc8, 0xbb, 0xe3, 0x29, 0xf9, 0x59, 0x83, 0x9b, 0x63,
-	0xa6, 0x46, 0xec, 0xcb, 0x77, 0xe7, 0x98, 0xc3, 0xea, 0x7b, 0xc5, 0x13, 0x90, 0x71, 0x47, 0x32,
-	0x6e, 0x90, 0xf5, 0xdc, 0x4d, 0xad, 0xfc, 0x98, 0xfc, 0xa4, 0x41, 0x79, 0xe4, 0x96, 0x21, 0xbb,
-	0xf9, 0x72, 0xa9, 0x9b, 0x4a, 0xb7, 0x8a, 0x86, 0x23, 0x5b, 0x5d, 0xb2, 0xad, 0x93, 0xb5, 0xa9,
-	0x6c, 0xf1, 0xbd, 0x46, 0x7e, 0xd5, 0x60, 0x61, 0xc2, 0xbd, 0xc9, 0x83, 0x1c, 0xc1, 0x9c, 0x3b,
-	0x41, 0x7f, 0xfd, 0xca, 0x79, 0x48, 0x6c, 0x4b, 0xe2, 0x3a, 0xd9, 0x9a, 0x72, 0x24, 0x93, 0x44,
-	0xbc, 0x41, 0x22, 0xee, 0x5b, 0xe9, 0x72, 0xa4, 0x91, 0x67, 0x03, 0xd9, 0x77, 0x84, 0x7e, 0xff,
-	0x4a, 0x39, 0x88, 0xfb, 0x86, 0xc4, 0x6d, 0x90, 0xbd, 0x82, 0xb8, 0xf6, 0x13, 0xf5, 0xf0, 0xb4,
-	0xd9, 0x7a, 0x76, 0x6e, 0x68, 0xcf, 0xcf, 0x0d, 0xed, 0xaf, 0x73, 0x43, 0xfb, 0xe1, 0xc2, 0x98,
-	0x79, 0x7e, 0x61, 0xcc, 0xfc, 0x7e, 0x61, 0xcc, 0x7c, 0x5c, 0x1f, 0xf9, 0x70, 0x88, 0xaa, 0x3a,
-	0xc7, 0xd4, 0xf5, 0x54, 0xfd, 0x93, 0x44, 0x41, 0x7e, 0x3f, 0x74, 0x4a, 0xf2, 0x0b, 0xfd, 0xfe,
-	0xbf, 0x01, 0x00, 0x00, 0xff, 0xff, 0x9c, 0xb2, 0x67, 0x97, 0x53, 0x0c, 0x00, 0x00,
+	// 973 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x96, 0xcf, 0x6f, 0xdc, 0x44,
+	0x14, 0xc7, 0x63, 0xda, 0xe6, 0xc7, 0x5b, 0xaa, 0x84, 0x61, 0xdb, 0x26, 0x6e, 0xea, 0xdd, 0x38,
+	0x24, 0xdd, 0x34, 0xc4, 0x4e, 0x52, 0xd1, 0x03, 0x12, 0x12, 0xec, 0xc2, 0xa1, 0x82, 0x43, 0xb3,
+	0x02, 0x8a, 0xb8, 0x44, 0xb3, 0xce, 0x68, 0x63, 0xb1, 0xeb, 0x71, 0xd7, 0xb3, 0x55, 0xa2, 0xd2,
+	0x0b, 0x1c, 0x90, 0x00, 0x09, 0x24, 0x0e, 0x1c, 0xb9, 0x73, 0x82, 0xff, 0xa2, 0xc7, 0x4a, 0x5c,
+	0x10, 0x87, 0x82, 0x12, 0xfe, 0x03, 0xfe, 0x01, 0x34, 0x33, 0xcf, 0x5e, 0xaf, 0xe3, 0x75, 0x1c,
+	0x38, 0xed, 0x7a, 0xe6, 0xbd, 0xf7, 0xfd, 0xf8, 0xcd, 0xcc, 0x77, 0x0c, 0x75, 0x16, 0x78, 0xbe,
+	0xeb, 0x1d, 0xd2, 0x81, 0x2f, 0x8e, 0xdd, 0xc7, 0x3b, 0x1d, 0x26, 0xe8, 0x8e, 0xfb, 0x68, 0xc8,
+	0x06, 0xc7, 0x4e, 0x38, 0xe0, 0x82, 0x93, 0xaa, 0x8c, 0x70, 0x30, 0xc2, 0xc1, 0x08, 0x73, 0xb9,
+	0xcb, 0x79, 0xb7, 0xc7, 0x5c, 0x1a, 0xfa, 0x2e, 0x0d, 0x02, 0x2e, 0xa8, 0xf0, 0x79, 0x10, 0xe9,
+	0x1c, 0xb3, 0xda, 0xe5, 0x5d, 0xae, 0xfe, 0xba, 0xf2, 0x1f, 0x8e, 0xda, 0xb9, 0x5a, 0x71, 0x65,
+	0x1d, 0x63, 0x79, 0x3c, 0xea, 0xf3, 0xc8, 0xed, 0xd0, 0x88, 0x8d, 0x42, 0xb8, 0x1f, 0xe8, 0x79,
+	0xfb, 0x1a, 0xbc, 0xba, 0x27, 0xe1, 0x3e, 0xa4, 0x47, 0x6d, 0x2a, 0x58, 0x9b, 0x3d, 0x1a, 0xb2,
+	0x48, 0xd8, 0x14, 0xaa, 0xe3, 0xc3, 0x51, 0xc8, 0x83, 0x88, 0x91, 0xfb, 0x30, 0x2b, 0xe8, 0xd1,
+	0xfe, 0x80, 0x0a, 0xb6, 0x68, 0xd4, 0x8d, 0xc6, 0x5c, 0xd3, 0x79, 0xf6, 0xa2, 0x36, 0xf5, 0xc7,
+	0x8b, 0xda, 0x7a, 0xd7, 0x17, 0x87, 0xc3, 0x8e, 0xe3, 0xf1, 0xbe, 0x8b, 0x9a, 0xfa, 0x67, 0x2b,
+	0x3a, 0xf8, 0xcc, 0x15, 0xc7, 0x21, 0x8b, 0x9c, 0x77, 0x99, 0xd7, 0x9e, 0x11, 0xba, 0xa4, 0x5d,
+	0x05, 0xa2, 0x24, 0x1e, 0xd0, 0x01, 0xed, 0x47, 0xb1, 0xf0, 0x1e, 0xf2, 0xc4, 0xa3, 0xa8, 0xfb,
+	0x26, 0x4c, 0x87, 0x6a, 0x44, 0xa9, 0x56, 0x76, 0x97, 0x9d, 0xbc, 0x2e, 0x3a, 0x3a, 0xab, 0x79,
+	0x59, 0x32, 0xb5, 0x31, 0xc3, 0xbe, 0x01, 0xd7, 0x54, 0xc9, 0x96, 0x0a, 0xf6, 0x59, 0xa2, 0xf5,
+	0x10, 0xae, 0x67, 0x27, 0x50, 0xee, 0x2d, 0x98, 0xc1, 0xd2, 0x8b, 0x46, 0xfd, 0x52, 0xa3, 0xb2,
+	0x7b, 0x2b, 0x5f, 0x4f, 0x67, 0x1e, 0xa3, 0x60, 0x9c, 0x93, 0x6e, 0x6a, 0x8b, 0x86, 0x89, 0xde,
+	0x47, 0xa3, 0xa6, 0xea, 0xe1, 0x44, 0x4d, 0x35, 0xd5, 0xa3, 0x61, 0x84, 0x72, 0x13, 0x5e, 0x4f,
+	0x27, 0xc6, 0x6a, 0x42, 0x97, 0xb1, 0xaf, 0x63, 0xd9, 0xe6, 0x70, 0x10, 0xa4, 0xd7, 0xf0, 0x00,
+	0xdf, 0x7b, 0x34, 0x8e, 0x7a, 0xef, 0xc3, 0x5c, 0x67, 0x38, 0x08, 0xfe, 0xcf, 0x2a, 0xce, 0x76,
+	0xb0, 0xa8, 0x7d, 0x07, 0x97, 0x51, 0xb3, 0xa1, 0x36, 0xa9, 0xc2, 0x95, 0x03, 0x16, 0xf0, 0xbe,
+	0x2e, 0xdf, 0xd6, 0x0f, 0xf6, 0xc3, 0xb1, 0xbe, 0x24, 0x3c, 0x6f, 0xc3, 0xa5, 0x16, 0x0d, 0xff,
+	0x03, 0xc9, 0xfd, 0x40, 0xb4, 0x65, 0xaa, 0xbd, 0x04, 0x37, 0xe2, 0xc2, 0x0f, 0x06, 0xdc, 0x63,
+	0xec, 0x20, 0x69, 0xfa, 0xd7, 0x06, 0x2c, 0x9e, 0x9d, 0x43, 0xe5, 0x00, 0x5e, 0x96, 0x9d, 0x0f,
+	0x71, 0x1c, 0xbb, 0xbf, 0xe4, 0x68, 0x25, 0x47, 0x1e, 0x9a, 0xd1, 0x5a, 0x73, 0x3f, 0x68, 0x6e,
+	0x4b, 0xba, 0x9f, 0xff, 0xac, 0x35, 0x4a, 0xd0, 0xc9, 0x84, 0xa8, 0x5d, 0x11, 0x23, 0x5d, 0xfb,
+	0x26, 0x2c, 0xa5, 0x8f, 0xd5, 0x07, 0x7e, 0xdf, 0x17, 0x09, 0x29, 0x07, 0x33, 0x6f, 0x12, 0x51,
+	0xf7, 0x60, 0x3e, 0x3e, 0x79, 0xfb, 0x3d, 0x35, 0x85, 0x47, 0x61, 0x75, 0xe2, 0x5e, 0x19, 0x55,
+	0xc1, 0x2d, 0x73, 0x55, 0xa4, 0x07, 0xed, 0x15, 0xa8, 0x29, 0xc1, 0x77, 0x7a, 0xbd, 0x16, 0xef,
+	0xf5, 0x98, 0x27, 0x2d, 0xe7, 0xbd, 0x90, 0x7b, 0x87, 0x09, 0xd3, 0xe7, 0x50, 0x9f, 0x1c, 0x82,
+	0x64, 0x9f, 0xc0, 0x2b, 0x5e, 0x32, 0xb7, 0xcf, 0xd4, 0x24, 0x76, 0x72, 0x6d, 0xc2, 0xb1, 0x19,
+	0x2f, 0x85, 0x74, 0x0b, 0x5e, 0x46, 0xc1, 0xbe, 0x0b, 0x37, 0xf5, 0x01, 0x1d, 0x9f, 0x48, 0x6d,
+	0x32, 0xa5, 0xa6, 0x1a, 0x71, 0xb9, 0xad, 0x1f, 0xec, 0xc7, 0xb0, 0x9c, 0x9f, 0x84, 0xb8, 0x1f,
+	0xc3, 0x42, 0x16, 0x17, 0x3b, 0x79, 0x21, 0xda, 0xf9, 0x0c, 0xed, 0xee, 0x3f, 0x15, 0xb8, 0xa2,
+	0x84, 0xc9, 0x97, 0x06, 0x4c, 0x6b, 0x27, 0x22, 0x8d, 0xfc, 0x92, 0x67, 0x8d, 0xcf, 0xdc, 0x28,
+	0x11, 0xa9, 0xdf, 0xc0, 0x7e, 0xed, 0x8b, 0xdf, 0xfe, 0xfe, 0xe1, 0x25, 0x8b, 0x2c, 0xbb, 0xb9,
+	0x17, 0x80, 0xb6, 0x3d, 0xf2, 0x95, 0x01, 0x33, 0xb8, 0x09, 0x48, 0x51, 0xf1, 0x71, 0xe7, 0x37,
+	0xef, 0x94, 0x09, 0x45, 0x90, 0x35, 0x05, 0x52, 0x23, 0xb7, 0xf2, 0x41, 0x04, 0x3d, 0x92, 0xdb,
+	0x95, 0x7c, 0x67, 0xc0, 0x5c, 0xe2, 0xb1, 0x64, 0xb3, 0x40, 0x20, 0x6b, 0xd1, 0xe6, 0xeb, 0xe5,
+	0x82, 0x91, 0xe7, 0xb6, 0xe2, 0x59, 0x21, 0x35, 0xb7, 0xe0, 0x66, 0x94, 0x0c, 0xd8, 0x1b, 0x69,
+	0x9f, 0xe7, 0xf5, 0x26, 0x65, 0xe0, 0xe7, 0xf5, 0x26, 0x6d, 0xea, 0x25, 0x7a, 0x23, 0xfd, 0x9e,
+	0x7c, 0x63, 0xc0, 0x6c, 0x6c, 0xd0, 0xa4, 0xa8, 0x7e, 0xc6, 0xdd, 0xcd, 0xcd, 0x52, 0xb1, 0x08,
+	0xb3, 0xae, 0x60, 0xea, 0xc4, 0xca, 0x87, 0x91, 0x66, 0xae, 0x56, 0xea, 0x5b, 0x03, 0xa6, 0xf5,
+	0x8b, 0x14, 0xee, 0xdc, 0x31, 0xaf, 0x37, 0x37, 0x4a, 0x44, 0x22, 0xc7, 0x96, 0xe2, 0xb8, 0x4d,
+	0xd6, 0x0a, 0x9b, 0xe2, 0x3e, 0x51, 0xd7, 0xc5, 0x53, 0xf2, 0x93, 0x01, 0x57, 0xc7, 0x7c, 0x8c,
+	0xb8, 0xe7, 0xef, 0xce, 0x31, 0x53, 0x35, 0xb7, 0xcb, 0x27, 0x20, 0xe3, 0xa6, 0x62, 0x5c, 0x23,
+	0xab, 0x85, 0x9b, 0x5a, 0x5b, 0x30, 0xf9, 0xd1, 0x80, 0x4a, 0xea, 0x62, 0x21, 0x5b, 0xc5, 0x72,
+	0x99, 0xcb, 0xc9, 0x74, 0xca, 0x86, 0x23, 0xdb, 0x86, 0x62, 0x5b, 0x25, 0x2b, 0x13, 0xd9, 0xe2,
+	0xab, 0x8c, 0xfc, 0x6a, 0xc0, 0x42, 0xd6, 0xb2, 0xc9, 0x1b, 0x05, 0x7a, 0x93, 0x6f, 0x01, 0xf3,
+	0xde, 0x45, 0xd3, 0x10, 0xd7, 0x51, 0xb8, 0x0d, 0xb2, 0x3e, 0xe1, 0x3c, 0x26, 0x79, 0xfa, 0xd2,
+	0x20, 0xbf, 0x18, 0x30, 0x9f, 0x29, 0x46, 0x76, 0x8a, 0x1c, 0x20, 0xf7, 0x5e, 0x30, 0x77, 0x2f,
+	0x92, 0x82, 0xa8, 0xf7, 0x14, 0xea, 0x36, 0x71, 0xca, 0xa1, 0xba, 0x4f, 0xd4, 0xef, 0xd3, 0x66,
+	0xeb, 0xd9, 0x89, 0x65, 0x3c, 0x3f, 0xb1, 0x8c, 0xbf, 0x4e, 0x2c, 0xe3, 0xfb, 0x53, 0x6b, 0xea,
+	0xf9, 0xa9, 0x35, 0xf5, 0xfb, 0xa9, 0x35, 0xf5, 0xe9, 0x46, 0xea, 0x13, 0x41, 0xd6, 0xf4, 0x0e,
+	0xa9, 0x1f, 0xe8, 0xea, 0x47, 0x49, 0x7d, 0xf5, 0xa5, 0xd0, 0x99, 0x56, 0xdf, 0xe2, 0x77, 0xff,
+	0x0d, 0x00, 0x00, 0xff, 0xff, 0xa2, 0x97, 0x52, 0xbf, 0x3d, 0x0c, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -967,12 +967,12 @@ type QueryClient interface {
 	TaxCap(ctx context.Context, in *QueryTaxCapRequest, opts ...grpc.CallOption) (*QueryTaxCapResponse, error)
 	// TaxRateLimits returns the tax rate limits
 	TaxRateLimits(ctx context.Context, in *QueryTaxRateLimitsRequest, opts ...grpc.CallOption) (*QueryTaxRateLimitsResponse, error)
-	// TaxProceeds returns the tax proceeds for the current period
+	// TaxProceeds returns the tax proceeds for the current epoch
 	TaxProceeds(ctx context.Context, in *QueryTaxProceedsRequest, opts ...grpc.CallOption) (*QueryTaxProceedsResponse, error)
-	// CollectionPeriods returns the list of collection periods
-	CollectionPeriods(ctx context.Context, in *QueryAllCollectionPeriodsRequest, opts ...grpc.CallOption) (*QueryAllCollectionPeriodsResponse, error)
-	// CollectionPeriod returns a single collection period based on *period*
-	CollectionPeriod(ctx context.Context, in *QueryCollectionPeriodRequest, opts ...grpc.CallOption) (*QueryCollectionPeriodResponse, error)
+	// CollectionEpochs returns the list of collection epochs
+	CollectionEpochs(ctx context.Context, in *QueryAllCollectionEpochsRequest, opts ...grpc.CallOption) (*QueryAllCollectionEpochsResponse, error)
+	// CollectionEpoch returns a single collection epoch based on *epoch*
+	CollectionEpoch(ctx context.Context, in *QueryCollectionEpochRequest, opts ...grpc.CallOption) (*QueryCollectionEpochResponse, error)
 }
 
 type queryClient struct {
@@ -1055,18 +1055,18 @@ func (c *queryClient) TaxProceeds(ctx context.Context, in *QueryTaxProceedsReque
 	return out, nil
 }
 
-func (c *queryClient) CollectionPeriods(ctx context.Context, in *QueryAllCollectionPeriodsRequest, opts ...grpc.CallOption) (*QueryAllCollectionPeriodsResponse, error) {
-	out := new(QueryAllCollectionPeriodsResponse)
-	err := c.cc.Invoke(ctx, "/enci.charity.v1beta1.Query/CollectionPeriods", in, out, opts...)
+func (c *queryClient) CollectionEpochs(ctx context.Context, in *QueryAllCollectionEpochsRequest, opts ...grpc.CallOption) (*QueryAllCollectionEpochsResponse, error) {
+	out := new(QueryAllCollectionEpochsResponse)
+	err := c.cc.Invoke(ctx, "/enci.charity.v1beta1.Query/CollectionEpochs", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) CollectionPeriod(ctx context.Context, in *QueryCollectionPeriodRequest, opts ...grpc.CallOption) (*QueryCollectionPeriodResponse, error) {
-	out := new(QueryCollectionPeriodResponse)
-	err := c.cc.Invoke(ctx, "/enci.charity.v1beta1.Query/CollectionPeriod", in, out, opts...)
+func (c *queryClient) CollectionEpoch(ctx context.Context, in *QueryCollectionEpochRequest, opts ...grpc.CallOption) (*QueryCollectionEpochResponse, error) {
+	out := new(QueryCollectionEpochResponse)
+	err := c.cc.Invoke(ctx, "/enci.charity.v1beta1.Query/CollectionEpoch", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1089,12 +1089,12 @@ type QueryServer interface {
 	TaxCap(context.Context, *QueryTaxCapRequest) (*QueryTaxCapResponse, error)
 	// TaxRateLimits returns the tax rate limits
 	TaxRateLimits(context.Context, *QueryTaxRateLimitsRequest) (*QueryTaxRateLimitsResponse, error)
-	// TaxProceeds returns the tax proceeds for the current period
+	// TaxProceeds returns the tax proceeds for the current epoch
 	TaxProceeds(context.Context, *QueryTaxProceedsRequest) (*QueryTaxProceedsResponse, error)
-	// CollectionPeriods returns the list of collection periods
-	CollectionPeriods(context.Context, *QueryAllCollectionPeriodsRequest) (*QueryAllCollectionPeriodsResponse, error)
-	// CollectionPeriod returns a single collection period based on *period*
-	CollectionPeriod(context.Context, *QueryCollectionPeriodRequest) (*QueryCollectionPeriodResponse, error)
+	// CollectionEpochs returns the list of collection epochs
+	CollectionEpochs(context.Context, *QueryAllCollectionEpochsRequest) (*QueryAllCollectionEpochsResponse, error)
+	// CollectionEpoch returns a single collection epoch based on *epoch*
+	CollectionEpoch(context.Context, *QueryCollectionEpochRequest) (*QueryCollectionEpochResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -1125,11 +1125,11 @@ func (*UnimplementedQueryServer) TaxRateLimits(ctx context.Context, req *QueryTa
 func (*UnimplementedQueryServer) TaxProceeds(ctx context.Context, req *QueryTaxProceedsRequest) (*QueryTaxProceedsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TaxProceeds not implemented")
 }
-func (*UnimplementedQueryServer) CollectionPeriods(ctx context.Context, req *QueryAllCollectionPeriodsRequest) (*QueryAllCollectionPeriodsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CollectionPeriods not implemented")
+func (*UnimplementedQueryServer) CollectionEpochs(ctx context.Context, req *QueryAllCollectionEpochsRequest) (*QueryAllCollectionEpochsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CollectionEpochs not implemented")
 }
-func (*UnimplementedQueryServer) CollectionPeriod(ctx context.Context, req *QueryCollectionPeriodRequest) (*QueryCollectionPeriodResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CollectionPeriod not implemented")
+func (*UnimplementedQueryServer) CollectionEpoch(ctx context.Context, req *QueryCollectionEpochRequest) (*QueryCollectionEpochResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CollectionEpoch not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -1280,38 +1280,38 @@ func _Query_TaxProceeds_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_CollectionPeriods_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryAllCollectionPeriodsRequest)
+func _Query_CollectionEpochs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllCollectionEpochsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).CollectionPeriods(ctx, in)
+		return srv.(QueryServer).CollectionEpochs(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/enci.charity.v1beta1.Query/CollectionPeriods",
+		FullMethod: "/enci.charity.v1beta1.Query/CollectionEpochs",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).CollectionPeriods(ctx, req.(*QueryAllCollectionPeriodsRequest))
+		return srv.(QueryServer).CollectionEpochs(ctx, req.(*QueryAllCollectionEpochsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_CollectionPeriod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryCollectionPeriodRequest)
+func _Query_CollectionEpoch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryCollectionEpochRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).CollectionPeriod(ctx, in)
+		return srv.(QueryServer).CollectionEpoch(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/enci.charity.v1beta1.Query/CollectionPeriod",
+		FullMethod: "/enci.charity.v1beta1.Query/CollectionEpoch",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).CollectionPeriod(ctx, req.(*QueryCollectionPeriodRequest))
+		return srv.(QueryServer).CollectionEpoch(ctx, req.(*QueryCollectionEpochRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1353,12 +1353,12 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_TaxProceeds_Handler,
 		},
 		{
-			MethodName: "CollectionPeriods",
-			Handler:    _Query_CollectionPeriods_Handler,
+			MethodName: "CollectionEpochs",
+			Handler:    _Query_CollectionEpochs_Handler,
 		},
 		{
-			MethodName: "CollectionPeriod",
-			Handler:    _Query_CollectionPeriod_Handler,
+			MethodName: "CollectionEpoch",
+			Handler:    _Query_CollectionEpoch_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1832,7 +1832,7 @@ func (m *QueryTaxRateLimitsResponse) MarshalToSizedBuffer(dAtA []byte) (int, err
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryAllCollectionPeriodsRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryAllCollectionEpochsRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1842,12 +1842,12 @@ func (m *QueryAllCollectionPeriodsRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryAllCollectionPeriodsRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryAllCollectionEpochsRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryAllCollectionPeriodsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryAllCollectionEpochsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1855,7 +1855,7 @@ func (m *QueryAllCollectionPeriodsRequest) MarshalToSizedBuffer(dAtA []byte) (in
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryAllCollectionPeriodsResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryAllCollectionEpochsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1865,20 +1865,20 @@ func (m *QueryAllCollectionPeriodsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryAllCollectionPeriodsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryAllCollectionEpochsResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryAllCollectionPeriodsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryAllCollectionEpochsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.CollectionPeriods) > 0 {
-		for iNdEx := len(m.CollectionPeriods) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.CollectionEpochs) > 0 {
+		for iNdEx := len(m.CollectionEpochs) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.CollectionPeriods[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.CollectionEpochs[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -1892,7 +1892,7 @@ func (m *QueryAllCollectionPeriodsResponse) MarshalToSizedBuffer(dAtA []byte) (i
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryCollectionPeriodRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryCollectionEpochRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1902,25 +1902,25 @@ func (m *QueryCollectionPeriodRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryCollectionPeriodRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryCollectionEpochRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryCollectionPeriodRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryCollectionEpochRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Period != 0 {
-		i = encodeVarintQuery(dAtA, i, uint64(m.Period))
+	if m.Epoch != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Epoch))
 		i--
 		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryCollectionPeriodResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryCollectionEpochResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1930,18 +1930,18 @@ func (m *QueryCollectionPeriodResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryCollectionPeriodResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryCollectionEpochResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryCollectionPeriodResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryCollectionEpochResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
 	{
-		size, err := m.CollectionPeriod.MarshalToSizedBuffer(dAtA[:i])
+		size, err := m.CollectionEpoch.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -2140,7 +2140,7 @@ func (m *QueryTaxRateLimitsResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryAllCollectionPeriodsRequest) Size() (n int) {
+func (m *QueryAllCollectionEpochsRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2149,14 +2149,14 @@ func (m *QueryAllCollectionPeriodsRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryAllCollectionPeriodsResponse) Size() (n int) {
+func (m *QueryAllCollectionEpochsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if len(m.CollectionPeriods) > 0 {
-		for _, e := range m.CollectionPeriods {
+	if len(m.CollectionEpochs) > 0 {
+		for _, e := range m.CollectionEpochs {
 			l = e.Size()
 			n += 1 + l + sovQuery(uint64(l))
 		}
@@ -2164,25 +2164,25 @@ func (m *QueryAllCollectionPeriodsResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryCollectionPeriodRequest) Size() (n int) {
+func (m *QueryCollectionEpochRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Period != 0 {
-		n += 1 + sovQuery(uint64(m.Period))
+	if m.Epoch != 0 {
+		n += 1 + sovQuery(uint64(m.Epoch))
 	}
 	return n
 }
 
-func (m *QueryCollectionPeriodResponse) Size() (n int) {
+func (m *QueryCollectionEpochResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = m.CollectionPeriod.Size()
+	l = m.CollectionEpoch.Size()
 	n += 1 + l + sovQuery(uint64(l))
 	return n
 }
@@ -3295,7 +3295,7 @@ func (m *QueryTaxRateLimitsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryAllCollectionPeriodsRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryAllCollectionEpochsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3318,10 +3318,10 @@ func (m *QueryAllCollectionPeriodsRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAllCollectionPeriodsRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryAllCollectionEpochsRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAllCollectionPeriodsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryAllCollectionEpochsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -3345,7 +3345,7 @@ func (m *QueryAllCollectionPeriodsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryAllCollectionPeriodsResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryAllCollectionEpochsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3368,15 +3368,15 @@ func (m *QueryAllCollectionPeriodsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAllCollectionPeriodsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryAllCollectionEpochsResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAllCollectionPeriodsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryAllCollectionEpochsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CollectionPeriods", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field CollectionEpochs", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -3403,8 +3403,8 @@ func (m *QueryAllCollectionPeriodsResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.CollectionPeriods = append(m.CollectionPeriods, CollectionPeriod{})
-			if err := m.CollectionPeriods[len(m.CollectionPeriods)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.CollectionEpochs = append(m.CollectionEpochs, CollectionEpoch{})
+			if err := m.CollectionEpochs[len(m.CollectionEpochs)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -3429,7 +3429,7 @@ func (m *QueryAllCollectionPeriodsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryCollectionPeriodRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryCollectionEpochRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3452,17 +3452,17 @@ func (m *QueryCollectionPeriodRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryCollectionPeriodRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryCollectionEpochRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryCollectionPeriodRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryCollectionEpochRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Period", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Epoch", wireType)
 			}
-			m.Period = 0
+			m.Epoch = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuery
@@ -3472,7 +3472,7 @@ func (m *QueryCollectionPeriodRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Period |= uint64(b&0x7F) << shift
+				m.Epoch |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -3498,7 +3498,7 @@ func (m *QueryCollectionPeriodRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryCollectionPeriodResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryCollectionEpochResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3521,15 +3521,15 @@ func (m *QueryCollectionPeriodResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryCollectionPeriodResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryCollectionEpochResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryCollectionPeriodResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryCollectionEpochResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CollectionPeriod", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field CollectionEpoch", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -3556,7 +3556,7 @@ func (m *QueryCollectionPeriodResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.CollectionPeriod.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.CollectionEpoch.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

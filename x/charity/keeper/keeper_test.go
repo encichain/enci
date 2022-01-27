@@ -47,12 +47,12 @@ func setupCharityKeeper(t testing.TB) (*Keeper, sdk.Context) {
 	return keeper, ctx
 }
 
-func TestGetCurrentPeriod(t *testing.T) {
+func TestGetCurrentEpoch(t *testing.T) {
 	app := CreateKeeperTestApp(t)
 	for i := int64(0); i < 10; i++ {
-		ctx := app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerPeriod) * i)
-		period := app.CharityKeeper.GetCurrentPeriod(ctx)
-		require.Equal(t, (ctx.BlockHeight() / int64(coretypes.BlocksPerPeriod)), period)
+		ctx := app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerEpoch) * i)
+		epoch := app.CharityKeeper.GetCurrentEpoch(ctx)
+		require.Equal(t, (ctx.BlockHeight() / int64(coretypes.BlocksPerEpoch)), epoch)
 	}
 }
 
@@ -163,32 +163,32 @@ func TestTaxProceeds(t *testing.T) {
 	require.False(t, app.CharityKeeper.GetTaxProceeds(app.Ctx).IsZero())
 }
 
-func TestPeriodTaxProceeds(t *testing.T) {
+func TestEpochTaxProceeds(t *testing.T) {
 	testApp := CreateKeeperTestApp(t)
 
 	for i := int64(0); i < 10; i++ {
 		// Set TaxProceed to store
-		testApp.CharityKeeper.SetPeriodTaxProceeds(testApp.Ctx, i, sdk.Coins{
+		testApp.CharityKeeper.SetEpochTaxProceeds(testApp.Ctx, i, sdk.Coins{
 			{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(i*20000 + 100)},
 		})
 
 		// Try to get unset TaxProceed, should return sdk.Coins{}
-		require.Equal(t, sdk.Coins{}, testApp.CharityKeeper.GetPeriodTaxProceeds(testApp.Ctx, i+1))
-		require.NoError(t, testApp.CharityKeeper.GetPeriodTaxProceeds(testApp.Ctx, i).Validate())
+		require.Equal(t, sdk.Coins{}, testApp.CharityKeeper.GetEpochTaxProceeds(testApp.Ctx, i+1))
+		require.NoError(t, testApp.CharityKeeper.GetEpochTaxProceeds(testApp.Ctx, i).Validate())
 
 		// Check if Get method retrieves valid set TaxProceed
 		require.Equal(t, sdk.Coins{
 			{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(i*20000 + 100)},
-		}, testApp.CharityKeeper.GetPeriodTaxProceeds(testApp.Ctx, i))
+		}, testApp.CharityKeeper.GetEpochTaxProceeds(testApp.Ctx, i))
 
-		require.NotEqual(t, sdk.Coins{}, testApp.CharityKeeper.GetPeriodTaxProceeds(testApp.Ctx, i))
-		require.False(t, testApp.CharityKeeper.GetPeriodTaxProceeds(testApp.Ctx, i).IsZero())
+		require.NotEqual(t, sdk.Coins{}, testApp.CharityKeeper.GetEpochTaxProceeds(testApp.Ctx, i))
+		require.False(t, testApp.CharityKeeper.GetEpochTaxProceeds(testApp.Ctx, i).IsZero())
 	}
 	// Try clearing Tax Proceeds from store
-	testApp.CharityKeeper.ClearPeriodTaxProceeds(testApp.Ctx)
+	testApp.CharityKeeper.ClearEpochTaxProceeds(testApp.Ctx)
 
 	for i := int64(0); i < 10; i++ {
-		require.Equal(t, sdk.Coins{}, testApp.CharityKeeper.GetPeriodTaxProceeds(testApp.Ctx, i))
+		require.Equal(t, sdk.Coins{}, testApp.CharityKeeper.GetEpochTaxProceeds(testApp.Ctx, i))
 	}
 }
 
@@ -215,7 +215,7 @@ func TestPayouts(t *testing.T) {
 	}
 }
 
-func TestGetCollectionPeriods(t *testing.T) {
+func TestGetCollectionEpochs(t *testing.T) {
 	app := CreateKeeperTestApp(t)
 	addr1 := "enci1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6test"
 	addr2 := "enci1ftxapr6ecnrmxukp8236wy8sewnn2q530spjn6test2"
@@ -227,18 +227,18 @@ func TestGetCollectionPeriods(t *testing.T) {
 		app.CharityKeeper.SetPayouts(app.Ctx, i, payouts)
 
 		taxproceeds := sdk.Coins{sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(int64((i+1)*1000)))}
-		app.CharityKeeper.SetPeriodTaxProceeds(app.Ctx, i, taxproceeds)
+		app.CharityKeeper.SetEpochTaxProceeds(app.Ctx, i, taxproceeds)
 	}
-	// Create expected []types.CollectionPeriod{} value
-	expectedval := []types.CollectionPeriod{}
+	// Create expected []types.CollectionEpoch{} value
+	expectedval := []types.CollectionEpoch{}
 	for i := int64(0); i < 10; i++ {
 		payouts := []types.Payout{
 			{Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(i*sdk.DefaultPowerReduction.Int64() + 1)}}, Recipientaddr: addr1},
 			{Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(i*sdk.DefaultPowerReduction.Int64() + 1000)}}, Recipientaddr: addr2},
 		}
 		taxproceeds := sdk.Coins{sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(int64((i+1)*1000)))}
-		expectedval = append(expectedval, types.CollectionPeriod{Period: uint64(i), TaxCollected: taxproceeds, Payouts: payouts})
+		expectedval = append(expectedval, types.CollectionEpoch{Epoch: uint64(i), TaxCollected: taxproceeds, Payouts: payouts})
 	}
-	ctx := app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerPeriod * 10))
-	require.Equal(t, expectedval, app.CharityKeeper.GetCollectionPeriods(ctx))
+	ctx := app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerEpoch * 10))
+	require.Equal(t, expectedval, app.CharityKeeper.GetCollectionEpochs(ctx))
 }

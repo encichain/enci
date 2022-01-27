@@ -33,14 +33,14 @@ const (
 // 0x01 				-> ProtocolBuffer(TaxRateLimits)
 // 0x02 | denom bytes	-> ProtocolBuffer(sdk.Int)
 // 0x03 				-> ProtocolBuffer(TaxProceeds{TaxProceeds: sdk.Coins})
-// 0x04 | period bytes  -> ProtocolBuffer(TaxProceeds{TaxProceeds: sdk.Coins})
-// 0x05 | period bytes  -> ProtocolBuffer(Payouts{Payouts: []Payout})
+// 0x04 | epoch bytes  -> ProtocolBuffer(TaxProceeds{TaxProceeds: sdk.Coins})
+// 0x05 | epoch bytes  -> ProtocolBuffer(Payouts{Payouts: []Payout})
 var (
-	TaxRateLimitsKey         = []byte{0x01} // Key for tax rate limits
-	TaxCapKeyPref            = []byte{0x02} // Prefix to taxcaps key
-	TaxProceedsKey           = []byte{0x03} // Key for tax proceeds
-	PeriodTaxProceedsKeyPref = []byte{0x04} // Prefix to *period* TaxProceeds Key
-	PayoutsKeyPref           = []byte{0x05} // Prefix to *period* Payouts Key
+	TaxRateLimitsKey        = []byte{0x01} // Key for tax rate limits
+	TaxCapKeyPref           = []byte{0x02} // Prefix to taxcaps key
+	TaxProceedsKey          = []byte{0x03} // Key for tax proceeds
+	EpochTaxProceedsKeyPref = []byte{0x04} // Prefix to *epoch* TaxProceeds Key
+	PayoutsKeyPref          = []byte{0x05} // Prefix to *epoch* Payouts Key
 )
 
 // this line is used by starport scaffolding # ibc/keys/port
@@ -54,19 +54,19 @@ func GetTaxCapKey(denom string) []byte {
 	return append(TaxCapKeyPref, []byte(denom)...)
 }
 
-// GetPeriodTaxProceedsKey - stored by *period* in CollectionPeriod
-func GetPeriodTaxProceedsKey(period int64) []byte {
-	return GetSubKeyForPeriod(PeriodTaxProceedsKeyPref, period)
+// GetEpochTaxProceedsKey - stored by *epoch* in CollectionEpoch
+func GetEpochTaxProceedsKey(epoch int64) []byte {
+	return GetSubKeyForEpoch(EpochTaxProceedsKeyPref, epoch)
 }
 
-// GetPayoutsKey - stored by *period*
-func GetPayoutsKey(period int64) []byte {
-	return GetSubKeyForPeriod(PayoutsKeyPref, period)
+// GetPayoutsKey - stored by *epoch*
+func GetPayoutsKey(epoch int64) []byte {
+	return GetSubKeyForEpoch(PayoutsKeyPref, epoch)
 }
 
-// GetSubKeyForPeriod returns a subkey stored by *period*
-func GetSubKeyForPeriod(prefix []byte, period int64) []byte {
+// GetSubKeyForEpoch returns a subkey stored by *epoch*
+func GetSubKeyForEpoch(prefix []byte, epoch int64) []byte {
 	b := make([]byte, 8)
-	binary.LittleEndian.PutUint64(b, uint64(period))
+	binary.LittleEndian.PutUint64(b, uint64(epoch))
 	return append(prefix, b...)
 }

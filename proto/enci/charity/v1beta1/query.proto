@@ -49,19 +49,19 @@ service Query {
         option (google.api.http).get = "/enci/charity/v1beta1/taxratelimits";
     }
 
-    // TaxProceeds returns the tax proceeds for the current period
+    // TaxProceeds returns the tax proceeds for the current epoch
     rpc TaxProceeds(QueryTaxProceedsRequest) returns (QueryTaxProceedsResponse) {
         option (google.api.http).get = "/enci/charity/v1beta1/taxproceeds";
     }
 
-    // CollectionPeriods returns the list of collection periods 
-    rpc CollectionPeriods(QueryAllCollectionPeriodsRequest) returns (QueryAllCollectionPeriodsResponse) {
-        option (google.api.http).get = "/enci/charity/v1beta1/collectionperiods";
+    // CollectionEpochs returns the list of collection epochs 
+    rpc CollectionEpochs(QueryAllCollectionEpochsRequest) returns (QueryAllCollectionEpochsResponse) {
+        option (google.api.http).get = "/enci/charity/v1beta1/collectionepochs";
     }
     
-    // CollectionPeriod returns a single collection period based on *period*
-    rpc CollectionPeriod(QueryCollectionPeriodRequest) returns (QueryCollectionPeriodResponse) {
-        option (google.api.http).get = "/enci/charity/v1beta1/collectionperiods/{period}";
+    // CollectionEpoch returns a single collection epoch based on *epoch*
+    rpc CollectionEpoch(QueryCollectionEpochRequest) returns (QueryCollectionEpochResponse) {
+        option (google.api.http).get = "/enci/charity/v1beta1/collectionepochs/{epoch}";
     }
 
 }
@@ -150,22 +150,22 @@ message QueryTaxRateLimitsResponse {
     TaxRateLimits tax_rate_limits = 1 [(gogoproto.nullable) = false];
 }
 
-// QueryAllCollectionPeriodsRequest is the request type for the QueryAllCollectionPeriods Request gRPC method
-message QueryAllCollectionPeriodsRequest {}
+// QueryAllCollectionEpochsRequest is the request type for the QueryAllCollectionEpochs Request gRPC method
+message QueryAllCollectionEpochsRequest {}
 
-// QueryAllCollectionPeriodsResponse is the response type for the QueryAllCollectionPeriods Request gRPC method
-message QueryAllCollectionPeriodsResponse {
-    repeated CollectionPeriod collection_periods = 1 [(gogoproto.nullable) = false];
+// QueryAllCollectionEpochsResponse is the response type for the QueryAllCollectionEpochs Request gRPC method
+message QueryAllCollectionEpochsResponse {
+    repeated CollectionEpoch collection_epochs = 1 [(gogoproto.nullable) = false];
 }
 
-//QueryCollectionPeriodRequest is the request type for the Query CollectionPeriod Request RPC method
-// Queries a single CollectionPeriod based on *period*
-message QueryCollectionPeriodRequest {
-    uint64 period = 1;
+//QueryCollectionEpochRequest is the request type for the Query CollectionEpoch Request RPC method
+// Queries a single CollectionEpoch based on *epoch*
+message QueryCollectionEpochRequest {
+    uint64 epoch = 1;
 }
 
-//QueryCollectionPeriodResponse is the response type for the Query CollectionPeriod Request RPC method
-// Responds with a single CollectionPeriod based on *period*
-message QueryCollectionPeriodResponse {
-   CollectionPeriod collection_period = 1 [(gogoproto.nullable) = false];
+//QueryCollectionEpochResponse is the response type for the Query CollectionEpoch Request RPC method
+// Responds with a single CollectionEpoch based on *epoch*
+message QueryCollectionEpochResponse {
+   CollectionEpoch collection_epoch = 1 [(gogoproto.nullable) = false];
 }

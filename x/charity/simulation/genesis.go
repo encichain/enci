@@ -97,7 +97,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 		types.DefaultTaxRateLimits,
 		taxCaps,
 		sdk.Coins{},
-		[]types.CollectionPeriod{},
+		[]types.CollectionEpoch{},
 	)
 
 	bz, err := json.MarshalIndent(&charityGenesis, "", " ")

@@ -9,7 +9,7 @@ option go_package = "github.com/encichain/enci/x/charity/types";
 
 // EventPayout defines the Payout Event
 message EventPayout {
-    uint64 period = 1;
+    uint64 epoch = 1;
     repeated Payout payouts = 2 [(gogoproto.nullable) = false];
     repeated cosmos.base.v1beta1.Coin burned_coins = 3 [
         (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
@@ -18,6 +18,6 @@ message EventPayout {
 
 // EventFailedPayouts defines a Payout failure Event
 message EventFailedPayouts {
-    uint64 period = 1;
+    uint64 epoch = 1;
     repeated string errors = 2;
 }

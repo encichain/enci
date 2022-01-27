@@ -68,9 +68,9 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-// GetCurrentPeriod calculates the current CollectionPeriod period by dividing current Block height by a Block week.
-func (k Keeper) GetCurrentPeriod(ctx sdk.Context) int64 {
-	return (ctx.BlockHeight() / int64(coretypes.BlocksPerPeriod))
+// GetCurrentEpoch calculates the current CollectionEpoch epoch by dividing current Block height by a Block week.
+func (k Keeper) GetCurrentEpoch(ctx sdk.Context) int64 {
+	return (ctx.BlockHeight() / int64(coretypes.BlocksPerEpoch))
 }
 
 // GetTaxRateLimits gets the tax rate limits
@@ -167,7 +167,7 @@ func (k Keeper) GetTaxCaps(ctx sdk.Context) []types.TaxCap {
 	return taxCaps
 }
 
-// RecordTaxProceeds adds collected tax to the TaxProceeds record for the current *Period*
+// RecordTaxProceeds adds collected tax to the TaxProceeds record for the current *Epoch*
 func (k Keeper) RecordTaxProceeds(ctx sdk.Context, proceeds sdk.Coins) {
 	if proceeds.IsZero() {
 		return
@@ -176,7 +176,7 @@ func (k Keeper) RecordTaxProceeds(ctx sdk.Context, proceeds sdk.Coins) {
 	k.SetTaxProceeds(ctx, taxproceeds.Add(proceeds...))
 }
 
-// GetTaxProceeds fetches the current tax proceeds collected in the current *Period* before the end of said *Period*
+// GetTaxProceeds fetches the current tax proceeds collected in the current *Epoch* before the end of said *Epoch*
 func (k Keeper) GetTaxProceeds(ctx sdk.Context) sdk.Coins {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.TaxProceedsKey)
@@ -197,10 +197,10 @@ func (k Keeper) SetTaxProceeds(ctx sdk.Context, proceeds sdk.Coins) {
 	store.Set(types.TaxProceedsKey, bz)
 }
 
-// GetPeriodTaxProceeds fetches the tax proceeds collected a specified period
-func (k Keeper) GetPeriodTaxProceeds(ctx sdk.Context, period int64) sdk.Coins {
+// GetEpochTaxProceeds fetches the tax proceeds collected a specified epoch
+func (k Keeper) GetEpochTaxProceeds(ctx sdk.Context, epoch int64) sdk.Coins {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.GetPeriodTaxProceedsKey(period))
+	bz := store.Get(types.GetEpochTaxProceedsKey(epoch))
 
 	csp := types.TaxProceeds{}
 	if bz == nil {
@@ -210,18 +210,18 @@ func (k Keeper) GetPeriodTaxProceeds(ctx sdk.Context, period int64) sdk.Coins {
 	return csp.TaxProceeds
 }
 
-// SetPeriodTaxProceeds sets the tax proceeds collected during a period to the store
-func (k Keeper) SetPeriodTaxProceeds(ctx sdk.Context, period int64, proceeds sdk.Coins) {
+// SetEpochTaxProceeds sets the tax proceeds collected during a epoch to the store
+func (k Keeper) SetEpochTaxProceeds(ctx sdk.Context, epoch int64, proceeds sdk.Coins) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(&types.TaxProceeds{TaxProceeds: proceeds})
 
-	store.Set(types.GetPeriodTaxProceedsKey(period), bz)
+	store.Set(types.GetEpochTaxProceedsKey(epoch), bz)
 }
 
-// GetPayouts fetches []Payout for a specified *period* from the store
-func (k Keeper) GetPayouts(ctx sdk.Context, period int64) []types.Payout {
+// GetPayouts fetches []Payout for a specified *epoch* from the store
+func (k Keeper) GetPayouts(ctx sdk.Context, epoch int64) []types.Payout {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.GetPayoutsKey(period))
+	bz := store.Get(types.GetPayoutsKey(epoch))
 	pos := types.Payouts{}
 
 	if bz == nil {
@@ -232,45 +232,45 @@ func (k Keeper) GetPayouts(ctx sdk.Context, period int64) []types.Payout {
 	return pos.Payouts
 }
 
-// SetPayouts sets the []Payout to the store, stored under *period*.
+// SetPayouts sets the []Payout to the store, stored under *epoch*.
 // Payout is used for query purposes only, hence the lack of need for storing individual Payout objects.
-func (k Keeper) SetPayouts(ctx sdk.Context, period int64, payouts []types.Payout) {
+func (k Keeper) SetPayouts(ctx sdk.Context, epoch int64, payouts []types.Payout) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(&types.Payouts{Payouts: payouts})
 
-	store.Set(types.GetPayoutsKey(period), bz)
+	store.Set(types.GetPayoutsKey(epoch), bz)
 }
 
-// GetCollectionPeriods creates and returns a slice of all existing CollectionPeriod
-func (k Keeper) GetCollectionPeriods(ctx sdk.Context) []types.CollectionPeriod {
-	collectionPeriods := []types.CollectionPeriod{}
+// GetCollectionEpochs creates and returns a slice of all existing CollectionEpoch
+func (k Keeper) GetCollectionEpochs(ctx sdk.Context) []types.CollectionEpoch {
+	collectionEpochs := []types.CollectionEpoch{}
 
-	// Iterate through existing *period*s and create CollectionPeriod per period
-	for p := int64(0); p < k.GetCurrentPeriod(ctx); p++ {
-		taxProceeds := k.GetPeriodTaxProceeds(ctx, p)
+	// Iterate through existing *epoch*s and create CollectionEpoch per epoch
+	for p := int64(0); p < k.GetCurrentEpoch(ctx); p++ {
+		taxProceeds := k.GetEpochTaxProceeds(ctx, p)
 		payouts := k.GetPayouts(ctx, p)
 
-		// do not include CollectionPeriods that have empty tax proceeds && empty payouts
+		// do not include CollectionEpochs that have empty tax proceeds && empty payouts
 		if taxProceeds.IsZero() && (len(payouts) == 0) {
 			continue
 		}
-		collectionPeriod := types.CollectionPeriod{
-			Period:       uint64(p),
+		collectionEpoch := types.CollectionEpoch{
+			Epoch:        uint64(p),
 			TaxCollected: taxProceeds,
 			Payouts:      payouts,
 		}
-		collectionPeriods = append(collectionPeriods, collectionPeriod)
+		collectionEpochs = append(collectionEpochs, collectionEpoch)
 	}
 
-	return collectionPeriods
+	return collectionEpochs
 }
 
-// ClearPeriodTaxProceeds deletes all Tax Proceeds stored by *period* from the store
+// ClearEpochTaxProceeds deletes all Tax Proceeds stored by *epoch* from the store
 // NOTE: For testing purposes only
-func (k Keeper) ClearPeriodTaxProceeds(ctx sdk.Context) {
+func (k Keeper) ClearEpochTaxProceeds(ctx sdk.Context) {
 	store := ctx.KVStore(k.storeKey)
 
-	iter := sdk.KVStorePrefixIterator(store, types.PeriodTaxProceedsKeyPref)
+	iter := sdk.KVStorePrefixIterator(store, types.EpochTaxProceedsKeyPref)
 	defer iter.Close()
 
 	for ; iter.Valid(); iter.Next() {
@@ -278,7 +278,7 @@ func (k Keeper) ClearPeriodTaxProceeds(ctx sdk.Context) {
 	}
 }
 
-// ClearPayouts deletes all []Payout stored by *period* from the store
+// ClearPayouts deletes all []Payout stored by *epoch* from the store
 // NOTE: For testing purposes only
 func (k Keeper) ClearPayouts(ctx sdk.Context) {
 	store := ctx.KVStore(k.storeKey)

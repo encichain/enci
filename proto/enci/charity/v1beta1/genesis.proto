@@ -19,6 +19,6 @@ message GenesisState {
         (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
         (gogoproto.nullable) = false
     ];
-    repeated CollectionPeriod collection_periods = 5 [(gogoproto.nullable) = false];
+    repeated CollectionEpoch collection_epochs = 5 [(gogoproto.nullable) = false];
 
 }

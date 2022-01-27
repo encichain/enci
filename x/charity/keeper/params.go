@@ -63,7 +63,7 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 }
 
 // SyncTaxCaps syncs the store []Taxcap with the paramstore []Taxcap.
-// To be called at end of period
+// To be called at end of epoch
 func (k Keeper) SyncTaxCaps(ctx sdk.Context) {
 	// Clear store Taxcaps
 	k.ClearTaxCaps(ctx)

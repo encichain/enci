@@ -31,13 +31,13 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		k.SetTaxCap(ctx, cap.Denom, cap.Cap)
 	}
 
-	// Set current period tax proceeds
+	// Set current epoch tax proceeds
 	k.SetTaxProceeds(ctx, genState.TaxProceeds)
 
-	// Set CollectionPeriod data
-	for _, period := range genState.CollectionPeriods {
-		k.SetPeriodTaxProceeds(ctx, int64(period.Period), period.TaxCollected)
-		k.SetPayouts(ctx, int64(period.Period), period.Payouts)
+	// Set CollectionEpoch data
+	for _, epoch := range genState.CollectionEpochs {
+		k.SetEpochTaxProceeds(ctx, int64(epoch.Epoch), epoch.TaxCollected)
+		k.SetPayouts(ctx, int64(epoch.Epoch), epoch.Payouts)
 	}
 
 	//Ensure charity collector module account is set
@@ -59,11 +59,11 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	params := k.GetAllParams(ctx)
 	taxCaps := k.GetTaxCaps(ctx)
 	taxProceeds := k.GetTaxProceeds(ctx)
-	collectionPeriods := k.GetCollectionPeriods(ctx)
+	collectionEpochs := k.GetCollectionEpochs(ctx)
 
 	// this line is used by starport scaffolding # genesis/module/export
 
 	// this line is used by starport scaffolding # ibc/genesis/export
 
-	return types.NewGenesisState(params, taxRateLimits, taxCaps, taxProceeds, collectionPeriods)
+	return types.NewGenesisState(params, taxRateLimits, taxCaps, taxProceeds, collectionEpochs)
 }

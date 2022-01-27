@@ -33,17 +33,17 @@ func NewDecodeStore(cdc codec.Codec) func(kvA, kvB kv.Pair) string {
 			cdc.MustUnmarshal(kvB.Value, &taxProceedsB)
 			return fmt.Sprintf("%v\n%v", taxProceedsA, taxProceedsB)
 
-		case bytes.Equal(kvA.Key[:1], types.PeriodTaxProceedsKeyPref):
-			var periodTaxProceedsA, periodTaxProceedsB types.TaxProceeds
-			cdc.MustUnmarshal(kvA.Value, &periodTaxProceedsA)
-			cdc.MustUnmarshal(kvB.Value, &periodTaxProceedsB)
-			return fmt.Sprintf("%v\n%v", periodTaxProceedsA, periodTaxProceedsB)
+		case bytes.Equal(kvA.Key[:1], types.EpochTaxProceedsKeyPref):
+			var epochTaxProceedsA, epochTaxProceedsB types.TaxProceeds
+			cdc.MustUnmarshal(kvA.Value, &epochTaxProceedsA)
+			cdc.MustUnmarshal(kvB.Value, &epochTaxProceedsB)
+			return fmt.Sprintf("%v\n%v", epochTaxProceedsA, epochTaxProceedsB)
 
 		case bytes.Equal(kvA.Key[:1], types.PayoutsKeyPref):
-			var periodPayoutsA, periodPayoutsB types.Payouts
-			cdc.MustUnmarshal(kvA.Value, &periodPayoutsA)
-			cdc.MustUnmarshal(kvB.Value, &periodPayoutsB)
-			return fmt.Sprintf("%v\n%v", periodPayoutsA, periodPayoutsB)
+			var epochPayoutsA, epochPayoutsB types.Payouts
+			cdc.MustUnmarshal(kvA.Value, &epochPayoutsA)
+			cdc.MustUnmarshal(kvB.Value, &epochPayoutsB)
+			return fmt.Sprintf("%v\n%v", epochPayoutsA, epochPayoutsB)
 
 		default:
 			panic(fmt.Sprintf("invalid charity key prefix %X", kvA.Key[:1]))

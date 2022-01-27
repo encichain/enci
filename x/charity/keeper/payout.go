@@ -12,7 +12,7 @@ import (
 )
 
 // DisburseDonations sends funds from CharityTaxCollector to all specified charities and returns []Payout and []string representation of errors..
-// Should not be called except during end of period.
+// Should not be called except during end of epoch.
 func (k Keeper) DisburseDonations(ctx sdk.Context, charities []types.Charity) (payouts []types.Payout, errs []string) {
 	payouts = []types.Payout{}
 	errs = []string{}

@@ -213,26 +213,26 @@ func local_request_Query_TaxProceeds_0(ctx context.Context, marshaler runtime.Ma
 
 }
 
-func request_Query_CollectionPeriods_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryAllCollectionPeriodsRequest
+func request_Query_CollectionEpochs_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq QueryAllCollectionEpochsRequest
 	var metadata runtime.ServerMetadata
 
-	msg, err := client.CollectionPeriods(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.CollectionEpochs(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_Query_CollectionPeriods_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryAllCollectionPeriodsRequest
+func local_request_Query_CollectionEpochs_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq QueryAllCollectionEpochsRequest
 	var metadata runtime.ServerMetadata
 
-	msg, err := server.CollectionPeriods(ctx, &protoReq)
+	msg, err := server.CollectionEpochs(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_Query_CollectionPeriod_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryCollectionPeriodRequest
+func request_Query_CollectionEpoch_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq QueryCollectionEpochRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -242,24 +242,24 @@ func request_Query_CollectionPeriod_0(ctx context.Context, marshaler runtime.Mar
 		_   = err
 	)
 
-	val, ok = pathParams["period"]
+	val, ok = pathParams["epoch"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "period")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "epoch")
 	}
 
-	protoReq.Period, err = runtime.Uint64(val)
+	protoReq.Epoch, err = runtime.Uint64(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "period", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "epoch", err)
 	}
 
-	msg, err := client.CollectionPeriod(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.CollectionEpoch(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_Query_CollectionPeriod_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq QueryCollectionPeriodRequest
+func local_request_Query_CollectionEpoch_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq QueryCollectionEpochRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -269,18 +269,18 @@ func local_request_Query_CollectionPeriod_0(ctx context.Context, marshaler runti
 		_   = err
 	)
 
-	val, ok = pathParams["period"]
+	val, ok = pathParams["epoch"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "period")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "epoch")
 	}
 
-	protoReq.Period, err = runtime.Uint64(val)
+	protoReq.Epoch, err = runtime.Uint64(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "period", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "epoch", err)
 	}
 
-	msg, err := server.CollectionPeriod(ctx, &protoReq)
+	msg, err := server.CollectionEpoch(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -475,7 +475,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 
 	})
 
-	mux.Handle("GET", pattern_Query_CollectionPeriods_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_Query_CollectionEpochs_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -486,7 +486,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Query_CollectionPeriods_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Query_CollectionEpochs_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -494,11 +494,11 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 			return
 		}
 
-		forward_Query_CollectionPeriods_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Query_CollectionEpochs_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_Query_CollectionPeriod_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_Query_CollectionEpoch_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -509,7 +509,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Query_CollectionPeriod_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Query_CollectionEpoch_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -517,7 +517,7 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 			return
 		}
 
-		forward_Query_CollectionPeriod_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Query_CollectionEpoch_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -722,7 +722,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 
 	})
 
-	mux.Handle("GET", pattern_Query_CollectionPeriods_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_Query_CollectionEpochs_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -731,18 +731,18 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Query_CollectionPeriods_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Query_CollectionEpochs_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_Query_CollectionPeriods_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Query_CollectionEpochs_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_Query_CollectionPeriod_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_Query_CollectionEpoch_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -751,14 +751,14 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Query_CollectionPeriod_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Query_CollectionEpoch_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_Query_CollectionPeriod_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Query_CollectionEpoch_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -782,9 +782,9 @@ var (
 
 	pattern_Query_TaxProceeds_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"enci", "charity", "v1beta1", "taxproceeds"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_CollectionPeriods_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"enci", "charity", "v1beta1", "collectionperiods"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_CollectionEpochs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"enci", "charity", "v1beta1", "collectionepochs"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_CollectionPeriod_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"enci", "charity", "v1beta1", "collectionperiods", "period"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_CollectionEpoch_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"enci", "charity", "v1beta1", "collectionepochs", "epoch"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (
@@ -804,7 +804,7 @@ var (
 
 	forward_Query_TaxProceeds_0 = runtime.ForwardResponseMessage
 
-	forward_Query_CollectionPeriods_0 = runtime.ForwardResponseMessage
+	forward_Query_CollectionEpochs_0 = runtime.ForwardResponseMessage
 
-	forward_Query_CollectionPeriod_0 = runtime.ForwardResponseMessage
+	forward_Query_CollectionEpoch_0 = runtime.ForwardResponseMessage
 )

@@ -15,8 +15,8 @@ import (
 func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyEndBlocker)
 
-	if coretypes.IsLastBlockPeriod(ctx) {
-		period := k.GetCurrentPeriod(ctx)
+	if coretypes.IsLastBlockEpoch(ctx) {
+		epoch := k.GetCurrentEpoch(ctx)
 		charities := k.GetCharity(ctx)
 		charityBal := k.BankKeeper.SpendableCoins(ctx, k.AccountKeeper.GetModuleAddress(types.CharityCollectorName))
 		burnAmt := sdk.Coins{}
@@ -40,14 +40,14 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 		// Disburse donations according to CharityTaxCollector balance
 		payouts, errs := k.DisburseDonations(ctx, charities)
 
-		// Set payouts to store under current *period*, if not empty
+		// Set payouts to store under current *epoch*, if not empty
 		if len(payouts) > 0 {
-			k.SetPayouts(ctx, period, payouts)
+			k.SetPayouts(ctx, epoch, payouts)
 		}
-		// Set period tax proceeds to store, if not zero
+		// Set epoch tax proceeds to store, if not zero
 		taxProceeds := k.GetTaxProceeds(ctx)
 		if !taxProceeds.IsZero() {
-			k.SetPeriodTaxProceeds(ctx, period, k.GetTaxProceeds(ctx))
+			k.SetEpochTaxProceeds(ctx, epoch, k.GetTaxProceeds(ctx))
 		}
 		// Sync taxcaps
 		k.SyncTaxCaps(ctx)
@@ -57,14 +57,14 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 
 		ctx.EventManager().EmitTypedEvent(
 			&types.EventPayout{
-				Period:      uint64(period),
+				Epoch:       uint64(epoch),
 				Payouts:     payouts,
 				BurnedCoins: burnAmt,
 			})
 		if len(errs) > 0 {
 			ctx.EventManager().EmitTypedEvent(
 				&types.EventFailedPayouts{
-					Period: uint64(period),
+					Epoch:  uint64(epoch),
 					Errors: errs,
 				})
 		}

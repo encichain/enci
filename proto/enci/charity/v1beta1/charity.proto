@@ -24,7 +24,7 @@ message Params {
     ];
     // Tax_caps represents max tax amount for each denom
     repeated TaxCap tax_caps = 3 [(gogoproto.nullable) = false]; 
-    // burn_rate represents the percentage of balance to be burned from charity tax collector account per end of period
+    // burn_rate represents the percentage of balance to be burned from charity tax collector account per end of epoch
     // constrained by TaxRateLimits
     string burn_rate = 4 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", 
@@ -58,10 +58,10 @@ message TaxRateLimits {
     ];
 }
 
-// CollectionPeriod defines the record of each tax collection period
-message CollectionPeriod {
-    uint64 period = 1;
-    // Tax collected during entire period
+// CollectionEpoch defines the record of each tax collection epoch
+message CollectionEpoch {
+    uint64 epoch = 1;
+    // Tax collected during entire epoch
     repeated cosmos.base.v1beta1.Coin tax_collected = 2 [
         (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
         (gogoproto.nullable) = false

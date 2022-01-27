@@ -46,7 +46,7 @@ func TestBurnEndblock(t *testing.T) {
 	require.NoError(t, err)
 	require.True(t, app.BankKeeper.HasBalance(ctx, burnAddr, testCoins[0]))
 
-	ctx = ctx.WithBlockHeight(int64(coretypes.BlocksPerPeriod - 1))
+	ctx = ctx.WithBlockHeight(int64(coretypes.BlocksPerEpoch - 1))
 	// Call endblock
 	charity.EndBlocker(ctx, app.CharityKeeper)
 	require.True(t, app.BankKeeper.GetAllBalances(ctx, burnAddr).IsZero())
@@ -73,8 +73,8 @@ func TestUserSendBurnEndBlock(t *testing.T) {
 	require.NoError(t, err)
 	require.True(t, app.BankKeeper.HasBalance(ctx, burnAddr, testCoins[0]))
 
-	// Set block height to end of period and call EndBlocker
-	ctx = ctx.WithBlockHeight(int64(coretypes.BlocksPerPeriod) - 1)
+	// Set block height to end of epoch and call EndBlocker
+	ctx = ctx.WithBlockHeight(int64(coretypes.BlocksPerEpoch) - 1)
 	charity.EndBlocker(ctx, app.CharityKeeper)
 
 	require.True(t, app.BankKeeper.GetAllBalances(ctx, burnAddr).IsZero())
@@ -143,8 +143,8 @@ func TestEndBlocker(t *testing.T) {
 	// Make sure store taxcap is set to default taxcap
 	require.Equal(t, types.DefaultCap, app.CharityKeeper.GetTaxCap(app.Ctx, coretypes.MicroTokenDenom))
 
-	// Set blockheight to end of period
-	app.Ctx = app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerPeriod - 1))
+	// Set blockheight to end of epoch
+	app.Ctx = app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerEpoch - 1))
 	// Get balances and calculate burn amount and post deduction balance
 	charityTaxBal := app.BankKeeper.GetAllBalances(app.Ctx, taxAddr)
 	require.Equal(t, keeper.InitCoins, charityTaxBal)
@@ -167,15 +167,15 @@ func TestEndBlocker(t *testing.T) {
 	// Verify that burn module account is now zero in balance
 	require.True(t, app.BankKeeper.GetAllBalances(app.Ctx, burnAddr).IsZero())
 
-	// Check if Payouts have been created and set to store under *period*
+	// Check if Payouts have been created and set to store under *epoch*
 	require.Equal(t, []types.Payout{
 		{Recipientaddr: bech32addr1, Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: afterBurnBal[0].Amount.Quo(sdk.NewInt(int64(2)))}}},
 		{Recipientaddr: bech32addr2, Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: afterBurnBal[0].Amount.Quo(sdk.NewInt(int64(2)))}}}},
-		app.CharityKeeper.GetPayouts(app.Ctx, app.CharityKeeper.GetCurrentPeriod(app.Ctx)))
+		app.CharityKeeper.GetPayouts(app.Ctx, app.CharityKeeper.GetCurrentEpoch(app.Ctx)))
 
-	// Check if taxproceeds have been stored under current *period*
-	periodproceeds := sdk.NewCoins(sdk.Coin{Denom: coretypes.MicroTokenDenom, Amount: proceeds})
-	require.True(t, app.CharityKeeper.GetPeriodTaxProceeds(app.Ctx, app.CharityKeeper.GetCurrentPeriod(app.Ctx))[0].Amount.GTE(periodproceeds[0].Amount))
+	// Check if taxproceeds have been stored under current *epoch*
+	epochproceeds := sdk.NewCoins(sdk.Coin{Denom: coretypes.MicroTokenDenom, Amount: proceeds})
+	require.True(t, app.CharityKeeper.GetEpochTaxProceeds(app.Ctx, app.CharityKeeper.GetCurrentEpoch(app.Ctx))[0].Amount.GTE(epochproceeds[0].Amount))
 
 	// Check if store taxcaps have been synced with param store taxcaps
 	require.Equal(t, app.CharityKeeper.GetParamTaxCaps(app.Ctx), app.CharityKeeper.GetTaxCaps(app.Ctx))

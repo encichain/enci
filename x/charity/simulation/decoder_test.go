@@ -23,8 +23,8 @@ func TestDecodeDistributionStore(t *testing.T) {
 	taxRateLimits := types.TaxRateLimits{RateMin: sdk.ZeroDec(), TaxRateMax: sdk.NewDecWithPrec(123, 3), BurnRateMax: sdk.NewDecWithPrec(123, 3)}
 	taxCap := sdk.IntProto{Int: sdk.NewInt(12345678)}
 	taxProceeds := types.TaxProceeds{TaxProceeds: sdk.NewCoins(sdk.NewInt64Coin(coretypes.MicroTokenDenom, 9876543))}
-	periodTaxProceeds := types.TaxProceeds{TaxProceeds: sdk.NewCoins(sdk.NewInt64Coin(coretypes.MicroTokenDenom, 234567))}
-	periodPayouts := types.Payouts{Payouts: []types.Payout{
+	epochTaxProceeds := types.TaxProceeds{TaxProceeds: sdk.NewCoins(sdk.NewInt64Coin(coretypes.MicroTokenDenom, 234567))}
+	epochPayouts := types.Payouts{Payouts: []types.Payout{
 		{Recipientaddr: "enci1aag23fr2qjxan9aktyfsywp3udxg036c9zxv55", Coins: coins},
 		{Recipientaddr: "TEST", Coins: coins.Add(coins...)},
 	},
@@ -35,8 +35,8 @@ func TestDecodeDistributionStore(t *testing.T) {
 			{Key: types.TaxRateLimitsKey, Value: cdc.MustMarshal(&taxRateLimits)},
 			{Key: types.TaxCapKeyPref, Value: cdc.MustMarshal(&taxCap)},
 			{Key: types.TaxProceedsKey, Value: cdc.MustMarshal(&taxProceeds)},
-			{Key: types.PeriodTaxProceedsKeyPref, Value: cdc.MustMarshal(&periodTaxProceeds)},
-			{Key: types.PayoutsKeyPref, Value: cdc.MustMarshal(&periodPayouts)},
+			{Key: types.EpochTaxProceedsKeyPref, Value: cdc.MustMarshal(&epochTaxProceeds)},
+			{Key: types.PayoutsKeyPref, Value: cdc.MustMarshal(&epochPayouts)},
 			{Key: []byte{0x15}, Value: []byte{0x15}},
 		},
 	}
@@ -48,8 +48,8 @@ func TestDecodeDistributionStore(t *testing.T) {
 		{"TaxRateLimits", fmt.Sprintf("%v\n%v", taxRateLimits, taxRateLimits)},
 		{"TaxCap", fmt.Sprintf("%v\n%v", taxCap, taxCap)},
 		{"TaxProceeds", fmt.Sprintf("%v\n%v", taxProceeds, taxProceeds)},
-		{"PeriodTaxProceeds", fmt.Sprintf("%v\n%v", periodTaxProceeds, periodTaxProceeds)},
-		{"Payouts", fmt.Sprintf("%v\n%v", periodPayouts, periodPayouts)},
+		{"EpochTaxProceeds", fmt.Sprintf("%v\n%v", epochTaxProceeds, epochTaxProceeds)},
+		{"Payouts", fmt.Sprintf("%v\n%v", epochPayouts, epochPayouts)},
 		{"other", ""},
 	}
 
