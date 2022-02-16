@@ -1,8 +1,15 @@
 package app
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
+	"strconv"
+	"testing"
+
+	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -60,6 +67,7 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	"github.com/cosmos/cosmos-sdk/x/staking/teststaking"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
@@ -84,6 +92,9 @@ import (
 	dbm "github.com/tendermint/tm-db"
 
 	custombank "github.com/encichain/enci/customcore/bank"
+	"github.com/encichain/enci/x/oracle"
+	oraclekeeper "github.com/encichain/enci/x/oracle/keeper"
+	oracletypes "github.com/encichain/enci/x/oracle/types"
 )
 
 const (
@@ -142,6 +153,7 @@ func NewEnciTestApp(
 
 		// this line is used by starport scaffolding # stargate/app/storeKey
 		charitytypes.StoreKey,
+		oracletypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -259,6 +271,14 @@ func NewEnciTestApp(
 	)
 	charityModule := charitymodule.NewAppModule(appCodec, app.CharityKeeper)
 
+	app.OracleKeeper = *oraclekeeper.NewKeeper(
+		appCodec,
+		keys[oracletypes.StoreKey],
+		keys[oracletypes.MemStoreKey],
+		app.StakingKeeper,
+		app.GetSubspace(oracletypes.ModuleName),
+	)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	// Create static IBC router, add transfer route, then set and seal it
@@ -300,6 +320,7 @@ func NewEnciTestApp(
 		transferModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 		charityModule,
+		oracle.NewAppModule(appCodec, app.OracleKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -319,6 +340,7 @@ func NewEnciTestApp(
 		authz.ModuleName, feegrant.ModuleName,
 		paramstypes.ModuleName, ibctransfertypes.ModuleName,
 		vestingtypes.ModuleName, ibchost.ModuleName,
+		oracletypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -331,7 +353,7 @@ func NewEnciTestApp(
 		authz.ModuleName, feegrant.ModuleName,
 		paramstypes.ModuleName, ibctransfertypes.ModuleName,
 		upgradetypes.ModuleName, vestingtypes.ModuleName,
-		ibchost.ModuleName,
+		ibchost.ModuleName, oracletypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -360,6 +382,7 @@ func NewEnciTestApp(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
+		oracletypes.ModuleName,
 	)
 
 	// Uncomment if you want to set a custom migration order here.
@@ -487,4 +510,129 @@ func Setup(isCheckTx bool) *EnciApp {
 	}
 
 	return app
+}
+
+// CreateTestInput Returns an instance of our app
+func CreateTestInput() (*EnciApp, sdk.Context) {
+	app := Setup(false)
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	return app, ctx
+}
+
+// ================== Accounts =============================
+
+type GenerateAccountStrategy func(int) []sdk.AccAddress
+
+func TestAddr(addr string, bech string) (sdk.AccAddress, error) {
+	res, err := sdk.AccAddressFromHex(addr)
+	if err != nil {
+		return nil, err
+	}
+	bechexpected := res.String()
+	if bech != bechexpected {
+		return nil, fmt.Errorf("bech encoding doesn't match reference")
+	}
+
+	bechres, err := sdk.AccAddressFromBech32(bech)
+	if err != nil {
+		return nil, err
+	}
+	if !bytes.Equal(bechres, res) {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+// createIncrementalAccounts is a strategy used by addTestAddrs() in order to generated addresses in ascending order.
+func createIncrementalAccounts(accNum int) []sdk.AccAddress {
+	var addresses []sdk.AccAddress
+	var buffer bytes.Buffer
+
+	// start at 100 so we can make up to 999 test addresses with valid test addresses
+	for i := 100; i < (accNum + 100); i++ {
+		numString := strconv.Itoa(i)
+		buffer.WriteString("A58856F0FD53BF058B4909A21AEC019107BA6") //base address string
+
+		buffer.WriteString(numString) //adding on final two digits to make addresses unique
+		res, _ := sdk.AccAddressFromHex(buffer.String())
+		bech := res.String()
+		addr, _ := TestAddr(buffer.String(), bech)
+
+		addresses = append(addresses, addr)
+		buffer.Reset()
+	}
+
+	return addresses
+}
+
+// AddTestAddrsIncremental constructs and returns accNum amount of accounts with an
+// initial balance of accAmt in random order
+func AddTestAddrsIncremental(app *EnciApp, ctx sdk.Context, accNum int, accAmt sdk.Int) []sdk.AccAddress {
+	return addTestAddrs(app, ctx, accNum, accAmt, createIncrementalAccounts)
+}
+
+func addTestAddrs(app *EnciApp, ctx sdk.Context, accNum int, accAmt sdk.Int, strategy GenerateAccountStrategy) []sdk.AccAddress {
+	testAddrs := strategy(accNum)
+
+	initCoins := sdk.NewCoins(sdk.NewCoin(app.StakingKeeper.BondDenom(ctx), accAmt))
+
+	for _, addr := range testAddrs {
+		initAccountWithCoins(app, ctx, addr, initCoins)
+	}
+
+	return testAddrs
+}
+
+func initAccountWithCoins(app *EnciApp, ctx sdk.Context, addr sdk.AccAddress, coins sdk.Coins) {
+	err := app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, coins)
+	if err != nil {
+		panic(err)
+	}
+
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr, coins)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func CreateValidators(t *testing.T, ctx sdk.Context, app *EnciApp, powers []int64) ([]sdk.AccAddress, []sdk.ValAddress, []stakingtypes.Validator) {
+	addrs := AddTestAddrsIncremental(app, ctx, 5, app.StakingKeeper.TokensFromConsensusPower(ctx, 300))
+	valAddrs := simapp.ConvertAddrsToValAddrs(addrs)
+	pks := simapp.CreateTestPubKeys(5)
+	cdc := simapp.MakeTestEncodingConfig().Marshaler
+	app.StakingKeeper = stakingkeeper.NewKeeper(
+		cdc,
+		app.GetKey(stakingtypes.StoreKey),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.GetSubspace(stakingtypes.ModuleName),
+	)
+
+	val1 := teststaking.NewValidator(t, valAddrs[0], pks[0])
+	val2 := teststaking.NewValidator(t, valAddrs[1], pks[1])
+	vals := []stakingtypes.Validator{val1, val2}
+
+	app.StakingKeeper.SetValidator(ctx, val1)
+	app.StakingKeeper.SetValidator(ctx, val2)
+	app.StakingKeeper.SetValidatorByConsAddr(ctx, val1)
+	app.StakingKeeper.SetValidatorByConsAddr(ctx, val2)
+	app.StakingKeeper.SetNewValidatorByPowerIndex(ctx, val1)
+	app.StakingKeeper.SetNewValidatorByPowerIndex(ctx, val2)
+
+	_, _ = app.StakingKeeper.Delegate(ctx, addrs[0], app.StakingKeeper.TokensFromConsensusPower(ctx, powers[0]), stakingtypes.Unbonded, val1, true)
+	_, _ = app.StakingKeeper.Delegate(ctx, addrs[1], app.StakingKeeper.TokensFromConsensusPower(ctx, powers[1]), stakingtypes.Unbonded, val2, true)
+	_, _ = app.StakingKeeper.Delegate(ctx, addrs[0], app.StakingKeeper.TokensFromConsensusPower(ctx, powers[2]), stakingtypes.Unbonded, val2, true)
+	applyValidatorSetUpdates(t, ctx, app.StakingKeeper, -1)
+
+	return addrs, valAddrs, vals
+}
+
+func applyValidatorSetUpdates(t *testing.T, ctx sdk.Context, k stakingkeeper.Keeper, expectedUpdatesLen int) []abci.ValidatorUpdate {
+	updates, err := k.ApplyAndReturnValidatorSetUpdates(ctx)
+	require.NoError(t, err)
+	if expectedUpdatesLen >= 0 {
+		require.Equal(t, expectedUpdatesLen, len(updates), "%v", updates)
+	}
+	return updates
 }

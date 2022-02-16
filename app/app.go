@@ -107,6 +107,10 @@ import (
 	customstaking "github.com/encichain/enci/customcore/staking"
 	charitykeeper "github.com/encichain/enci/x/charity/keeper"
 	charitytypes "github.com/encichain/enci/x/charity/types"
+
+	"github.com/encichain/enci/x/oracle"
+	oraclekeeper "github.com/encichain/enci/x/oracle/keeper"
+	oracletypes "github.com/encichain/enci/x/oracle/types"
 )
 
 const (
@@ -162,6 +166,7 @@ var (
 		charitymodule.AppModuleBasic{},
 		feegrantmodule.AppModuleBasic{},
 		authzmodule.AppModuleBasic{},
+		oracle.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -237,6 +242,7 @@ type EnciApp struct {
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	CharityKeeper charitykeeper.Keeper
+	OracleKeeper  oraclekeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -279,7 +285,7 @@ func NewEnciApp(
 		feegrant.StoreKey, authzkeeper.StoreKey,
 
 		// this line is used by starport scaffolding # stargate/app/storeKey
-		charitytypes.StoreKey,
+		charitytypes.StoreKey, oracletypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -397,6 +403,14 @@ func NewEnciApp(
 	)
 	charityModule := charitymodule.NewAppModule(appCodec, app.CharityKeeper)
 
+	app.OracleKeeper = *oraclekeeper.NewKeeper(
+		appCodec,
+		keys[oracletypes.StoreKey],
+		keys[oracletypes.MemStoreKey],
+		app.StakingKeeper,
+		app.GetSubspace(oracletypes.ModuleName),
+	)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	// Create static IBC router, add transfer route, then set and seal it
@@ -438,6 +452,7 @@ func NewEnciApp(
 		transferModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 		charityModule,
+		oracle.NewAppModule(appCodec, app.OracleKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -457,6 +472,7 @@ func NewEnciApp(
 		authz.ModuleName, feegrant.ModuleName,
 		paramstypes.ModuleName, ibctransfertypes.ModuleName,
 		vestingtypes.ModuleName, ibchost.ModuleName,
+		oracletypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -469,7 +485,7 @@ func NewEnciApp(
 		authz.ModuleName, feegrant.ModuleName,
 		paramstypes.ModuleName, ibctransfertypes.ModuleName,
 		upgradetypes.ModuleName, vestingtypes.ModuleName,
-		ibchost.ModuleName,
+		ibchost.ModuleName, oracletypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -498,6 +514,7 @@ func NewEnciApp(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
+		oracletypes.ModuleName,
 	)
 
 	// Uncomment if you want to set a custom migration order here.
@@ -744,6 +761,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, cdc *codec.LegacyAmino, key, t
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 	paramsKeeper.Subspace(charitytypes.ModuleName)
+	paramsKeeper.Subspace(oracletypes.ModuleName)
 
 	return paramsKeeper
 }

@@ -77,3 +77,24 @@ func DefaultConfig() network.Config {
 		KeyringOptions:  []keyring.Option{},
 	}
 }
+
+// Returns DefaultConfig() but with EnciApp struct literal rather than cosmoscmd.App as AppConstructor field
+func DefaultTestConfig() network.Config {
+	encoding := app.MakeTestEncodingConfig()
+
+	cfg := DefaultConfig()
+	cfg.Codec = encoding.Marshaler
+	cfg.TxConfig = encoding.TxConfig
+	cfg.LegacyAmino = encoding.Amino
+	cfg.InterfaceRegistry = encoding.InterfaceRegistry
+	cfg.AppConstructor = func(val network.Validator) servertypes.Application {
+		return app.NewEnciTestApp(
+			val.Ctx.Logger, tmdb.NewMemDB(), nil, true, map[int64]bool{}, val.Ctx.Config.RootDir, 0,
+			encoding,
+			simapp.EmptyAppOptions{},
+			baseapp.SetPruning(storetypes.NewPruningOptionsFromString(val.AppConfig.Pruning)),
+			baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),
+		)
+	}
+	return cfg
+}
