@@ -68,6 +68,7 @@ func (s *IntegrationTestSuite) TestWorkerNoPrevoteCmd() {
 
 	// Claim was created
 	res, err := clitestutil.ExecTestCLICmd(clientCtx, cli.CmdClaim(), []string{testClaim.Hash().String()})
+	s.Require().NoError(err)
 
 	resType := &types.QueryClaimResponse{}
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(res.Bytes(), resType))
@@ -77,6 +78,7 @@ func (s *IntegrationTestSuite) TestWorkerNoPrevoteCmd() {
 
 	// Pending round was created
 	res, err = clitestutil.ExecTestCLICmd(clientCtx, cli.CmdPendingRounds(), []string{claimType})
+	s.Require().NoError(err)
 	resPending := &types.QueryPendingRoundsResponse{}
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(res.Bytes(), resPending))
 	s.Require().Equal(len(resPending.PendingRounds), 1)
@@ -84,6 +86,7 @@ func (s *IntegrationTestSuite) TestWorkerNoPrevoteCmd() {
 
 	// Query round
 	res, err = clitestutil.ExecTestCLICmd(clientCtx, cli.CmdRound(), []string{claimType, "1"})
+	s.Require().NoError(err)
 	resRound := &types.QueryRoundResponse{}
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(res.Bytes(), resRound))
 	s.Require().Equal(len(resRound.Round.Votes), 1)
@@ -91,6 +94,7 @@ func (s *IntegrationTestSuite) TestWorkerNoPrevoteCmd() {
 
 	// Query all rounds
 	res, err = clitestutil.ExecTestCLICmd(clientCtx, cli.CmdAllRounds(), []string{})
+	s.Require().NoError(err)
 	resAllRounds := &types.QueryAllRoundsResponse{}
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(res.Bytes(), resAllRounds))
 	s.Require().Equal(len(resAllRounds.Rounds), 1)
@@ -103,6 +107,7 @@ func (s *IntegrationTestSuite) TestWorkerPrevoteCmd() {
 	// we need to be careful about the claims round and how long we wait for
 	// the actual claim to go through
 	currentHeight, err := s.network.LatestHeight()
+	s.Require().NoError(err)
 
 	nextRound := (uint64(currentHeight) + types.TestVotePeriod) - (uint64(currentHeight)+types.TestVotePeriod)%types.TestVotePeriod
 	testPrevoteClaim.BlockHeight = int64(nextRound)
@@ -134,6 +139,7 @@ func (s *IntegrationTestSuite) TestWorkerPrevoteCmd() {
 
 	// Claim was created
 	res, err := clitestutil.ExecTestCLICmd(clientCtx, cli.CmdClaim(), []string{testPrevoteClaim.Hash().String()})
+	s.Require().NoError(err)
 	resType := &types.QueryClaimResponse{}
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(res.Bytes(), resType), res.String())
 	resClaim := &types.TestClaim{}

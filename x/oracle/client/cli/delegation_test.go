@@ -35,19 +35,21 @@ func (s *IntegrationTestSuite) TestDelegationCmd() {
 	s.Require().Equal(uint32(0), txRes.Code)
 
 	args = []string{
-		fmt.Sprintf("%s", val.Address.String()),
+		val.Address.String(),
 	}
 
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cli.CmdDelegeateAddress(), args)
+	s.Require().NoError(err)
 	delRes := &types.QueryDelegeateAddressResponse{}
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), delRes), out.String())
 	s.Require().Equal(del.String(), delRes.Delegate)
 
 	args = []string{
-		fmt.Sprintf("%s", delRes.Delegate),
+		delRes.Delegate,
 	}
 
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cli.CmdValidatorAddress(), args)
+	s.Require().NoError(err)
 	valRes := &types.QueryValidatorAddressResponse{}
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), valRes), out.String())
 
@@ -71,8 +73,9 @@ func (s *IntegrationTestSuite) TestDelegationCmd() {
 
 	// test undo delegation
 	args = []string{
-		fmt.Sprintf("%s", val.Address.String()),
+		val.Address.String(),
 	}
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cli.CmdDelegeateAddress(), args)
+	s.Require().Error(err)
 	s.Require().Contains(out.String(), "NotFound")
 }

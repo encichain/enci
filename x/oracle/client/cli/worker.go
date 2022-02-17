@@ -6,7 +6,8 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
-	"sync"
+
+	//"sync"
 	"syscall"
 	"time"
 
@@ -22,7 +23,7 @@ import (
 var (
 	txQuery    = "tm.event='Tx'"
 	blockQuery = "tm.event='NewBlock'"
-	once       sync.Once
+	//once       sync.Once
 )
 
 // BlockHandler is the code that the worker must run every block
@@ -108,7 +109,7 @@ func loop(goctx context.Context, cancel context.CancelFunc, cmd *cobra.Command, 
 	}
 
 	if clientCtx.NodeURI == "" {
-		return fmt.Errorf("Missing Tendermint Node URI")
+		return fmt.Errorf("missing Tendermint Node URI")
 	}
 
 	rpcClient, _ := http.New(clientCtx.NodeURI, "/websocket")
@@ -163,13 +164,13 @@ func loop(goctx context.Context, cancel context.CancelFunc, cmd *cobra.Command, 
 
 // subscribe returns channel of events from the oracle chain given a query (TX or BLOCK)
 func subscribe(ctx context.Context, clnt *http.HTTP, query string) (<-chan ctypes.ResultEvent, context.CancelFunc) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	ch, err := clnt.Subscribe(ctx, fmt.Sprintf("oracle-feeder"), query)
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	ch, err := clnt.Subscribe(ctx, "oracle-feeder", query)
 
 	for err != nil {
 		fmt.Println("Could not subscribe to Tendermint event, retrying in 1 second.")
 		time.Sleep(1 * time.Second)
-		ch, err = clnt.Subscribe(ctx, fmt.Sprintf("oracle-feeder"), query)
+		ch, err = clnt.Subscribe(ctx, "oracle-feeder", query)
 	}
 
 	return ch, cancel

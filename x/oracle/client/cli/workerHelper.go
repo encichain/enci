@@ -71,7 +71,7 @@ func (h WorkerHelper) SubmitWorkerTx(claim exported.Claim) {
 	usePrevote := h.OracleParams.ClaimParams[claimType].Prevote
 
 	// use the most recent data and no salt = ""
-	if usePrevote == false {
+	if !usePrevote {
 		err := h.SubmitVote(claim, "")
 		if err != nil {
 			fmt.Println("Error submitting claim vote", err)

@@ -10,6 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking/teststaking"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	enciapp "github.com/encichain/enci/app"
+	coretypes "github.com/encichain/enci/types"
 	"github.com/encichain/enci/x/oracle/keeper"
 	"github.com/encichain/enci/x/oracle/types"
 )
@@ -38,6 +39,7 @@ func CreateValidators(t *testing.T, ctx sdk.Context, app *enciapp.EnciApp, power
 	pks := simapp.CreateTestPubKeys(5)
 
 	stakingHelper := teststaking.NewHelper(t, ctx, app.StakingKeeper)
+	stakingHelper.Denom = coretypes.MicroTokenDenom
 
 	appCodec := app.AppCodec()
 
