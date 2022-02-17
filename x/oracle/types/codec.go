@@ -9,8 +9,8 @@ import (
 	"github.com/encichain/enci/x/oracle/exported"
 )
 
-// RegisterLegacyAminoCodec registers all the necessary types and interfaces for the
-// evidence module.
+// RegisterLegacyAminoCodec registers the x/oracle interfaces and concrete types on the
+// provided LegacyAmino codec. These types are used for Amino JSON serialization
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*exported.Claim)(nil), nil)
 	cdc.RegisterConcrete(&MsgVote{}, "oracle/MsgVote", nil)
@@ -29,7 +29,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgDelegate{},
 	)
 	registry.RegisterInterface(
-		"relevantcommunity.oracle.oracle.Claim",
+		"enci.oracle.v1beta1.Claim",
 		(*exported.Claim)(nil),
 		&TestClaim{},
 	)

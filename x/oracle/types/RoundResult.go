@@ -31,7 +31,6 @@ func (r *RoundResult) UpsertClaim(claimHash tmbytes.HexBytes, votePower int64) {
 	}
 	newClaim := newClaimVoteResult(claimHash, votePower)
 	r.Claims = append(r.Claims, newClaim)
-	return
 }
 
 func newClaimVoteResult(claimHash tmbytes.HexBytes, votePower int64) *ClaimVoteResult {
