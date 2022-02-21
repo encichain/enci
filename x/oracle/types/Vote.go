@@ -13,13 +13,13 @@ func NewVote(roundID uint64, claim exported.Claim, validator sdk.ValAddress, cla
 	return &Vote{
 		RoundId:     roundID,
 		ClaimHash:   claim.Hash(),
-		ConsensusId: claim.GetConcensusKey(),
+		ConsensusId: claim.GetConsensusKey(),
 		Validator:   validator,
 		ClaimType:   claimType,
 	}
 }
 
-// VoteHash returns the hash for a precommit given the proper args
+// VoteHash returns the SHA-256 hash for a precommit given the proper args
 func VoteHash(salt string, claimHash string, signer sdk.AccAddress) []byte {
 	h := sha256.New()
 	h.Write([]byte(fmt.Sprintf("%s:%s:%s", salt, claimHash, signer.String())))

@@ -21,16 +21,6 @@ func NewMsgPrevote(s sdk.AccAddress, hash []byte) *MsgPrevote {
 	return &MsgPrevote{Signer: s.String(), Hash: hash}
 }
 
-// Route get msg route
-func (msg *MsgPrevote) Route() string {
-	return RouterKey
-}
-
-// Type get msg type
-func (msg *MsgPrevote) Type() string {
-	return TypeMsgPrevote
-}
-
 // GetSigners implements sdk.Msg
 func (msg *MsgPrevote) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.MustGetSigner()}
@@ -62,4 +52,16 @@ func (msg MsgPrevote) MustGetSigner() sdk.AccAddress {
 		panic(err)
 	}
 	return accAddr
+}
+
+// ===== Implements legacytx.LegacyMsg interface =====
+
+// Route get msg route
+func (msg *MsgPrevote) Route() string {
+	return RouterKey
+}
+
+// Type get msg type
+func (msg *MsgPrevote) Type() string {
+	return TypeMsgPrevote
 }

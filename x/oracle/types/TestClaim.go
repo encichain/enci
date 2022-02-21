@@ -51,9 +51,9 @@ func (c *TestClaim) GetRoundID() uint64 {
 	return uint64(c.BlockHeight)
 }
 
-// GetConcensusKey returns a key the oracle will use of vote consensus
+// GetConsensusKey returns a key the oracle will use of vote consensus
 // for deterministic results it should be the same as the hash of the content
 // for nondeterministic content it should be a constant
-func (c *TestClaim) GetConcensusKey() string {
+func (c *TestClaim) GetConsensusKey() string {
 	return c.Hash().String()
 }

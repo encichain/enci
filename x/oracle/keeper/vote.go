@@ -16,11 +16,12 @@ import (
 
 // CreateVote casts a vote for a given claim.
 func (k Keeper) CreateVote(ctx sdk.Context, claim exported.Claim, validator sdk.ValAddress) {
+	// Set claim to store
 	k.CreateClaim(ctx, claim)
 	roundID := claim.GetRoundID()
 	claimType := claim.Type()
 	vote := types.NewVote(roundID, claim, validator, claimType)
-
+	// Create new store to Get Round{} if it exists
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.RoundKey)
 
 	var votes types.Round
@@ -57,11 +58,13 @@ func (k Keeper) DeleteVotesForRound(ctx sdk.Context, claimType string, roundID u
 }
 
 // TallyVotes tallies up the votes for a given Claim and returns the result with the maximum claim
-// vote.ClaimHash
+// TODO: Refactor TallyVotes(). A RoundResult containing only Claims from a single validator is returned
 func (k Keeper) TallyVotes(ctx sdk.Context, claimType string, roundID uint64) *types.RoundResult {
 	votes := k.GetRound(ctx, claimType, roundID)
 
+	// Validator consensus ID : RoundResult{}
 	voteMap := make(map[string]*types.RoundResult)
+	// TODO: maxVotePower is initialized to 0 and never updated. Refactor
 	var maxVotePower int64
 	var maxVoteKey string
 	for _, vote := range votes.Votes {
@@ -72,6 +75,8 @@ func (k Keeper) TallyVotes(ctx sdk.Context, claimType string, roundID uint64) *t
 		weight := validator.GetConsensusPower(sdk.DefaultPowerReduction)
 		key := vote.GetConsensusId()
 
+		// Check if Validator is in voteMap.
+		// ??For every validator, create a new RoundResult{} object
 		resultObject := voteMap[key]
 		if resultObject == nil {
 			resultObject = &types.RoundResult{
@@ -84,6 +89,7 @@ func (k Keeper) TallyVotes(ctx sdk.Context, claimType string, roundID uint64) *t
 
 		voteMap[key] = resultObject
 
+		// issue: this will always resolve to true if VotePower > 0
 		if resultObject.VotePower > maxVotePower {
 			maxVoteKey = key
 		}
@@ -104,6 +110,7 @@ func (k Keeper) TallyVotes(ctx sdk.Context, claimType string, roundID uint64) *t
 }
 
 // VotePassedThreshold checks if a given claim has cleared the vote threshold
+// Criteria for passing threshold is if the submitted VotePower > Threshold (default 50%) * Total bonded consensus power
 func (k Keeper) VotePassedThreshold(ctx sdk.Context, roundResult *types.RoundResult) (bool, int64) {
 	totalBondedPower := sdk.TokensToConsensusPower(k.StakingKeeper.TotalBondedTokens(ctx), sdk.DefaultPowerReduction)
 	claimParams := k.ClaimParamsForType(ctx, roundResult.ClaimType)

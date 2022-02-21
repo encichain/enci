@@ -20,12 +20,6 @@ func NewMsgDelegate(val, del sdk.AccAddress) *MsgDelegate {
 	}
 }
 
-// Route implements sdk.Msg
-func (m *MsgDelegate) Route() string { return ModuleName }
-
-// Type implements sdk.Msg
-func (m *MsgDelegate) Type() string { return TypeMsgDelegate }
-
 // ValidateBasic implements sdk.Msg
 func (m *MsgDelegate) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Validator); err != nil {
@@ -64,3 +58,11 @@ func (m *MsgDelegate) MustGetDelegate() sdk.AccAddress {
 	}
 	return val
 }
+
+// ===== Implements legacytx.LegacyMsg interface =====
+
+// Route implements sdk.Msg
+func (m *MsgDelegate) Route() string { return ModuleName }
+
+// Type implements sdk.Msg
+func (m *MsgDelegate) Type() string { return TypeMsgDelegate }

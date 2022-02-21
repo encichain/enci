@@ -18,13 +18,13 @@ type Claim interface {
 	Type() string
 	Hash() tmbytes.HexBytes
 	GetRoundID() uint64
-	// GetConcensusKey returns a key the oracle will use fore voting consensus
+	// GetConsensusKey returns a key the oracle will use fore voting consensus
 	// for deterministic results it should be the the hash of the content
 	// (this is because we expect all validators to submit claims with the same exact content)
 	// however for nondeterministic content it should be a constant because voting doesn't
 	// depend on the content of the claim (developers will need to use the results of the voting
 	// to reconcile the various claims)
-	GetConcensusKey() string
+	GetConsensusKey() string
 	ValidateBasic() error
 }
 ```

@@ -34,16 +34,6 @@ func NewMsgVote(s sdk.AccAddress, claim exported.Claim, salt string) (*MsgVote, 
 	return &MsgVote{Signer: s.String(), Claim: any, Salt: salt}, nil
 }
 
-// Route get msg route
-func (msg *MsgVote) Route() string {
-	return RouterKey
-}
-
-// Type get msg type
-func (msg *MsgVote) Type() string {
-	return TypeMsgVote
-}
-
 // GetSigners get msg signers
 func (msg *MsgVote) GetSigners() []sdk.AccAddress {
 	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
@@ -107,4 +97,16 @@ func (msg MsgVote) MustGetSigner() sdk.AccAddress {
 func (msg MsgVote) UnpackInterfaces(ctx types.AnyUnpacker) error {
 	var claim exported.Claim
 	return ctx.UnpackAny(msg.Claim, &claim)
+}
+
+// ===== Implements legacytx.LegacyMsg interface =====
+
+// Route get msg route
+func (msg *MsgVote) Route() string {
+	return RouterKey
+}
+
+// Type get msg type
+func (msg *MsgVote) Type() string {
+	return TypeMsgVote
 }

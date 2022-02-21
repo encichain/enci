@@ -30,12 +30,14 @@ func (k msgServer) Vote(goCtx context.Context, msg *types.MsgVote) (*types.MsgVo
 	signer := msg.MustGetSigner()
 	valAddr := getValidatorAddr(ctx, k, signer)
 
+	// TODO: Add Feeder delegate check. If not submitted by validator it must be submitted by feeder delegate
 	// make sure this message is submitted by a validator
 	val := k.StakingKeeper.Validator(ctx, valAddr)
 	if val == nil {
 		return nil, sdkerrors.Wrap(staking.ErrNoValidatorFound, valAddr.String())
 	}
 
+	// Check if there is a Prevote in store for specific vote if enabled for claim
 	prevoteHash, err := k.isCorrectRound(ctx, msg, signer)
 	if err != nil {
 		return nil, err
@@ -96,6 +98,7 @@ func (k msgServer) Prevote(goCtx context.Context, msg *types.MsgPrevote) (*types
 
 	valAddr := getValidatorAddr(ctx, k, signer)
 
+	// TODO: Add Feeder delegate check. If not submitted by validator it must be submitted by feeder delegate
 	// make sure this message is submitted by a validator
 	val := k.StakingKeeper.Validator(ctx, valAddr)
 	if val == nil {

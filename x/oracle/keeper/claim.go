@@ -11,6 +11,7 @@ import (
 )
 
 // CreateClaim sets Claim by hash in the module's KVStore.
+// Key used is the hash of the Claim. Hash -> ProtocolBuffer(Claim{})
 func (k Keeper) CreateClaim(ctx sdk.Context, claim exported.Claim) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ClaimKey)
 	store.Set(claim.Hash(), k.MustMarshalClaim(claim))

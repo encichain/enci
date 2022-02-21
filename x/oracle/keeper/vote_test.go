@@ -34,7 +34,7 @@ func (suite *KeeperTestSuite) TestCastVote() {
 	suite.Equal(vote.Validator, val0)
 	suite.Equal(vote.ClaimHash, claim.Hash())
 	suite.Equal(vote.ClaimType, claim.ClaimType)
-	suite.Equal(vote.ConsensusId, claim.GetConcensusKey())
+	suite.Equal(vote.ConsensusId, claim.GetConsensusKey())
 	suite.Equal(vote.RoundId, roundID)
 
 	// Add second vote
@@ -67,6 +67,10 @@ func (suite *KeeperTestSuite) TestVoteTally() {
 
 	val0 := suite.validators[0]
 	val1 := suite.validators[1]
+	val2 := suite.validators[2]
+	val3 := suite.validators[3]
+	val3Power := suite.k.StakingKeeper.Validator(ctx, val3).GetConsensusPower(sdk.DefaultPowerReduction)
+	suite.Equal(10, val3Power)
 
 	suite.k.CreateVote(ctx, claim, val0)
 
@@ -76,11 +80,14 @@ func (suite *KeeperTestSuite) TestVoteTally() {
 
 	// Haven't reached threshold (50%)
 	suite.k.CreateVote(ctx, claim, val1)
+	suite.k.CreateVote(ctx, claim, val2)
 	roundResult = suite.k.TallyVotes(ctx, claimType, roundID)
 	suite.NotNil(roundResult)
+	suite.Equal(2, len(roundResult.Claims))
 
 	totalBondedPower := sdk.TokensToConsensusPower(suite.k.StakingKeeper.TotalBondedTokens(ctx), sdk.DefaultPowerReduction)
 	suite.Equal(roundResult.TotalPower, totalBondedPower)
+	suite.Equal(20, totalBondedPower)
 
 	suite.Equal(roundResult.VotePower, suite.pow[0]+suite.pow[1])
 
