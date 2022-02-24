@@ -28,23 +28,29 @@ message MsgVote {
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;
 
-  string              signer = 1;
-  google.protobuf.Any claim  = 2 [(cosmos_proto.accepts_interface) = "Claim"];
-  string              salt = 3;
+  string              salt = 1 [(gogoproto.moretags) = "yaml:\"salt\""];
+  google.protobuf.Any claim  = 2 [
+    (cosmos_proto.accepts_interface) = "Claim",
+    (gogoproto.moretags) = "yaml:\"claim\""
+  ];
+  string              signer = 3 [(gogoproto.moretags) = "yaml:\"signer\""];
 }
 
 // MsgVoteResponse defines the Msg/SubmitEvidence response type.
 message MsgVoteResponse {
   // hash defines the hash of the evidence.
-  bytes hash = 4;
+  string hash = 1 [(gogoproto.moretags) = "yaml:\"hash\""];
 }
 
 // MsgPrevote - sdk.Msg for prevoting on an array of oracle claim types.
 // The purpose of the prevote is to hide vote for data with hashes formatted as hex string: 
-// SHA256("{salt}:{data_cannonical_json}:{voter}")
+// SHA256("{salt}:{data_cannonical_json}:{validator}")
 message MsgPrevote {
-  bytes  hash = 1;
-  string signer = 2;
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string hash = 1 [(gogoproto.moretags) = "yaml:\"hash\""];
+  string signer = 2 [(gogoproto.moretags) = "yaml:\"signer\""];
 }
 
 message MsgPrevoteResponse {}
@@ -53,8 +59,11 @@ message MsgPrevoteResponse {}
 // MsgDelegate - sdk.Msg for delegating oracle voting rights from a validator
 // to another address, must be signed by an active validator
 message MsgDelegate {
-  string delegate  = 1;
-  string validator = 2;
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string delegate  = 1 [(gogoproto.moretags) = "yaml:\"delegate\""];
+  string validator = 2 [(gogoproto.moretags) = "yaml:\"validator\""];
 }
 
 // MsgDelegateResponse delegation response

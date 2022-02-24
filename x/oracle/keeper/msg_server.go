@@ -155,7 +155,7 @@ func (k msgServer) isCorrectRound(ctx sdk.Context, msg *types.MsgVote, signer sd
 	if claimRoundID+claimParams.VotePeriod < currentRound {
 		return []byte{}, sdkerrors.Wrap(types.ErrIncorrectClaimRound, fmt.Sprintf("expected %d, got %d", currentRound-claimParams.VotePeriod, claimRoundID))
 	}
-
+	// TODO: Refactor: This should check if the prevoteHash matches the generated hash. If it does not match, reject the vote
 	prevoteHash := types.VoteHash(msg.Salt, claim.Hash().String(), signer)
 	hasPrevote := k.HasPrevote(ctx, prevoteHash)
 	if hasPrevote == false {

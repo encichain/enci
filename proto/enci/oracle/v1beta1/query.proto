@@ -7,6 +7,7 @@ import "google/protobuf/any.proto";
 import "google/api/annotations.proto";
 import "enci/oracle/v1beta1/params.proto";
 import "enci/oracle/v1beta1/oracle.proto";
+import "enci/oracle/v1beta1/genesis.proto";
 import "cosmos_proto/cosmos.proto";
 
 // this line is used by starport scaffolding # 1
@@ -20,93 +21,41 @@ service Query {
     option (google.api.http).get = "/enci/oracle/v1beta1/params";
   }
 
-  // PendingRounds queries the pending Rounds of the oracle module
-  rpc PendingRounds(QueryPendingRoundsRequest) returns (QueryPendingRoundsResponse) {
-    option (google.api.http).get = "/enci/oracle/v1beta1/pending_rounds/{claim_type}";
+  // VoteRounds queries the active VoteRounds for all claim types
+  rpc VoteRounds(QueryVoteRoundsRequest) returns (QueryVoteRoundsResponse) {
+    option (google.api.http).get = "/enci/oracle/v1beta1/voterounds";
   }
 
-  // LastFinalizedRound queries the pending Rounds of the oracle module
-  rpc LastFinalizedRound(QueryLastFinalizedRoundRequest) returns (QueryLastFinalizedRoundResponse) {
-    option (google.api.http).get = "/enci/oracle/v1beta1/finalized_round/{claim_type}";
+  // PrevoteRounds queries the active PrevoteRounds for all claim types
+  rpc PrevoteRounds(QueryPrevoteRoundsRequest) returns (QueryPrevoteRoundsResponse) {
+    option (google.api.http).get = "/enci/oracle/v1beta1/prevoterounds";
   }
 
-  // Vote queries the parameters of the oracle module
-  rpc Round(QueryRoundRequest) returns (QueryRoundResponse) {
-    option (google.api.http).get = "/enci/oracle/v1beta1/round/{claimType}/{roundId}";
+  // VoterDelegations queries all the voter delegations
+  rpc VoterDelegations(QueryVoterDelegationsRequest) returns (QueryVoterDelegationsResponse) {
+    option (google.api.http).get = "/enci/oracle/v1beta1/voter_delegations";
   }
 
-  // Votes queries the parameters of the oracle module
-  rpc AllRounds(QueryAllRoundsRequest) returns (QueryAllRoundsResponse) {
-    option (google.api.http).get = "/enci/oracle/v1beta1/all_rounds";
-  }
-
-  // AllClaims queries all claims with pagination.
-	rpc AllClaims(QueryAllClaimsRequest) returns (QueryAllClaimsResponse){
-    option (google.api.http).get = "/enci/oracle/v1beta1/allclaims";
-  };
-
-  // Claim queries claims based on claim hash.
-  rpc Claim(QueryClaimRequest) returns (QueryClaimResponse){
-    option (google.api.http).get = "/enci/oracle/v1beta1/claim/{claim_hash}";
-  };
-
-  rpc QueryDelegeateAddress(QueryDelegeateAddressRequest) returns (QueryDelegeateAddressResponse) {
+  // DelegateAddress queries a delegate address attached to a validator
+  rpc DelegateAddress(QueryDelegateAddressRequest) returns (QueryDelegateAddressResponse) {
     option (google.api.http).get = "/enci/oracle/v1beta1/delegate/{validator}";
   }
-  rpc QueryValidatorAddress(QueryValidatorAddressRequest) returns (QueryValidatorAddressResponse) {
+
+  // ValidatorAddress queries a validator address attached to a vote delegate
+  rpc ValidatorAddress(QueryValidatorAddressRequest) returns (QueryValidatorAddressResponse) {
     option (google.api.http).get = "/enci/oracle/v1beta1/validator/{delegate}";
   }
+
+  // NextVotePeriod queries the block height of the next vote period
+  rpc NextVotePeriod(QueryNextVotePeriodRequest) returns (QueryNextVotePeriodResponse) {
+    option (google.api.http).get = "/enci/oracle/v1beta1/next_vote_period";
+  }
+
+  // NextPrevote queries the block height of the next prevote period
+  rpc NextPrevote(QueryNextPrevoteRequest) returns (QueryNextPrevoteResponse) {
+    option (google.api.http).get = "/enci/oracle/v1beta1/next_prevote";
+  }
 }
-
-// QueryRoundResponse is the request type for the Query/Params RPC method
-message QueryRoundRequest {
-  string claimType = 1;
-  uint64 roundId = 2;
-}
-
-// QueryRoundResponse is the response type for the Query/Params RPC method
-message QueryRoundResponse {
-  Round round = 1 [(gogoproto.nullable) = false];
-}
-
-
-
-// QueryAllRoundsRequest is the request type for the Query/Params RPC method
-message QueryAllRoundsRequest {
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
-}
-
-// QueryAllRoundsResponse is the response type for the Query/Params RPC method
-message QueryAllRoundsResponse {
-  repeated Round rounds = 1 [(gogoproto.nullable) = false];
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-
-
-// QueryPendingRoundsRequest is the request type for the Query/Params RPC method
-message QueryPendingRoundsRequest {
-  string claim_type = 1;
-}
-
-// QueryParamsResponse is the response type for the Query/Params RPC method
-message QueryPendingRoundsResponse {
-  repeated uint64 pending_rounds = 1 [(gogoproto.nullable) = false];
-}
-
-
-
-// LastFinalizedRround is the request type for the Query/Params RPC method
-message QueryLastFinalizedRoundRequest {
-  string claim_type = 1;
-}
-
-// LastFinalizedRround is the response type for the Query/Params RPC method
-message QueryLastFinalizedRoundResponse {
-  uint64 lastFinalizedRound = 1;
-}
-
-
 
 // QueryParamsRequest is the request type for the Query/Params RPC method
 message QueryParamsRequest {}
@@ -116,44 +65,62 @@ message QueryParamsResponse {
   Params params = 1 [(gogoproto.nullable) = false];
 }
 
-
-
-// QueryClaimRequest is the request type for the Query/Claim RPC method
-message QueryClaimRequest {
-  string claim_hash = 1;
+// QueryRoundResponse is the request type for the Query/Params RPC method
+message QueryVoteRoundsRequest {
 }
 
-// QueryClaimResponse is the response type for the Query/Claim RPC method.
-message QueryClaimResponse {
-  // claim returns the requested claim.
-  google.protobuf.Any claim = 1 [(cosmos_proto.accepts_interface) = "Claim"];
+// QueryRoundResponse is the response type for the Query/Params RPC method
+message QueryVoteRoundsResponse {
+  repeated VoteRound vote_rounds = 1 [(gogoproto.nullable) = false];
 }
 
-
-
-// this line is used by starport scaffolding # 3
-
-// QueryAllClaimsRequest is the request type for the Query/AllClaims RPC method
-message QueryAllClaimsRequest {
-	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+// QueryPrevoteRoundsRequest is the request type for the Query PrevoteRounds RPC method
+message QueryPrevoteRoundsRequest {
+}
+// QueryPrevoteRoundsResponse is the response type for the Query PrevoteRoudns RPC method
+message QueryPrevoteRoundsResponse {
+  repeated PrevoteRound prevote_rounds = 1 [(gogoproto.nullable) = false];
 }
 
-// QueryAllClaimsResponse is the response type for the Query/Claims RPC method.
-message QueryAllClaimsResponse {
-	repeated google.protobuf.Any claims = 1;
-	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+// QueryVoterDelegationsRequest is the request type for the Query VoterDelegations RPC method
+message QueryVoterDelegationsRequest {
+}
+// QueryVoterDelegationsResponse is the response type for the query VoterDelegations RPC method
+message QueryVoterDelegationsResponse {
+  repeated VoterDelegation voter_delegations = 1 [(gogoproto.nullable) = false];
 }
 
+// QueryValidaorAddressRequest is the request type for the Query ValidatorAddress RPC method
 message QueryValidatorAddressRequest {
   string delegate = 1;
 }
+// QueryValidaorAddressRequest is the response type for the Query ValidatorAddress RPC method
 message QueryValidatorAddressResponse {
   string validator = 1;
 }
 
-message QueryDelegeateAddressRequest {
+// QueryDelegateAddressRequest is the request type for the Query DelegateAddress RPC method
+message QueryDelegateAddressRequest {
   string validator = 1;
 }
-message QueryDelegeateAddressResponse {
+// QueryDelegateAddressRequest is the response type for the Query DelegateAddress RPC method
+message QueryDelegateAddressResponse {
   string delegate = 2;
 }
+
+// QueryNextVotePeriodRequest is the request type for the Query NextVotePeriod RPC method
+message QueryNextVotePeriodRequest {
+}
+// QueryNextVotePeriodRequest is the response type for the Query NextVotePeriod RPC method
+message QueryNextVotePeriodResponse {
+  uint64 block = 1;
+}
+
+// QueryNextPrevoteRequest is the request type for the Query NextPrevote RPC method
+message QueryNextPrevoteRequest {
+}
+// QueryNextPrevoteRequest is the response type for the Query NextPrevote RPC method
+message QueryNextPrevoteResponse {
+  uint64 block = 1;
+}
+

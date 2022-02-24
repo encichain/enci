@@ -3,21 +3,52 @@ package enci.oracle.v1beta1;
 
 option go_package = "github.com/encichain/enci/x/oracle/types";
 import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
 
 // Vote is a vote for a given claim by a validator
 message Vote {
-  uint64 roundId = 1; // use int in case we need to enforce sequential ordering
-  bytes claimHash = 2 [(gogoproto.casttype) = "github.com/tendermint/tendermint/libs/bytes.HexBytes"];
-  string consensusId = 3; //  used to compare claims when tallying votes
-  string claimType = 4;
-  bytes validator = 5 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.ValAddress"];
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  google.protobuf.Any claim = 1 [(gogoproto.moretags) = "yaml:\"claim\""];
+  string validator = 2 [(gogoproto.moretags) = "yaml:\"validator\""];
 }
 
-// Round contains all claim votes for a given round
-message Round {
-  uint64 roundId = 1;
-  string claimType = 2; // namespace so we can have multiple oracles
-  repeated Vote votes = 3 [(gogoproto.nullable) = false];
+// Prevote submitted by the validator for a claim, designed to hide claim values
+// by presubmitting a hash.
+// Hash is in the format: Hex string SHA256("{salt}:{claim Hash}:{validator address}")
+message Prevote {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string hash = 1 [(gogoproto.moretags) = "yaml:\"hash\""];
+  string validator = 2 [(gogoproto.moretags) = "yaml:\"validator\""];
+  uint64 submit_block = 3 [(gogoproto.moretags) = "yaml:\"submit_block\""];
+}
+
+// VoteRound contains all claim votes during VotePeriod
+message VoteRound {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // namespace so we can have multiple claim types
+  string claim_type = 1 [(gogoproto.moretags) = "yaml:\"claim_type\""];
+  repeated Vote votes = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.moretags) = "yaml:\"votes\""
+  ];
+}
+
+// PrevoteRound contains all claim prevotes during PrevotePeriod
+message PrevoteRound {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string claim_type = 1 [(gogoproto.moretags) = "yaml:\"claim_type\""];
+  repeated Prevote prevotes = 2 [
+    (gogoproto.nullable) = false,
+    (gogoproto.moretags) = "yaml:\"prevotes\""
+  ]; 
 }
 
 // TestClaim is a concrete Claim type we use for testing

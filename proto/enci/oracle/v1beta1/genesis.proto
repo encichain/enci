@@ -16,18 +16,15 @@ message GenesisState {
     option (gogoproto.equal)           = false;
     option (gogoproto.goproto_getters) = false;
   
-    // params defines all the paramaters of related to deposit.
+    // params defines the parameters of each claim
     Params params = 1 [(gogoproto.nullable) = false];
-    repeated google.protobuf.Any claims  =2;
-    repeated Round rounds = 3 [(gogoproto.nullable) = false];
-    message ListOfUint {
-        repeated uint64 pending = 1 [(gogoproto.nullable) = false];
-    }
-    map<string, ListOfUint> pending = 4 [(gogoproto.nullable) = false];
-    repeated MsgDelegate delegations =5 [
-        (gogoproto.nullable) = false
-    ];
-    repeated bytes prevotes = 6 [(gogoproto.nullable) = false];
-    map<string, uint64> finalizedRounds = 7 [(gogoproto.nullable) = false];
+    repeated VoterDelegation voter_delegations = 2 [(gogoproto.nullable) = false];
+    repeated VoteRound votes = 3 [(gogoproto.nullable) = false];
+    repeated PrevoteRound prevotes = 4 [(gogoproto.nullable) = false];
+}
 
+// VoterDelegation gives voting privileges to a delegate on behalf of the validator 
+message VoterDelegation {
+    string delegate_address = 1; 
+    string validator_address = 2; 
 }
