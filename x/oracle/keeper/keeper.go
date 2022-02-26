@@ -17,16 +17,16 @@ type (
 		storeKey      sdk.StoreKey
 		memKey        sdk.StoreKey
 		StakingKeeper types.StakingKeeper
-		paramspace    types.ParamSubspace
+		paramStore    types.ParamSubspace
 	}
 )
 
 // NewKeeper instatiates the oracle keeper
-func NewKeeper(cdc codec.Codec, storeKey, memKey sdk.StoreKey, stakingKeeper types.StakingKeeper, paramspace types.ParamSubspace) *Keeper {
+func NewKeeper(cdc codec.Codec, storeKey, memKey sdk.StoreKey, stakingKeeper types.StakingKeeper, paramStore types.ParamSubspace) *Keeper {
 
 	// set KeyTable if it has not already been set
-	if !paramspace.HasKeyTable() {
-		paramspace = paramspace.WithKeyTable(types.ParamKeyTable())
+	if !paramStore.HasKeyTable() {
+		paramStore = paramStore.WithKeyTable(types.ParamKeyTable())
 	}
 
 	return &Keeper{
@@ -34,7 +34,7 @@ func NewKeeper(cdc codec.Codec, storeKey, memKey sdk.StoreKey, stakingKeeper typ
 		storeKey:      storeKey,
 		memKey:        memKey,
 		StakingKeeper: stakingKeeper,
-		paramspace:    paramspace,
+		paramStore:    paramStore,
 	}
 }
 
