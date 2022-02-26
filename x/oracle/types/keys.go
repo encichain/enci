@@ -1,10 +1,8 @@
 package types
 
 import (
-	"strconv"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	tmbytes "github.com/tendermint/tendermint/libs/bytes"
+	"github.com/cosmos/cosmos-sdk/types/address"
 )
 
 // Keys for oracle store, with <prefix><key> -> <value>
@@ -25,28 +23,21 @@ const (
 	MemStoreKey = "mem_capability"
 )
 
-// Keys for oracle store, with <prefix><key> -> <value>
+// Keys for x/oracle store
+// stored as format: key -> encoding(value)
+// 0x01 | claimtype bytes									-> ProtocolBuffer(VoteRound)
+// 0x02 | claimtype bytes									-> ProtocolBuffer(PrevoteRound)
+// 0x03 | address length byte | validator address bytes		-> ProtocolBuffer(Prevote)
+// 0x04 | address length byte | validator address bytes 	-> ProtocolBuffer(Vote)
+// 0x05 | address length byte | validator address bytes  	-> sdk.AccAddress
+// 0x06 | address length byte | delegate address bytes  	-> sdk.ValAddress
 var (
-	// 0x00 | claim_hash -> claim
-	ClaimKey = []byte{0x00}
-
-	// 0x01 | claimType | roundId -> round
-	RoundKey = []byte{0x01}
-
-	// 0x02 | claimType | roundId -> roundId
-	PendingRoundKey = []byte{0x02}
-
-	// - 0x03 | prevote_hash -> prevote_hash
-	PrevoteKey = []byte{0x03}
-
-	// - 0x04 | del_address -> val_address
-	DelValKey = []byte{0x05} // key for validator feed delegation
-
-	// - 0x05 | val_address -> del_address
-	ValDelKey = []byte{0x06} // key for validator feed delegation
-
-	// - 0x06 | claimType -> roundId
-	FinalizedRoundKey = []byte{0x07} // key for validator feed delegation
+	VoteRoundKey    = []byte{0x01} // prefix for a key to a VoteRound stored by claim type
+	PrevoteRoundKey = []byte{0x02} // prefix for a key to a PrevoteRound stored by claim type
+	PrevoteKey      = []byte{0x03} // prefix for a key to a Prevote stored by validator address
+	VoteKey         = []byte{0x04} // prefix for a key to a Vote stored by validator address
+	DelValKey       = []byte{0x05} // prefix for a key to a Delegate address stored by validator address
+	ValDelKey       = []byte{0x06} // prefix for a key to a validator address stored by assigned delegate address
 )
 
 // KeyPrefix helper
@@ -54,27 +45,32 @@ func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
 
-// GetDelValKey returns the validator for a given delegate key
+// GetVoteRoundKey returns a key to a VoteRound - stored by *claimType*
+func GetVoteRoundKey(claimType string) []byte {
+	return append(VoteRoundKey, []byte(claimType)...)
+}
+
+// GetPrevoteRoundKey returns a key to a PrevoteRound - stored by *claimType*
+func GetPrevoteRoundKey(claimType string) []byte {
+	return append(PrevoteRoundKey, []byte(claimType)...)
+}
+
+// GetPrevoteKey returns a key to a Prevote - stored by *Validator* address
+func GetPrevoteKey(val sdk.ValAddress) []byte {
+	return append(PrevoteKey, address.MustLengthPrefix(val)...)
+}
+
+// GetVoteKey returns a key to a Vote - stored by *Validator* address
+func GetVoteKey(val sdk.ValAddress) []byte {
+	return append(VoteKey, address.MustLengthPrefix(val)...)
+}
+
+// GetDelValKey returns the validator for a given delegate address - stored by *delegate address*
 func GetDelValKey(del sdk.AccAddress) []byte {
-	return append(DelValKey, del.Bytes()...)
+	return append(DelValKey, address.MustLengthPrefix(del)...)
 }
 
-// GetValDelKey returns the validator for a given delegate key
-func GetValDelKey(val sdk.AccAddress) []byte {
-	return append(ValDelKey, val.Bytes()...)
-}
-
-// GetClaimPrevoteKey returns the key for a validators prevote
-func GetClaimPrevoteKey(hash tmbytes.HexBytes) []byte {
-	return append(PrevoteKey, hash...)
-}
-
-// GetRoundKey helper
-func GetRoundKey(claimType string, roundID uint64) string {
-	return claimType + strconv.FormatUint(roundID, 10)
-}
-
-// RoundPrefix helper
-func RoundPrefix(claimType string, roundID uint64) []byte {
-	return KeyPrefix(GetRoundKey(claimType, roundID))
+// GetValDelKey returns the delegate for a given validator address - stored by *validator address*
+func GetValDelKey(val sdk.ValAddress) []byte {
+	return append(ValDelKey, address.MustLengthPrefix(val)...)
 }

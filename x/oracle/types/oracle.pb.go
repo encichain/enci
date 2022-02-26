@@ -5,10 +5,9 @@ package types
 
 import (
 	fmt "fmt"
-	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
+	types "github.com/cosmos/cosmos-sdk/codec/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
-	github_com_tendermint_tendermint_libs_bytes "github.com/tendermint/tendermint/libs/bytes"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -27,11 +26,8 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Vote is a vote for a given claim by a validator
 type Vote struct {
-	RoundId     uint64                                               `protobuf:"varint,1,opt,name=roundId,proto3" json:"roundId,omitempty"`
-	ClaimHash   github_com_tendermint_tendermint_libs_bytes.HexBytes `protobuf:"bytes,2,opt,name=claimHash,proto3,casttype=github.com/tendermint/tendermint/libs/bytes.HexBytes" json:"claimHash,omitempty"`
-	ConsensusId string                                               `protobuf:"bytes,3,opt,name=consensusId,proto3" json:"consensusId,omitempty"`
-	ClaimType   string                                               `protobuf:"bytes,4,opt,name=claimType,proto3" json:"claimType,omitempty"`
-	Validator   github_com_cosmos_cosmos_sdk_types.ValAddress        `protobuf:"bytes,5,opt,name=validator,proto3,casttype=github.com/cosmos/cosmos-sdk/types.ValAddress" json:"validator,omitempty"`
+	Claim     *types.Any `protobuf:"bytes,1,opt,name=claim,proto3" json:"claim,omitempty" yaml:"claim"`
+	Validator string     `protobuf:"bytes,2,opt,name=validator,proto3" json:"validator,omitempty" yaml:"validator"`
 }
 
 func (m *Vote) Reset()         { *m = Vote{} }
@@ -67,60 +63,27 @@ func (m *Vote) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Vote proto.InternalMessageInfo
 
-func (m *Vote) GetRoundId() uint64 {
-	if m != nil {
-		return m.RoundId
-	}
-	return 0
+// Prevote submitted by the validator for a claim, designed to hide claim values
+// by presubmitting a hash.
+// Hash is in the format: Hex string SHA256("{salt}:{claim Hash}:{validator address}")
+type Prevote struct {
+	Hash        string `protobuf:"bytes,1,opt,name=hash,proto3" json:"hash,omitempty" yaml:"hash"`
+	Validator   string `protobuf:"bytes,2,opt,name=validator,proto3" json:"validator,omitempty" yaml:"validator"`
+	SubmitBlock uint64 `protobuf:"varint,3,opt,name=submit_block,json=submitBlock,proto3" json:"submit_block,omitempty" yaml:"submit_block"`
 }
 
-func (m *Vote) GetClaimHash() github_com_tendermint_tendermint_libs_bytes.HexBytes {
-	if m != nil {
-		return m.ClaimHash
-	}
-	return nil
-}
-
-func (m *Vote) GetConsensusId() string {
-	if m != nil {
-		return m.ConsensusId
-	}
-	return ""
-}
-
-func (m *Vote) GetClaimType() string {
-	if m != nil {
-		return m.ClaimType
-	}
-	return ""
-}
-
-func (m *Vote) GetValidator() github_com_cosmos_cosmos_sdk_types.ValAddress {
-	if m != nil {
-		return m.Validator
-	}
-	return nil
-}
-
-// Round contains all claim votes for a given round
-type Round struct {
-	RoundId   uint64 `protobuf:"varint,1,opt,name=roundId,proto3" json:"roundId,omitempty"`
-	ClaimType string `protobuf:"bytes,2,opt,name=claimType,proto3" json:"claimType,omitempty"`
-	Votes     []Vote `protobuf:"bytes,3,rep,name=votes,proto3" json:"votes"`
-}
-
-func (m *Round) Reset()         { *m = Round{} }
-func (m *Round) String() string { return proto.CompactTextString(m) }
-func (*Round) ProtoMessage()    {}
-func (*Round) Descriptor() ([]byte, []int) {
+func (m *Prevote) Reset()         { *m = Prevote{} }
+func (m *Prevote) String() string { return proto.CompactTextString(m) }
+func (*Prevote) ProtoMessage()    {}
+func (*Prevote) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f5e6dcb96c8266e5, []int{1}
 }
-func (m *Round) XXX_Unmarshal(b []byte) error {
+func (m *Prevote) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *Round) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Prevote) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_Round.Marshal(b, m, deterministic)
+		return xxx_messageInfo_Prevote.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -130,38 +93,96 @@ func (m *Round) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *Round) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Round.Merge(m, src)
+func (m *Prevote) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Prevote.Merge(m, src)
 }
-func (m *Round) XXX_Size() int {
+func (m *Prevote) XXX_Size() int {
 	return m.Size()
 }
-func (m *Round) XXX_DiscardUnknown() {
-	xxx_messageInfo_Round.DiscardUnknown(m)
+func (m *Prevote) XXX_DiscardUnknown() {
+	xxx_messageInfo_Prevote.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Round proto.InternalMessageInfo
+var xxx_messageInfo_Prevote proto.InternalMessageInfo
 
-func (m *Round) GetRoundId() uint64 {
-	if m != nil {
-		return m.RoundId
+// VoteRound contains all claim votes during VotePeriod
+type VoteRound struct {
+	// namespace so we can have multiple claim types
+	ClaimType string `protobuf:"bytes,1,opt,name=claim_type,json=claimType,proto3" json:"claim_type,omitempty" yaml:"claim_type"`
+	Votes     []Vote `protobuf:"bytes,2,rep,name=votes,proto3" json:"votes" yaml:"votes"`
+}
+
+func (m *VoteRound) Reset()         { *m = VoteRound{} }
+func (m *VoteRound) String() string { return proto.CompactTextString(m) }
+func (*VoteRound) ProtoMessage()    {}
+func (*VoteRound) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f5e6dcb96c8266e5, []int{2}
+}
+func (m *VoteRound) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *VoteRound) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_VoteRound.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
 	}
-	return 0
+}
+func (m *VoteRound) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VoteRound.Merge(m, src)
+}
+func (m *VoteRound) XXX_Size() int {
+	return m.Size()
+}
+func (m *VoteRound) XXX_DiscardUnknown() {
+	xxx_messageInfo_VoteRound.DiscardUnknown(m)
 }
 
-func (m *Round) GetClaimType() string {
-	if m != nil {
-		return m.ClaimType
-	}
-	return ""
+var xxx_messageInfo_VoteRound proto.InternalMessageInfo
+
+// PrevoteRound contains all claim prevotes during PrevotePeriod
+type PrevoteRound struct {
+	ClaimType string    `protobuf:"bytes,1,opt,name=claim_type,json=claimType,proto3" json:"claim_type,omitempty" yaml:"claim_type"`
+	Prevotes  []Prevote `protobuf:"bytes,2,rep,name=prevotes,proto3" json:"prevotes" yaml:"prevotes"`
 }
 
-func (m *Round) GetVotes() []Vote {
-	if m != nil {
-		return m.Votes
-	}
-	return nil
+func (m *PrevoteRound) Reset()         { *m = PrevoteRound{} }
+func (m *PrevoteRound) String() string { return proto.CompactTextString(m) }
+func (*PrevoteRound) ProtoMessage()    {}
+func (*PrevoteRound) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f5e6dcb96c8266e5, []int{3}
 }
+func (m *PrevoteRound) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *PrevoteRound) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_PrevoteRound.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *PrevoteRound) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PrevoteRound.Merge(m, src)
+}
+func (m *PrevoteRound) XXX_Size() int {
+	return m.Size()
+}
+func (m *PrevoteRound) XXX_DiscardUnknown() {
+	xxx_messageInfo_PrevoteRound.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PrevoteRound proto.InternalMessageInfo
 
 // TestClaim is a concrete Claim type we use for testing
 type TestClaim struct {
@@ -174,7 +195,7 @@ func (m *TestClaim) Reset()         { *m = TestClaim{} }
 func (m *TestClaim) String() string { return proto.CompactTextString(m) }
 func (*TestClaim) ProtoMessage()    {}
 func (*TestClaim) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f5e6dcb96c8266e5, []int{2}
+	return fileDescriptor_f5e6dcb96c8266e5, []int{4}
 }
 func (m *TestClaim) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -226,39 +247,47 @@ func (m *TestClaim) GetContent() string {
 
 func init() {
 	proto.RegisterType((*Vote)(nil), "enci.oracle.v1beta1.Vote")
-	proto.RegisterType((*Round)(nil), "enci.oracle.v1beta1.Round")
+	proto.RegisterType((*Prevote)(nil), "enci.oracle.v1beta1.Prevote")
+	proto.RegisterType((*VoteRound)(nil), "enci.oracle.v1beta1.VoteRound")
+	proto.RegisterType((*PrevoteRound)(nil), "enci.oracle.v1beta1.PrevoteRound")
 	proto.RegisterType((*TestClaim)(nil), "enci.oracle.v1beta1.TestClaim")
 }
 
 func init() { proto.RegisterFile("enci/oracle/v1beta1/oracle.proto", fileDescriptor_f5e6dcb96c8266e5) }
 
 var fileDescriptor_f5e6dcb96c8266e5 = []byte{
-	// 394 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x52, 0x3d, 0xaf, 0x9b, 0x30,
-	0x14, 0x85, 0x40, 0xfa, 0x84, 0x5f, 0x27, 0xda, 0xc1, 0xad, 0x2a, 0x82, 0x32, 0xb1, 0x3c, 0x50,
-	0xfa, 0x21, 0x75, 0x2d, 0x5d, 0xf2, 0xa6, 0x4a, 0xe8, 0x29, 0x43, 0x37, 0x63, 0x5f, 0x81, 0x15,
-	0xb0, 0x23, 0xec, 0xa0, 0xe4, 0x27, 0x74, 0xeb, 0xcf, 0xca, 0x98, 0xb1, 0x53, 0x54, 0x25, 0xff,
-	0x22, 0x53, 0x65, 0x42, 0x14, 0x5a, 0x55, 0xed, 0xc4, 0xb9, 0xe7, 0x1e, 0xdd, 0x7b, 0x38, 0xbe,
-	0x28, 0x04, 0x41, 0x79, 0x22, 0x1b, 0x42, 0x2b, 0x48, 0xda, 0x59, 0x0e, 0x9a, 0xcc, 0xfa, 0x32,
-	0x5e, 0x35, 0x52, 0x4b, 0xff, 0x85, 0x51, 0xc4, 0x3d, 0xd5, 0x2b, 0x5e, 0xbf, 0x2c, 0x64, 0x21,
-	0xbb, 0x7e, 0x62, 0xd0, 0x45, 0x3a, 0xfd, 0x36, 0x42, 0xee, 0x42, 0x6a, 0xf0, 0x31, 0xba, 0x6b,
-	0xe4, 0x5a, 0xb0, 0x47, 0x86, 0xed, 0xd0, 0x8e, 0xdc, 0xec, 0x5a, 0xfa, 0x0b, 0xe4, 0xd1, 0x8a,
-	0xf0, 0x7a, 0x4e, 0x54, 0x89, 0x47, 0xa1, 0x1d, 0x3d, 0x4f, 0x3f, 0x9e, 0x0f, 0x93, 0xf7, 0x05,
-	0xd7, 0xe5, 0x3a, 0x8f, 0xa9, 0xac, 0x13, 0x0d, 0x82, 0x41, 0x53, 0x73, 0xa1, 0x87, 0xb0, 0xe2,
-	0xb9, 0x4a, 0xf2, 0xad, 0x06, 0x15, 0xcf, 0x61, 0x93, 0x1a, 0x90, 0xdd, 0x46, 0xf9, 0x21, 0xba,
-	0xa7, 0x52, 0x28, 0x10, 0x6a, 0xad, 0x1e, 0x19, 0x76, 0x42, 0x3b, 0xf2, 0xb2, 0x21, 0xe5, 0xbf,
-	0xe9, 0x37, 0x3f, 0x6d, 0x57, 0x80, 0xdd, 0xae, 0x7f, 0x23, 0xfc, 0x2f, 0xc8, 0x6b, 0x49, 0xc5,
-	0x19, 0xd1, 0xb2, 0xc1, 0xe3, 0xce, 0xd7, 0xec, 0x7c, 0x98, 0x3c, 0x0c, 0x7c, 0x51, 0xa9, 0x6a,
-	0xa9, 0xfa, 0xcf, 0x83, 0x62, 0xcb, 0x44, 0x6f, 0x57, 0xa0, 0xe2, 0x05, 0xa9, 0x3e, 0x31, 0xd6,
-	0x80, 0x52, 0xd9, 0x6d, 0xc6, 0xb4, 0x45, 0xe3, 0xcc, 0xfc, 0xf3, 0x3f, 0xb2, 0xf8, 0xcd, 0xd1,
-	0xe8, 0x4f, 0x47, 0x1f, 0xd0, 0xb8, 0x95, 0x1a, 0x14, 0x76, 0x42, 0x27, 0xba, 0x7f, 0xfb, 0x2a,
-	0xfe, 0xcb, 0x3b, 0xc4, 0x26, 0xed, 0xd4, 0xdd, 0x1d, 0x26, 0x56, 0x76, 0x51, 0x4f, 0x01, 0x79,
-	0x4f, 0xa0, 0xf4, 0x67, 0x33, 0xc7, 0xa4, 0x92, 0x57, 0x92, 0x2e, 0xe7, 0xc0, 0x8b, 0x52, 0x77,
-	0xfb, 0x9d, 0x6c, 0x48, 0xfd, 0xc7, 0x03, 0x46, 0x77, 0x54, 0x0a, 0x0d, 0x42, 0xf7, 0x89, 0x5e,
-	0xcb, 0x34, 0xdd, 0x1d, 0x03, 0x7b, 0x7f, 0x0c, 0xec, 0x9f, 0xc7, 0xc0, 0xfe, 0x7e, 0x0a, 0xac,
-	0xfd, 0x29, 0xb0, 0x7e, 0x9c, 0x02, 0xeb, 0x6b, 0x34, 0x88, 0xcc, 0x58, 0xa6, 0x25, 0xe1, 0xa2,
-	0x43, 0xc9, 0xe6, 0x7a, 0x68, 0x5d, 0x70, 0xf9, 0xb3, 0xee, 0x6a, 0xde, 0xfd, 0x0a, 0x00, 0x00,
-	0xff, 0xff, 0xd0, 0xb7, 0x08, 0x93, 0x84, 0x02, 0x00, 0x00,
+	// 491 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x93, 0x31, 0x6f, 0xd4, 0x30,
+	0x18, 0x86, 0xe3, 0xde, 0x95, 0x36, 0xce, 0x49, 0x2d, 0xe9, 0xa1, 0xa6, 0x55, 0x95, 0x44, 0x66,
+	0xc9, 0x94, 0xa8, 0x07, 0xd3, 0x89, 0x85, 0x20, 0x24, 0x46, 0xb0, 0x2a, 0x06, 0x96, 0xca, 0x49,
+	0x4d, 0x12, 0x91, 0x8b, 0x4f, 0x17, 0xdf, 0x89, 0xac, 0x4c, 0x8c, 0x88, 0x5f, 0x50, 0x36, 0x7e,
+	0x4a, 0xc7, 0x8e, 0x4c, 0x11, 0xba, 0x5b, 0x98, 0xf3, 0x0b, 0x90, 0xed, 0xa4, 0x97, 0xe1, 0x26,
+	0xd8, 0xf2, 0xf9, 0x7b, 0xdf, 0xcf, 0x8f, 0x5f, 0x3b, 0xd0, 0xa5, 0x45, 0x9c, 0x05, 0x6c, 0x41,
+	0xe2, 0x9c, 0x06, 0xab, 0xcb, 0x88, 0x72, 0x72, 0xd9, 0x96, 0xfe, 0x7c, 0xc1, 0x38, 0x33, 0x4f,
+	0x84, 0xc2, 0x6f, 0x97, 0x5a, 0xc5, 0xf9, 0x38, 0x61, 0x09, 0x93, 0xfd, 0x40, 0x7c, 0x29, 0xe9,
+	0xf9, 0x59, 0xc2, 0x58, 0x92, 0xd3, 0x40, 0x56, 0xd1, 0xf2, 0x63, 0x40, 0x8a, 0x4a, 0xb5, 0xd0,
+	0x17, 0x00, 0x87, 0xef, 0x19, 0xa7, 0xe6, 0x0b, 0xb8, 0x1f, 0xe7, 0x24, 0x9b, 0x59, 0xc0, 0x05,
+	0x9e, 0x31, 0x19, 0xfb, 0xca, 0xe3, 0x77, 0x1e, 0xff, 0x65, 0x51, 0x85, 0xc7, 0x4d, 0xed, 0x8c,
+	0x2a, 0x32, 0xcb, 0xa7, 0x48, 0x8a, 0x11, 0x56, 0x26, 0x73, 0x02, 0xf5, 0x15, 0xc9, 0xb3, 0x1b,
+	0xc2, 0xd9, 0xc2, 0xda, 0x73, 0x81, 0xa7, 0x87, 0xe3, 0xa6, 0x76, 0x8e, 0x95, 0xf6, 0xa1, 0x85,
+	0xf0, 0x56, 0x36, 0x3d, 0xfc, 0x7a, 0xeb, 0x68, 0x7f, 0x6e, 0x1d, 0x0d, 0xfd, 0x04, 0xf0, 0xe0,
+	0xed, 0x82, 0xae, 0x04, 0xc7, 0x53, 0x38, 0x4c, 0x49, 0x99, 0x4a, 0x0c, 0x3d, 0x3c, 0x6a, 0x6a,
+	0xc7, 0x50, 0x43, 0xc4, 0x2a, 0xc2, 0xb2, 0xf9, 0x2f, 0xdb, 0x99, 0x53, 0x38, 0x2a, 0x97, 0xd1,
+	0x2c, 0xe3, 0xd7, 0x51, 0xce, 0xe2, 0x4f, 0xd6, 0xc0, 0x05, 0xde, 0x30, 0x3c, 0x6d, 0x6a, 0xe7,
+	0x44, 0xd9, 0xfa, 0x5d, 0x84, 0x0d, 0x55, 0x86, 0xa2, 0xea, 0xa1, 0x7e, 0x07, 0x50, 0x17, 0x79,
+	0x61, 0xb6, 0x2c, 0x6e, 0xcc, 0xe7, 0x10, 0xca, 0xf3, 0x5f, 0xf3, 0x6a, 0x4e, 0x5b, 0xe4, 0x27,
+	0x4d, 0xed, 0x3c, 0xee, 0x65, 0x24, 0x7b, 0x08, 0xeb, 0xb2, 0xb8, 0xaa, 0xe6, 0xd4, 0x7c, 0x0d,
+	0xf7, 0xc5, 0x51, 0x4b, 0x6b, 0xcf, 0x1d, 0x78, 0xc6, 0xe4, 0xcc, 0xdf, 0x71, 0x93, 0xbe, 0xd8,
+	0x24, 0x1c, 0xdf, 0xd5, 0x8e, 0xb6, 0xcd, 0x5c, 0xba, 0x10, 0x56, 0xee, 0x1e, 0xd4, 0x0f, 0x00,
+	0x47, 0x6d, 0x7e, 0xff, 0xc3, 0xf5, 0x0e, 0x1e, 0xce, 0xd5, 0x94, 0x0e, 0xed, 0x62, 0x27, 0x5a,
+	0xbb, 0x55, 0x78, 0xda, 0xd2, 0x1d, 0xa9, 0xa9, 0x9d, 0x17, 0xe1, 0x87, 0x31, 0x3d, 0x46, 0x0a,
+	0xf5, 0x2b, 0x5a, 0xf2, 0x57, 0xf2, 0xb9, 0xb8, 0xd0, 0x90, 0x31, 0xbf, 0xa1, 0x59, 0x92, 0x72,
+	0x09, 0x38, 0xc0, 0xfd, 0x25, 0xf3, 0x02, 0x6e, 0xc1, 0xd4, 0x0d, 0xf7, 0x49, 0x2d, 0x78, 0x10,
+	0xb3, 0x82, 0xd3, 0x82, 0xcb, 0x6b, 0xd4, 0x71, 0x57, 0x86, 0xe1, 0xdd, 0xda, 0x06, 0xf7, 0x6b,
+	0x1b, 0xfc, 0x5e, 0xdb, 0xe0, 0xdb, 0xc6, 0xd6, 0xee, 0x37, 0xb6, 0xf6, 0x6b, 0x63, 0x6b, 0x1f,
+	0xbc, 0x24, 0xe3, 0xe9, 0x32, 0xf2, 0x63, 0x36, 0x0b, 0xc4, 0xa9, 0xe2, 0x94, 0x64, 0x85, 0xfc,
+	0x0a, 0x3e, 0x77, 0x3f, 0x9a, 0x88, 0xa4, 0x8c, 0x1e, 0xc9, 0x37, 0xff, 0xec, 0x6f, 0x00, 0x00,
+	0x00, 0xff, 0xff, 0x16, 0x52, 0xd0, 0x7a, 0x84, 0x03, 0x00, 0x00,
 }
 
 func (m *Vote) Marshal() (dAtA []byte, err error) {
@@ -286,38 +315,24 @@ func (m *Vote) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Validator)
 		i = encodeVarintOracle(dAtA, i, uint64(len(m.Validator)))
 		i--
-		dAtA[i] = 0x2a
-	}
-	if len(m.ClaimType) > 0 {
-		i -= len(m.ClaimType)
-		copy(dAtA[i:], m.ClaimType)
-		i = encodeVarintOracle(dAtA, i, uint64(len(m.ClaimType)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if len(m.ConsensusId) > 0 {
-		i -= len(m.ConsensusId)
-		copy(dAtA[i:], m.ConsensusId)
-		i = encodeVarintOracle(dAtA, i, uint64(len(m.ConsensusId)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.ClaimHash) > 0 {
-		i -= len(m.ClaimHash)
-		copy(dAtA[i:], m.ClaimHash)
-		i = encodeVarintOracle(dAtA, i, uint64(len(m.ClaimHash)))
-		i--
 		dAtA[i] = 0x12
 	}
-	if m.RoundId != 0 {
-		i = encodeVarintOracle(dAtA, i, uint64(m.RoundId))
+	if m.Claim != nil {
+		{
+			size, err := m.Claim.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintOracle(dAtA, i, uint64(size))
+		}
 		i--
-		dAtA[i] = 0x8
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *Round) Marshal() (dAtA []byte, err error) {
+func (m *Prevote) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -327,12 +342,54 @@ func (m *Round) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Round) MarshalTo(dAtA []byte) (int, error) {
+func (m *Prevote) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Round) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *Prevote) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.SubmitBlock != 0 {
+		i = encodeVarintOracle(dAtA, i, uint64(m.SubmitBlock))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Validator) > 0 {
+		i -= len(m.Validator)
+		copy(dAtA[i:], m.Validator)
+		i = encodeVarintOracle(dAtA, i, uint64(len(m.Validator)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Hash) > 0 {
+		i -= len(m.Hash)
+		copy(dAtA[i:], m.Hash)
+		i = encodeVarintOracle(dAtA, i, uint64(len(m.Hash)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *VoteRound) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *VoteRound) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *VoteRound) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -348,7 +405,7 @@ func (m *Round) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 				i = encodeVarintOracle(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0x1a
+			dAtA[i] = 0x12
 		}
 	}
 	if len(m.ClaimType) > 0 {
@@ -356,12 +413,51 @@ func (m *Round) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.ClaimType)
 		i = encodeVarintOracle(dAtA, i, uint64(len(m.ClaimType)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0xa
 	}
-	if m.RoundId != 0 {
-		i = encodeVarintOracle(dAtA, i, uint64(m.RoundId))
+	return len(dAtA) - i, nil
+}
+
+func (m *PrevoteRound) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *PrevoteRound) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *PrevoteRound) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Prevotes) > 0 {
+		for iNdEx := len(m.Prevotes) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Prevotes[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintOracle(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.ClaimType) > 0 {
+		i -= len(m.ClaimType)
+		copy(dAtA[i:], m.ClaimType)
+		i = encodeVarintOracle(dAtA, i, uint64(len(m.ClaimType)))
 		i--
-		dAtA[i] = 0x8
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -425,19 +521,8 @@ func (m *Vote) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.RoundId != 0 {
-		n += 1 + sovOracle(uint64(m.RoundId))
-	}
-	l = len(m.ClaimHash)
-	if l > 0 {
-		n += 1 + l + sovOracle(uint64(l))
-	}
-	l = len(m.ConsensusId)
-	if l > 0 {
-		n += 1 + l + sovOracle(uint64(l))
-	}
-	l = len(m.ClaimType)
-	if l > 0 {
+	if m.Claim != nil {
+		l = m.Claim.Size()
 		n += 1 + l + sovOracle(uint64(l))
 	}
 	l = len(m.Validator)
@@ -447,21 +532,57 @@ func (m *Vote) Size() (n int) {
 	return n
 }
 
-func (m *Round) Size() (n int) {
+func (m *Prevote) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.RoundId != 0 {
-		n += 1 + sovOracle(uint64(m.RoundId))
+	l = len(m.Hash)
+	if l > 0 {
+		n += 1 + l + sovOracle(uint64(l))
 	}
+	l = len(m.Validator)
+	if l > 0 {
+		n += 1 + l + sovOracle(uint64(l))
+	}
+	if m.SubmitBlock != 0 {
+		n += 1 + sovOracle(uint64(m.SubmitBlock))
+	}
+	return n
+}
+
+func (m *VoteRound) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	l = len(m.ClaimType)
 	if l > 0 {
 		n += 1 + l + sovOracle(uint64(l))
 	}
 	if len(m.Votes) > 0 {
 		for _, e := range m.Votes {
+			l = e.Size()
+			n += 1 + l + sovOracle(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *PrevoteRound) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ClaimType)
+	if l > 0 {
+		n += 1 + l + sovOracle(uint64(l))
+	}
+	if len(m.Prevotes) > 0 {
+		for _, e := range m.Prevotes {
 			l = e.Size()
 			n += 1 + l + sovOracle(uint64(l))
 		}
@@ -525,10 +646,10 @@ func (m *Vote) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RoundId", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Claim", wireType)
 			}
-			m.RoundId = 0
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowOracle
@@ -538,114 +659,33 @@ func (m *Vote) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.RoundId |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			if msglen < 0 {
+				return ErrInvalidLengthOracle
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthOracle
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Claim == nil {
+				m.Claim = &types.Any{}
+			}
+			if err := m.Claim.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClaimHash", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowOracle
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthOracle
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthOracle
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ClaimHash = append(m.ClaimHash[:0], dAtA[iNdEx:postIndex]...)
-			if m.ClaimHash == nil {
-				m.ClaimHash = []byte{}
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ConsensusId", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowOracle
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthOracle
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthOracle
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ConsensusId = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClaimType", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowOracle
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthOracle
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthOracle
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ClaimType = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Validator", wireType)
 			}
-			var byteLen int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowOracle
@@ -655,25 +695,23 @@ func (m *Vote) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if byteLen < 0 {
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return ErrInvalidLengthOracle
 			}
-			postIndex := iNdEx + byteLen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return ErrInvalidLengthOracle
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Validator = append(m.Validator[:0], dAtA[iNdEx:postIndex]...)
-			if m.Validator == nil {
-				m.Validator = []byte{}
-			}
+			m.Validator = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -696,7 +734,7 @@ func (m *Vote) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *Round) Unmarshal(dAtA []byte) error {
+func (m *Prevote) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -719,17 +757,17 @@ func (m *Round) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Round: wiretype end group for non-group")
+			return fmt.Errorf("proto: Prevote: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Round: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: Prevote: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RoundId", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Hash", wireType)
 			}
-			m.RoundId = 0
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowOracle
@@ -739,12 +777,126 @@ func (m *Round) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.RoundId |= uint64(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthOracle
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthOracle
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Hash = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Validator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowOracle
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthOracle
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthOracle
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Validator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SubmitBlock", wireType)
+			}
+			m.SubmitBlock = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowOracle
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.SubmitBlock |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipOracle(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthOracle
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *VoteRound) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowOracle
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: VoteRound: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: VoteRound: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ClaimType", wireType)
 			}
@@ -776,7 +928,7 @@ func (m *Round) Unmarshal(dAtA []byte) error {
 			}
 			m.ClaimType = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
+		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Votes", wireType)
 			}
@@ -807,6 +959,122 @@ func (m *Round) Unmarshal(dAtA []byte) error {
 			}
 			m.Votes = append(m.Votes, Vote{})
 			if err := m.Votes[len(m.Votes)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipOracle(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthOracle
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *PrevoteRound) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowOracle
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: PrevoteRound: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: PrevoteRound: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ClaimType", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowOracle
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthOracle
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthOracle
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ClaimType = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Prevotes", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowOracle
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthOracle
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthOracle
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Prevotes = append(m.Prevotes, Prevote{})
+			if err := m.Prevotes[len(m.Prevotes)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
