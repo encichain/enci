@@ -25,18 +25,18 @@ const (
 
 // Keys for x/oracle store
 // stored as format: key -> encoding(value)
-// 0x01 | claimtype bytes									-> ProtocolBuffer(VoteRound)
-// 0x02 | claimtype bytes									-> ProtocolBuffer(PrevoteRound)
-// 0x03 | address length byte | validator address bytes		-> ProtocolBuffer(Prevote)
-// 0x04 | address length byte | validator address bytes 	-> ProtocolBuffer(Vote)
-// 0x05 | address length byte | validator address bytes  	-> sdk.AccAddress
-// 0x06 | address length byte | delegate address bytes  	-> sdk.ValAddress
+// 0x01 | claimtype bytes											-> ProtocolBuffer(VoteRound)
+// 0x02 | claimtype bytes											-> ProtocolBuffer(PrevoteRound)
+// 0x03 | address length byte | validator operator address bytes	-> ProtocolBuffer(Prevote)
+// 0x04 | address length byte | validator operator address bytes 	-> ProtocolBuffer(Vote)
+// 0x05 | address length byte | validator operator address bytes  	-> sdk.AccAddress
+// 0x06 | address length byte | delegate address bytes  			-> sdk.ValAddress
 var (
 	VoteRoundKey    = []byte{0x01} // prefix for a key to a VoteRound stored by claim type
 	PrevoteRoundKey = []byte{0x02} // prefix for a key to a PrevoteRound stored by claim type
-	PrevoteKey      = []byte{0x03} // prefix for a key to a Prevote stored by validator address
-	VoteKey         = []byte{0x04} // prefix for a key to a Vote stored by validator address
-	DelValKey       = []byte{0x05} // prefix for a key to a Delegate address stored by validator address
+	PrevoteKey      = []byte{0x03} // prefix for a key to a Prevote stored by validator operator address
+	VoteKey         = []byte{0x04} // prefix for a key to a Vote stored by validator operator address
+	DelValKey       = []byte{0x05} // prefix for a key to a Delegate address stored by validator operator address
 	ValDelKey       = []byte{0x06} // prefix for a key to a validator address stored by assigned delegate address
 )
 
@@ -55,22 +55,22 @@ func GetPrevoteRoundKey(claimType string) []byte {
 	return append(PrevoteRoundKey, []byte(claimType)...)
 }
 
-// GetPrevoteKey returns a key to a Prevote - stored by *Validator* address
+// GetPrevoteKey returns a key to a Prevote - stored by *Validator* operator address
 func GetPrevoteKey(val sdk.ValAddress) []byte {
 	return append(PrevoteKey, address.MustLengthPrefix(val)...)
 }
 
-// GetVoteKey returns a key to a Vote - stored by *Validator* address
+// GetVoteKey returns a key to a Vote - stored by *Validator* operator address
 func GetVoteKey(val sdk.ValAddress) []byte {
 	return append(VoteKey, address.MustLengthPrefix(val)...)
 }
 
-// GetDelValKey returns the validator for a given delegate address - stored by *delegate address*
+// GetDelValKey returns the validator for a given delegate address - stored by *delegate* address
 func GetDelValKey(del sdk.AccAddress) []byte {
 	return append(DelValKey, address.MustLengthPrefix(del)...)
 }
 
-// GetValDelKey returns the delegate for a given validator address - stored by *validator address*
+// GetValDelKey returns the delegate for a given validator address - stored by *Validator* operator address
 func GetValDelKey(val sdk.ValAddress) []byte {
 	return append(ValDelKey, address.MustLengthPrefix(val)...)
 }

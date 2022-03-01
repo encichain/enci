@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"bytes"
-
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/encichain/enci/x/oracle/exported"
@@ -124,16 +122,6 @@ func (k Keeper) VotePassedThreshold(ctx sdk.Context, roundResult *types.RoundRes
 /// PRE-VOTE
 ////////////////////
 
-// CreatePrevote sets the prevote for a given validator
-func (k Keeper) CreatePrevote(ctx sdk.Context, hash []byte) {
-	ctx.KVStore(k.storeKey).Set(types.GetClaimPrevoteKey(hash), hash)
-}
-
-// GetPrevote gets the prevote for a given validator
-func (k Keeper) GetPrevote(ctx sdk.Context, hash tmbytes.HexBytes) tmbytes.HexBytes {
-	return ctx.KVStore(k.storeKey).Get(hash)
-}
-
 // DeletePrevote deletes the prevote for a given validator
 func (k Keeper) DeletePrevote(ctx sdk.Context, hash tmbytes.HexBytes) {
 	ctx.KVStore(k.storeKey).Delete(types.GetClaimPrevoteKey(hash))
@@ -142,27 +130,4 @@ func (k Keeper) DeletePrevote(ctx sdk.Context, hash tmbytes.HexBytes) {
 // HasPrevote gets the prevote for a given hash
 func (k Keeper) HasPrevote(ctx sdk.Context, hash tmbytes.HexBytes) bool {
 	return ctx.KVStore(k.storeKey).Has(types.GetClaimPrevoteKey(hash))
-}
-
-// GetAllPrevotes returns all prevotes
-func (k Keeper) GetAllPrevotes(ctx sdk.Context) [][]byte {
-	prevotes := [][]byte{}
-	k.IteratePrevotes(ctx, func(hash []byte) (stop bool) {
-		prevotes = append(prevotes, hash)
-		return
-	})
-	return prevotes
-}
-
-// IteratePrevotes iterates over all prevotes in the store
-func (k Keeper) IteratePrevotes(ctx sdk.Context, handler func(hash []byte) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
-	iter := sdk.KVStorePrefixIterator(store, types.PrevoteKey)
-	defer iter.Close()
-	for ; iter.Valid(); iter.Next() {
-		hash := bytes.TrimPrefix(iter.Key(), types.PrevoteKey)
-		if handler(hash) {
-			break
-		}
-	}
 }
