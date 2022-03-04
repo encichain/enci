@@ -12,6 +12,7 @@ message Vote {
 
   google.protobuf.Any claim = 1 [(gogoproto.moretags) = "yaml:\"claim\""];
   string validator = 2 [(gogoproto.moretags) = "yaml:\"validator\""];
+  uint64 vote_power = 3 [(gogoproto.moretags) = "yaml:\"vote_power\""]; // Vote power of validator
 }
 
 // Prevote submitted by the validator for a claim, designed to hide claim values
@@ -37,6 +38,7 @@ message VoteRound {
     (gogoproto.nullable) = false,
     (gogoproto.moretags) = "yaml:\"votes\""
   ];
+  uint64 aggregate_power = 3 [(gogoproto.moretags) = "yaml:\"aggregate_power\""]; // Aggregate vote power of all validators with recorded vote
 }
 
 // PrevoteRound contains all claim prevotes during PrevotePeriod

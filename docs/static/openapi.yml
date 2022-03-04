@@ -13535,7 +13535,13 @@ paths:
                                   }
                           validator:
                             type: string
+                          votePower:
+                            type: string
+                            format: uint64
                         title: Vote is a vote for a given claim by a validator
+                    aggregatePower:
+                      type: string
+                      format: uint64
                   title: VoteRound contains all claim votes during VotePeriod
             title: >-
               QueryRoundResponse is the response type for the Query/Params RPC
@@ -22031,7 +22037,13 @@ definitions:
                           }
                   validator:
                     type: string
+                  votePower:
+                    type: string
+                    format: uint64
                 title: Vote is a vote for a given claim by a validator
+            aggregatePower:
+              type: string
+              format: uint64
           title: VoteRound contains all claim votes during VotePeriod
     title: QueryRoundResponse is the response type for the Query/Params RPC method
   enci.oracle.v1beta1.QueryVoterDelegationsResponse:
@@ -22214,6 +22226,9 @@ definitions:
               }
       validator:
         type: string
+      votePower:
+        type: string
+        format: uint64
     title: Vote is a vote for a given claim by a validator
   enci.oracle.v1beta1.VoteRound:
     type: object
@@ -22395,7 +22410,13 @@ definitions:
                     }
             validator:
               type: string
+            votePower:
+              type: string
+              format: uint64
           title: Vote is a vote for a given claim by a validator
+      aggregatePower:
+        type: string
+        format: uint64
     title: VoteRound contains all claim votes during VotePeriod
   enci.oracle.v1beta1.VoterDelegation:
     type: object
