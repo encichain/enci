@@ -44,124 +44,10 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-// GetVoteRound returns a VoteRound stored by *claimType*
-func (k Keeper) GetVoteRound(ctx sdk.Context, claimType string) types.VoteRound {
+// GetVote returns a Vote from the store, by *claim type* | *Validator* address
+func (k Keeper) GetVote(ctx sdk.Context, val sdk.ValAddress, claimType string) types.Vote {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.GetVoteRoundKey(claimType))
-	res := types.VoteRound{}
-
-	if bz == nil {
-		return res
-	}
-
-	k.cdc.MustUnmarshal(bz, &res)
-
-	return res
-}
-
-// SetVoteRound sets a VoteRound to the store - stored by *claimType*
-func (k Keeper) SetVoteRound(ctx sdk.Context, voteRound types.VoteRound) {
-	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshal(&types.VoteRound{
-		ClaimType:      voteRound.ClaimType,
-		Votes:          voteRound.Votes,
-		AggregatePower: voteRound.AggregatePower,
-	})
-	store.Set(types.GetVoteRoundKey(voteRound.ClaimType), bz)
-}
-
-// IterateVoteRounds iterates through all stored VoteRounds and performs callback function
-// Stops iteration when no more valid
-func (k Keeper) IterateVoteRounds(ctx sdk.Context, cb func(voteRound types.VoteRound) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.VoteRoundKey)
-
-	defer iterator.Close()
-	for ; iterator.Valid(); iterator.Next() {
-		voteRound := types.VoteRound{}
-		k.cdc.MustUnmarshal(iterator.Value(), &voteRound)
-
-		if cb(voteRound) {
-			break
-		}
-	}
-}
-
-// GetAllVoteRounds returns all VoteRounds for all claim types
-func (k Keeper) GetAllVoteRounds(ctx sdk.Context) []types.VoteRound {
-	var voteRounds []types.VoteRound
-
-	k.IterateVoteRounds(ctx, func(voteRound types.VoteRound) bool {
-		voteRounds = append(voteRounds, types.VoteRound{
-			ClaimType:      voteRound.ClaimType,
-			Votes:          voteRound.Votes,
-			AggregatePower: voteRound.AggregatePower,
-		})
-		return false
-	})
-	return voteRounds
-}
-
-// IteratePrevoteRounds iterates through all stored PrevoteRounds and performs callback function
-// Stops iteration when no more valid
-func (k Keeper) IteratePrevoteRounds(ctx sdk.Context, cb func(prevoteRound types.PrevoteRound) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.PrevoteRoundKey)
-
-	defer iterator.Close()
-	for ; iterator.Valid(); iterator.Next() {
-		//claimType := string(iterator.Key()[len(types.PrevoteRoundKey):])
-		prevoteRound := types.PrevoteRound{}
-		k.cdc.MustUnmarshal(iterator.Value(), &prevoteRound)
-
-		if cb(prevoteRound) {
-			break
-		}
-	}
-}
-
-// GetAllPrevoteRounds returns all PrevoteRounds
-func (k Keeper) GetAllPrevoteRounds(ctx sdk.Context) []types.PrevoteRound {
-	var prevoteRounds []types.PrevoteRound
-
-	k.IteratePrevoteRounds(ctx, func(prevoteRound types.PrevoteRound) bool {
-		prevoteRounds = append(prevoteRounds, types.PrevoteRound{
-			ClaimType: prevoteRound.ClaimType,
-			Prevotes:  prevoteRound.Prevotes,
-		})
-		return false
-	})
-	return prevoteRounds
-}
-
-// GetPrevoteRound returns a PrevoteRound stored by *claimType*
-func (k Keeper) GetPrevoteRound(ctx sdk.Context, claimType string) types.PrevoteRound {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.GetPrevoteRoundKey(claimType))
-	res := types.PrevoteRound{}
-
-	if bz == nil {
-		return res
-	}
-	k.cdc.MustUnmarshal(bz, &res)
-
-	return res
-}
-
-// SetPrevoteRound sets a Prevote round to the store by *claimType*
-func (k Keeper) SetPrevoteRound(ctx sdk.Context, prevoteRound types.PrevoteRound) {
-	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshal(&types.PrevoteRound{
-		ClaimType: prevoteRound.ClaimType,
-		Prevotes:  prevoteRound.Prevotes,
-	})
-	store.Set(types.GetPrevoteRoundKey(prevoteRound.ClaimType), bz)
-}
-
-// GetVote returns a Vote from the store, by *Validator* address
-func (k Keeper) GetVote(ctx sdk.Context, val sdk.ValAddress) types.Vote {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.GetVoteKey(val))
+	bz := store.Get(types.GetVoteKey(val, claimType))
 	vote := types.Vote{}
 
 	if bz == nil {
@@ -172,14 +58,15 @@ func (k Keeper) GetVote(ctx sdk.Context, val sdk.ValAddress) types.Vote {
 	return vote
 }
 
-// SetVote sets a Vote to the store, by *Validator* adderss
-func (k Keeper) SetVote(ctx sdk.Context, val sdk.ValAddress, vote types.Vote) {
+// SetVote sets a Vote to the store, by *claim type* | *Validator* address
+func (k Keeper) SetVote(ctx sdk.Context, val sdk.ValAddress, vote types.Vote, claimType string) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(&types.Vote{
 		Claim:     vote.Claim,
 		Validator: vote.Validator,
+		VotePower: vote.VotePower,
 	})
-	store.Set(types.GetVoteKey(val), bz)
+	store.Set(types.GetVoteKey(val, claimType), bz)
 }
 
 // IterateVotes iterates through all stored Vote and performs callback function
@@ -212,10 +99,10 @@ func (k Keeper) GetAllVotes(ctx sdk.Context) []types.Vote {
 	return votes
 }
 
-// GetPrevote returns a Prevote from the store, by *Validator* address
-func (k Keeper) GetPrevote(ctx sdk.Context, val sdk.ValAddress) types.Prevote {
+// GetPrevote returns a Prevote from the store, by *claim type* | *Validator* address
+func (k Keeper) GetPrevote(ctx sdk.Context, val sdk.ValAddress, claimType string) types.Prevote {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.GetPrevoteKey(val))
+	bz := store.Get(types.GetPrevoteKey(val, claimType))
 	prevote := types.Prevote{}
 
 	if bz == nil {
@@ -226,15 +113,15 @@ func (k Keeper) GetPrevote(ctx sdk.Context, val sdk.ValAddress) types.Prevote {
 	return prevote
 }
 
-// SetPrevote sets a Prevote to the store, by *Validator* address
-func (k Keeper) SetPrevote(ctx sdk.Context, val sdk.ValAddress, prevote types.Prevote) {
+// SetPrevote sets a Prevote to the store, by *claim type* | *Validator* address
+func (k Keeper) SetPrevote(ctx sdk.Context, val sdk.ValAddress, prevote types.Prevote, claimType string) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(&types.Prevote{
 		Hash:        prevote.Hash,
 		Validator:   prevote.Validator,
 		SubmitBlock: prevote.SubmitBlock,
 	})
-	store.Set(types.GetPrevoteKey(val), bz)
+	store.Set(types.GetPrevoteKey(val, claimType), bz)
 }
 
 // IteratePrevotes iterates through all stored prevote and performs callback function
