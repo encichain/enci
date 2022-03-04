@@ -16,7 +16,10 @@ type VoteHash []byte
 // VoteHash returns the SHA-256 hash for a precommit given the proper args
 func CreateVoteHash(salt string, claimHash string, validator sdk.ValAddress) VoteHash {
 	h := sha256.New()
-	h.Write([]byte(fmt.Sprintf("%s:%s:%s", salt, claimHash, validator.String())))
+	_, err := h.Write([]byte(fmt.Sprintf("%s:%s:%s", salt, claimHash, validator.String())))
+	if err != nil {
+		panic(err)
+	}
 	return h.Sum(nil)
 }
 

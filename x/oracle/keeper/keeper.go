@@ -63,8 +63,9 @@ func (k Keeper) GetVoteRound(ctx sdk.Context, claimType string) types.VoteRound 
 func (k Keeper) SetVoteRound(ctx sdk.Context, voteRound types.VoteRound) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(&types.VoteRound{
-		ClaimType: voteRound.ClaimType,
-		Votes:     voteRound.Votes,
+		ClaimType:      voteRound.ClaimType,
+		Votes:          voteRound.Votes,
+		AggregatePower: voteRound.AggregatePower,
 	})
 	store.Set(types.GetVoteRoundKey(voteRound.ClaimType), bz)
 }
@@ -92,8 +93,9 @@ func (k Keeper) GetAllVoteRounds(ctx sdk.Context) []types.VoteRound {
 
 	k.IterateVoteRounds(ctx, func(voteRound types.VoteRound) bool {
 		voteRounds = append(voteRounds, types.VoteRound{
-			ClaimType: voteRound.ClaimType,
-			Votes:     voteRound.Votes,
+			ClaimType:      voteRound.ClaimType,
+			Votes:          voteRound.Votes,
+			AggregatePower: voteRound.AggregatePower,
 		})
 		return false
 	})
