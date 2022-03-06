@@ -42,8 +42,8 @@ service Query {
   }
 
   // ValidatorAddress queries a validator address attached to a vote delegate
-  rpc ValidatorAddress(QueryValidatorAddressRequest) returns (QueryValidatorAddressResponse) {
-    option (google.api.http).get = "/enci/oracle/v1beta1/validator/{delegate}";
+  rpc DelegatorAddress(QueryDelegatorAddressRequest) returns (QueryDelegatorAddressResponse) {
+    option (google.api.http).get = "/enci/oracle/v1beta1/delegator/{delegate}";
   }
 
   // NextVotePeriod queries the block height of the next vote period
@@ -90,12 +90,12 @@ message QueryVoterDelegationsResponse {
   repeated VoterDelegation voter_delegations = 1 [(gogoproto.nullable) = false];
 }
 
-// QueryValidaorAddressRequest is the request type for the Query ValidatorAddress RPC method
-message QueryValidatorAddressRequest {
+// QueryDelegatorAddressRequest is the request type for the Query Delegator Address RPC method
+message QueryDelegatorAddressRequest {
   string delegate = 1;
 }
-// QueryValidaorAddressRequest is the response type for the Query ValidatorAddress RPC method
-message QueryValidatorAddressResponse {
+// QueryDelegatorAddressRequest is the response type for the Query Delegator Address RPC method
+message QueryDelegatorAddressResponse {
   string validator = 1;
 }
 

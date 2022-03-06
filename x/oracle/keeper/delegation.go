@@ -22,7 +22,7 @@ func (k Keeper) GetVoterDelegate(ctx sdk.Context, val sdk.ValAddress) (sdk.AccAd
 
 // GetVoterDelegator returns a validator address if it exists, given a *delegate* address.
 // Return error if no validator delegator address mapped
-func (k Keeper) GetVoterDelegator(ctx sdk.Context, del sdk.AccAddress) (sdk.AccAddress, error) {
+func (k Keeper) GetVoterDelegator(ctx sdk.Context, del sdk.AccAddress) (sdk.ValAddress, error) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.GetDelValKey(del))
 
@@ -30,7 +30,7 @@ func (k Keeper) GetVoterDelegator(ctx sdk.Context, del sdk.AccAddress) (sdk.AccA
 		return nil, sdkerrors.Wrap(types.ErrNoVoteDelegator, del.String())
 	}
 
-	return sdk.AccAddress(bz), nil
+	return sdk.ValAddress(bz), nil
 }
 
 // SetVoterDelegation stores a voter delegation in both directions to the store for easy lookup
