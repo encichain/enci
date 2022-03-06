@@ -12675,31 +12675,19 @@ paths:
               params:
                 type: object
                 properties:
-                  claimParams:
-                    type: object
-                    additionalProperties:
-                      type: object
-                      properties:
-                        claimType:
-                          type: string
-                        prevotePeriod:
-                          type: string
-                          format: uint64
-                        votePeriod:
-                          type: string
-                          format: uint64
-                        voteThreshold:
-                          type: string
-                      title: >-
-                        ClaimParams is the parameters set for each oracle claim
-                        type
-                    title: 'Key: Claim type, Value: ClaimParams'
+                  prevotePeriod:
+                    type: string
+                    format: uint64
+                  votePeriod:
+                    type: string
+                    format: uint64
+                  voteThreshold:
+                    type: string
                   voteFrequency:
                     type: string
                     format: uint64
-                    title: >-
-                      vote_frequency represents the number of blocks between
-                      each voting period
+                  abstainEnabled:
+                    type: boolean
                 description: Params represents the parameters for the module.
             title: >-
               QueryParamsResponse is the response type for the Query/Params RPC
@@ -21650,20 +21638,6 @@ definitions:
     description: >-
       MsgCreateVestingAccountResponse defines the Msg/CreateVestingAccount
       response type.
-  enci.oracle.v1beta1.ClaimParams:
-    type: object
-    properties:
-      claimType:
-        type: string
-      prevotePeriod:
-        type: string
-        format: uint64
-      votePeriod:
-        type: string
-        format: uint64
-      voteThreshold:
-        type: string
-    title: ClaimParams is the parameters set for each oracle claim type
   enci.oracle.v1beta1.MsgDelegateResponse:
     type: object
     title: MsgDelegateResponse delegation response
@@ -21679,29 +21653,19 @@ definitions:
   enci.oracle.v1beta1.Params:
     type: object
     properties:
-      claimParams:
-        type: object
-        additionalProperties:
-          type: object
-          properties:
-            claimType:
-              type: string
-            prevotePeriod:
-              type: string
-              format: uint64
-            votePeriod:
-              type: string
-              format: uint64
-            voteThreshold:
-              type: string
-          title: ClaimParams is the parameters set for each oracle claim type
-        title: 'Key: Claim type, Value: ClaimParams'
+      prevotePeriod:
+        type: string
+        format: uint64
+      votePeriod:
+        type: string
+        format: uint64
+      voteThreshold:
+        type: string
       voteFrequency:
         type: string
         format: uint64
-        title: >-
-          vote_frequency represents the number of blocks between each voting
-          period
+      abstainEnabled:
+        type: boolean
     description: Params represents the parameters for the module.
   enci.oracle.v1beta1.Prevote:
     type: object
@@ -21787,29 +21751,19 @@ definitions:
       params:
         type: object
         properties:
-          claimParams:
-            type: object
-            additionalProperties:
-              type: object
-              properties:
-                claimType:
-                  type: string
-                prevotePeriod:
-                  type: string
-                  format: uint64
-                votePeriod:
-                  type: string
-                  format: uint64
-                voteThreshold:
-                  type: string
-              title: ClaimParams is the parameters set for each oracle claim type
-            title: 'Key: Claim type, Value: ClaimParams'
+          prevotePeriod:
+            type: string
+            format: uint64
+          votePeriod:
+            type: string
+            format: uint64
+          voteThreshold:
+            type: string
           voteFrequency:
             type: string
             format: uint64
-            title: >-
-              vote_frequency represents the number of blocks between each voting
-              period
+          abstainEnabled:
+            type: boolean
         description: Params represents the parameters for the module.
     title: QueryParamsResponse is the response type for the Query/Params RPC method
   enci.oracle.v1beta1.QueryPrevoteRoundsResponse:

@@ -8,23 +8,13 @@ import "gogoproto/gogo.proto";
 
 // Params represents the parameters for the module.
 message Params {
-  // Key: Claim type, Value: ClaimParams
-  map<string, ClaimParams> claim_params  = 1 [
-    (gogoproto.nullable) = false,
-    (gogoproto.moretags) = "yaml:\"claim_params\""
-  ];
-  // vote_frequency represents the number of blocks between each voting period
-  uint64 vote_frequency = 2;
-}
-
-// ClaimParams is the parameters set for each oracle claim type
-message ClaimParams {
-  string claim_type = 1  [(gogoproto.moretags) = "yaml:\"claim_type\""];
-  uint64 prevote_period = 2 [(gogoproto.moretags) = "yaml:\"prevote_period\""];
-  uint64 vote_period = 3 [(gogoproto.moretags) = "yaml:\"vote_period\""];
-  string vote_threshold = 4 [
+  uint64 prevote_period = 1 [(gogoproto.moretags) = "yaml:\"prevote_period\""];
+  uint64 vote_period = 2 [(gogoproto.moretags) = "yaml:\"vote_period\""];
+  string vote_threshold = 3 [
     (gogoproto.moretags)   = "yaml:\"vote_threshold\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable)   = false
   ];
+  uint64 vote_frequency = 4 [(gogoproto.moretags) = "yaml:\"vote_frequency\""];  // represents the number of blocks between each voting period
+  bool abstain_enabled = 5 [(gogoproto.moretags) = "yaml:\"abstain_enabled\""];
 }

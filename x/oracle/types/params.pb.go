@@ -26,10 +26,11 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Params represents the parameters for the module.
 type Params struct {
-	// Key: Claim type, Value: ClaimParams
-	ClaimParams map[string]ClaimParams `protobuf:"bytes,1,rep,name=claim_params,json=claimParams,proto3" json:"claim_params" yaml:"claim_params" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	// vote_frequency represents the number of blocks between each voting period
-	VoteFrequency uint64 `protobuf:"varint,2,opt,name=vote_frequency,json=voteFrequency,proto3" json:"vote_frequency,omitempty"`
+	PrevotePeriod  uint64                                 `protobuf:"varint,1,opt,name=prevote_period,json=prevotePeriod,proto3" json:"prevote_period,omitempty" yaml:"prevote_period"`
+	VotePeriod     uint64                                 `protobuf:"varint,2,opt,name=vote_period,json=votePeriod,proto3" json:"vote_period,omitempty" yaml:"vote_period"`
+	VoteThreshold  github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=vote_threshold,json=voteThreshold,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"vote_threshold" yaml:"vote_threshold"`
+	VoteFrequency  uint64                                 `protobuf:"varint,4,opt,name=vote_frequency,json=voteFrequency,proto3" json:"vote_frequency,omitempty" yaml:"vote_frequency"`
+	AbstainEnabled bool                                   `protobuf:"varint,5,opt,name=abstain_enabled,json=abstainEnabled,proto3" json:"abstain_enabled,omitempty" yaml:"abstain_enabled"`
 }
 
 func (m *Params) Reset()         { *m = Params{} }
@@ -65,11 +66,18 @@ func (m *Params) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Params proto.InternalMessageInfo
 
-func (m *Params) GetClaimParams() map[string]ClaimParams {
+func (m *Params) GetPrevotePeriod() uint64 {
 	if m != nil {
-		return m.ClaimParams
+		return m.PrevotePeriod
 	}
-	return nil
+	return 0
+}
+
+func (m *Params) GetVotePeriod() uint64 {
+	if m != nil {
+		return m.VotePeriod
+	}
+	return 0
 }
 
 func (m *Params) GetVoteFrequency() uint64 {
@@ -79,106 +87,43 @@ func (m *Params) GetVoteFrequency() uint64 {
 	return 0
 }
 
-// ClaimParams is the parameters set for each oracle claim type
-type ClaimParams struct {
-	ClaimType     string                                 `protobuf:"bytes,1,opt,name=claim_type,json=claimType,proto3" json:"claim_type,omitempty" yaml:"claim_type"`
-	PrevotePeriod uint64                                 `protobuf:"varint,2,opt,name=prevote_period,json=prevotePeriod,proto3" json:"prevote_period,omitempty" yaml:"prevote_period"`
-	VotePeriod    uint64                                 `protobuf:"varint,3,opt,name=vote_period,json=votePeriod,proto3" json:"vote_period,omitempty" yaml:"vote_period"`
-	VoteThreshold github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=vote_threshold,json=voteThreshold,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"vote_threshold" yaml:"vote_threshold"`
-}
-
-func (m *ClaimParams) Reset()         { *m = ClaimParams{} }
-func (m *ClaimParams) String() string { return proto.CompactTextString(m) }
-func (*ClaimParams) ProtoMessage()    {}
-func (*ClaimParams) Descriptor() ([]byte, []int) {
-	return fileDescriptor_754d571249ec7e6b, []int{1}
-}
-func (m *ClaimParams) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *ClaimParams) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ClaimParams.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *ClaimParams) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ClaimParams.Merge(m, src)
-}
-func (m *ClaimParams) XXX_Size() int {
-	return m.Size()
-}
-func (m *ClaimParams) XXX_DiscardUnknown() {
-	xxx_messageInfo_ClaimParams.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ClaimParams proto.InternalMessageInfo
-
-func (m *ClaimParams) GetClaimType() string {
+func (m *Params) GetAbstainEnabled() bool {
 	if m != nil {
-		return m.ClaimType
+		return m.AbstainEnabled
 	}
-	return ""
-}
-
-func (m *ClaimParams) GetPrevotePeriod() uint64 {
-	if m != nil {
-		return m.PrevotePeriod
-	}
-	return 0
-}
-
-func (m *ClaimParams) GetVotePeriod() uint64 {
-	if m != nil {
-		return m.VotePeriod
-	}
-	return 0
+	return false
 }
 
 func init() {
 	proto.RegisterType((*Params)(nil), "enci.oracle.v1beta1.Params")
-	proto.RegisterMapType((map[string]ClaimParams)(nil), "enci.oracle.v1beta1.Params.ClaimParamsEntry")
-	proto.RegisterType((*ClaimParams)(nil), "enci.oracle.v1beta1.ClaimParams")
 }
 
 func init() { proto.RegisterFile("enci/oracle/v1beta1/params.proto", fileDescriptor_754d571249ec7e6b) }
 
 var fileDescriptor_754d571249ec7e6b = []byte{
-	// 438 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x6c, 0x52, 0xcf, 0x6e, 0x94, 0x40,
-	0x18, 0x67, 0x76, 0x6b, 0x93, 0x0e, 0xb6, 0xa9, 0x53, 0x6b, 0xb0, 0x26, 0x40, 0x48, 0x34, 0x1c,
-	0x74, 0x48, 0xab, 0x51, 0xd3, 0x93, 0x41, 0xad, 0xd7, 0x86, 0xf4, 0xe4, 0xa5, 0xce, 0xce, 0x8e,
-	0x0b, 0x29, 0x30, 0x38, 0xb0, 0x1b, 0x79, 0x0b, 0x1f, 0xc3, 0x93, 0xcf, 0xd1, 0x63, 0x8f, 0xc6,
-	0x03, 0x31, 0xec, 0x1b, 0xf0, 0x02, 0x9a, 0x99, 0x61, 0x53, 0xb6, 0xd9, 0x13, 0xdf, 0x9f, 0xdf,
-	0xef, 0xf7, 0x7d, 0x3f, 0xbe, 0x81, 0x2e, 0xcb, 0x69, 0x12, 0x70, 0x41, 0x68, 0xca, 0x82, 0xc5,
-	0xf1, 0x84, 0x55, 0xe4, 0x38, 0x28, 0x88, 0x20, 0x59, 0x89, 0x0b, 0xc1, 0x2b, 0x8e, 0x0e, 0x24,
-	0x02, 0x6b, 0x04, 0xee, 0x11, 0x47, 0x0f, 0x67, 0x7c, 0xc6, 0x55, 0x3f, 0x90, 0x91, 0x86, 0x7a,
-	0xff, 0x00, 0xdc, 0x3e, 0x57, 0x5c, 0x94, 0xc2, 0xfb, 0x34, 0x25, 0x49, 0x76, 0xa9, 0xb5, 0x2c,
-	0xe0, 0x8e, 0x7d, 0xf3, 0xe4, 0x39, 0xde, 0x20, 0x86, 0x35, 0x05, 0xbf, 0x97, 0x78, 0x1d, 0x7f,
-	0xcc, 0x2b, 0x51, 0x87, 0x4f, 0xae, 0x1b, 0xc7, 0xe8, 0x1a, 0xe7, 0xa0, 0x26, 0x59, 0x7a, 0xea,
-	0x0d, 0xf5, 0xbc, 0xc8, 0xa4, 0xb7, 0x70, 0xf4, 0x14, 0xee, 0x2d, 0x78, 0xc5, 0x2e, 0xbf, 0x0a,
-	0xf6, 0x6d, 0xce, 0x72, 0x5a, 0x5b, 0x23, 0x17, 0xf8, 0x5b, 0xd1, 0xae, 0xac, 0x9e, 0xad, 0x8a,
-	0x47, 0x5f, 0xe0, 0xfe, 0xdd, 0x21, 0x68, 0x1f, 0x8e, 0xaf, 0x58, 0x6d, 0x01, 0x17, 0xf8, 0x3b,
-	0x91, 0x0c, 0xd1, 0x6b, 0x78, 0x6f, 0x41, 0xd2, 0x39, 0x53, 0x1a, 0xe6, 0x89, 0xbb, 0x71, 0xe7,
-	0x81, 0x4e, 0xa4, 0xe1, 0xa7, 0xa3, 0xb7, 0xc0, 0xfb, 0x35, 0x82, 0xe6, 0xa0, 0x85, 0x5e, 0x41,
-	0xa8, 0xd7, 0xae, 0xea, 0x82, 0xe9, 0x21, 0xe1, 0x61, 0xd7, 0x38, 0x0f, 0x86, 0x96, 0x64, 0xcf,
-	0x8b, 0x76, 0x54, 0x72, 0x51, 0x17, 0x0c, 0xbd, 0x83, 0x7b, 0x85, 0x60, 0xca, 0x51, 0xc1, 0x44,
-	0xc2, 0xa7, 0xda, 0x4e, 0xf8, 0xb8, 0x6b, 0x9c, 0x43, 0xcd, 0x5c, 0xef, 0x7b, 0xd1, 0x6e, 0x5f,
-	0x38, 0x57, 0x39, 0x7a, 0x03, 0xcd, 0x21, 0x7d, 0xac, 0xe8, 0x8f, 0xba, 0xc6, 0x41, 0x9a, 0xbe,
-	0xc6, 0x85, 0x03, 0x62, 0xde, 0xff, 0xc9, 0x2a, 0x16, 0xac, 0x8c, 0x79, 0x3a, 0xb5, 0xb6, 0xd4,
-	0xd2, 0x9f, 0xe4, 0x2d, 0xfe, 0x34, 0xce, 0xb3, 0x59, 0x52, 0xc5, 0xf3, 0x09, 0xa6, 0x3c, 0x0b,
-	0x28, 0x2f, 0x33, 0x5e, 0xf6, 0x9f, 0x17, 0xe5, 0xf4, 0x2a, 0x90, 0x4e, 0x4a, 0xfc, 0x81, 0xd1,
-	0xdb, 0x45, 0xd7, 0xd5, 0x3c, 0x7d, 0x92, 0x8b, 0x55, 0x1e, 0x9e, 0xfd, 0x6c, 0x6d, 0x70, 0xdd,
-	0xda, 0xe0, 0xa6, 0xb5, 0xc1, 0xdf, 0xd6, 0x06, 0x3f, 0x96, 0xb6, 0x71, 0xb3, 0xb4, 0x8d, 0xdf,
-	0x4b, 0xdb, 0xf8, 0xec, 0x0f, 0xa6, 0xc9, 0x2b, 0xd0, 0x98, 0x24, 0xb9, 0x8a, 0x82, 0xef, 0xab,
-	0x47, 0xab, 0x66, 0x4e, 0xb6, 0xd5, 0x0b, 0x7c, 0xf9, 0x3f, 0x00, 0x00, 0xff, 0xff, 0xad, 0x06,
-	0xbc, 0x26, 0xd0, 0x02, 0x00, 0x00,
+	// 350 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x5c, 0x51, 0xbf, 0x4e, 0x83, 0x40,
+	0x18, 0xe7, 0x6a, 0x6d, 0x14, 0xd3, 0x9a, 0xa0, 0x36, 0xd8, 0x01, 0x08, 0x83, 0x61, 0x11, 0xd2,
+	0x38, 0x98, 0x38, 0x19, 0xd4, 0xba, 0x36, 0x8d, 0x93, 0x4b, 0x73, 0x1c, 0x67, 0x21, 0x02, 0x87,
+	0x77, 0xd7, 0xc6, 0xbe, 0x85, 0x8f, 0xe1, 0xa3, 0x74, 0xec, 0x68, 0x1c, 0x88, 0xa1, 0x6f, 0xd0,
+	0xd1, 0xc9, 0x70, 0xd0, 0x58, 0x3a, 0xdd, 0xf7, 0xfd, 0xfe, 0x7c, 0xb9, 0x5f, 0x7e, 0xb2, 0x81,
+	0x13, 0x14, 0x3a, 0x84, 0x42, 0x14, 0x61, 0x67, 0xd6, 0xf7, 0x30, 0x87, 0x7d, 0x27, 0x85, 0x14,
+	0xc6, 0xcc, 0x4e, 0x29, 0xe1, 0x44, 0x39, 0x29, 0x14, 0x76, 0xa9, 0xb0, 0x2b, 0x45, 0xef, 0x74,
+	0x42, 0x26, 0x44, 0xf0, 0x4e, 0x31, 0x95, 0x52, 0xf3, 0xb7, 0x21, 0xb7, 0x86, 0xc2, 0xab, 0xdc,
+	0xca, 0x9d, 0x94, 0xe2, 0x19, 0xe1, 0x78, 0x9c, 0x62, 0x1a, 0x12, 0x5f, 0x05, 0x06, 0xb0, 0x9a,
+	0xee, 0xf9, 0x3a, 0xd3, 0xcf, 0xe6, 0x30, 0x8e, 0x6e, 0xcc, 0x3a, 0x6f, 0x8e, 0xda, 0x15, 0x30,
+	0x14, 0xbb, 0x72, 0x2d, 0x1f, 0x6d, 0xdb, 0x1b, 0xc2, 0xde, 0x5d, 0x67, 0xba, 0x52, 0xda, 0x6b,
+	0x5e, 0x79, 0xcb, 0x98, 0xc8, 0x1d, 0xc1, 0xf1, 0x80, 0x62, 0x16, 0x90, 0xc8, 0x57, 0xf7, 0x0c,
+	0x60, 0x1d, 0xba, 0x8f, 0x8b, 0x4c, 0x97, 0xbe, 0x33, 0xfd, 0x62, 0x12, 0xf2, 0x60, 0xea, 0xd9,
+	0x88, 0xc4, 0x0e, 0x22, 0x2c, 0x26, 0xac, 0x7a, 0x2e, 0x99, 0xff, 0xea, 0xf0, 0x79, 0x8a, 0x99,
+	0x7d, 0x8f, 0xd1, 0xff, 0x47, 0xeb, 0xd7, 0xcc, 0x51, 0xbb, 0x00, 0x9e, 0x36, 0x7b, 0x11, 0x55,
+	0x28, 0x5e, 0x28, 0x7e, 0x9b, 0xe2, 0x04, 0xcd, 0xd5, 0xe6, 0x6e, 0xd4, 0x3a, 0x5f, 0x5d, 0x18,
+	0x6c, 0x76, 0xe5, 0x4e, 0x3e, 0x86, 0x1e, 0xe3, 0x30, 0x4c, 0xc6, 0x38, 0x81, 0x5e, 0x84, 0x7d,
+	0x75, 0xdf, 0x00, 0xd6, 0x81, 0xdb, 0x5b, 0x67, 0x7a, 0xb7, 0x3c, 0xb1, 0x23, 0x30, 0x47, 0x9d,
+	0x0a, 0x79, 0x28, 0x01, 0x77, 0xf0, 0x99, 0x6b, 0x60, 0x91, 0x6b, 0x60, 0x99, 0x6b, 0xe0, 0x27,
+	0xd7, 0xc0, 0xc7, 0x4a, 0x93, 0x96, 0x2b, 0x4d, 0xfa, 0x5a, 0x69, 0xd2, 0xb3, 0xb5, 0x15, 0xba,
+	0x28, 0x14, 0x05, 0x30, 0x4c, 0xc4, 0xe4, 0xbc, 0x6f, 0xea, 0x17, 0xd1, 0xbd, 0x96, 0xe8, 0xf2,
+	0xea, 0x2f, 0x00, 0x00, 0xff, 0xff, 0x81, 0x34, 0xec, 0xf3, 0x1a, 0x02, 0x00, 0x00,
 }
 
 func (this *Params) Equal(that interface{}) bool {
@@ -200,43 +145,6 @@ func (this *Params) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if len(this.ClaimParams) != len(that1.ClaimParams) {
-		return false
-	}
-	for i := range this.ClaimParams {
-		a := this.ClaimParams[i]
-		b := that1.ClaimParams[i]
-		if !(&a).Equal(&b) {
-			return false
-		}
-	}
-	if this.VoteFrequency != that1.VoteFrequency {
-		return false
-	}
-	return true
-}
-func (this *ClaimParams) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ClaimParams)
-	if !ok {
-		that2, ok := that.(ClaimParams)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if this.ClaimType != that1.ClaimType {
-		return false
-	}
 	if this.PrevotePeriod != that1.PrevotePeriod {
 		return false
 	}
@@ -244,6 +152,12 @@ func (this *ClaimParams) Equal(that interface{}) bool {
 		return false
 	}
 	if !this.VoteThreshold.Equal(that1.VoteThreshold) {
+		return false
+	}
+	if this.VoteFrequency != that1.VoteFrequency {
+		return false
+	}
+	if this.AbstainEnabled != that1.AbstainEnabled {
 		return false
 	}
 	return true
@@ -268,58 +182,21 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.AbstainEnabled {
+		i--
+		if m.AbstainEnabled {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x28
+	}
 	if m.VoteFrequency != 0 {
 		i = encodeVarintParams(dAtA, i, uint64(m.VoteFrequency))
 		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x20
 	}
-	if len(m.ClaimParams) > 0 {
-		for k := range m.ClaimParams {
-			v := m.ClaimParams[k]
-			baseI := i
-			{
-				size, err := (&v).MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintParams(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x12
-			i -= len(k)
-			copy(dAtA[i:], k)
-			i = encodeVarintParams(dAtA, i, uint64(len(k)))
-			i--
-			dAtA[i] = 0xa
-			i = encodeVarintParams(dAtA, i, uint64(baseI-i))
-			i--
-			dAtA[i] = 0xa
-		}
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *ClaimParams) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ClaimParams) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ClaimParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
 	{
 		size := m.VoteThreshold.Size()
 		i -= size
@@ -329,23 +206,16 @@ func (m *ClaimParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintParams(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x22
+	dAtA[i] = 0x1a
 	if m.VotePeriod != 0 {
 		i = encodeVarintParams(dAtA, i, uint64(m.VotePeriod))
 		i--
-		dAtA[i] = 0x18
+		dAtA[i] = 0x10
 	}
 	if m.PrevotePeriod != 0 {
 		i = encodeVarintParams(dAtA, i, uint64(m.PrevotePeriod))
 		i--
-		dAtA[i] = 0x10
-	}
-	if len(m.ClaimType) > 0 {
-		i -= len(m.ClaimType)
-		copy(dAtA[i:], m.ClaimType)
-		i = encodeVarintParams(dAtA, i, uint64(len(m.ClaimType)))
-		i--
-		dAtA[i] = 0xa
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -367,31 +237,6 @@ func (m *Params) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if len(m.ClaimParams) > 0 {
-		for k, v := range m.ClaimParams {
-			_ = k
-			_ = v
-			l = v.Size()
-			mapEntrySize := 1 + len(k) + sovParams(uint64(len(k))) + 1 + l + sovParams(uint64(l))
-			n += mapEntrySize + 1 + sovParams(uint64(mapEntrySize))
-		}
-	}
-	if m.VoteFrequency != 0 {
-		n += 1 + sovParams(uint64(m.VoteFrequency))
-	}
-	return n
-}
-
-func (m *ClaimParams) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.ClaimType)
-	if l > 0 {
-		n += 1 + l + sovParams(uint64(l))
-	}
 	if m.PrevotePeriod != 0 {
 		n += 1 + sovParams(uint64(m.PrevotePeriod))
 	}
@@ -400,6 +245,12 @@ func (m *ClaimParams) Size() (n int) {
 	}
 	l = m.VoteThreshold.Size()
 	n += 1 + l + sovParams(uint64(l))
+	if m.VoteFrequency != 0 {
+		n += 1 + sovParams(uint64(m.VoteFrequency))
+	}
+	if m.AbstainEnabled {
+		n += 2
+	}
 	return n
 }
 
@@ -439,236 +290,6 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClaimParams", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthParams
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthParams
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.ClaimParams == nil {
-				m.ClaimParams = make(map[string]ClaimParams)
-			}
-			var mapkey string
-			mapvalue := &ClaimParams{}
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowParams
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowParams
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= uint64(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthParams
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey < 0 {
-						return ErrInvalidLengthParams
-					}
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					var mapmsglen int
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowParams
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						mapmsglen |= int(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					if mapmsglen < 0 {
-						return ErrInvalidLengthParams
-					}
-					postmsgIndex := iNdEx + mapmsglen
-					if postmsgIndex < 0 {
-						return ErrInvalidLengthParams
-					}
-					if postmsgIndex > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapvalue = &ClaimParams{}
-					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
-						return err
-					}
-					iNdEx = postmsgIndex
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipParams(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if (skippy < 0) || (iNdEx+skippy) < 0 {
-						return ErrInvalidLengthParams
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.ClaimParams[mapkey] = *mapvalue
-			iNdEx = postIndex
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field VoteFrequency", wireType)
-			}
-			m.VoteFrequency = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.VoteFrequency |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipParams(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthParams
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ClaimParams) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowParams
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ClaimParams: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ClaimParams: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClaimType", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthParams
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthParams
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ClaimType = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field PrevotePeriod", wireType)
 			}
@@ -687,7 +308,7 @@ func (m *ClaimParams) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 3:
+		case 2:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field VotePeriod", wireType)
 			}
@@ -706,7 +327,7 @@ func (m *ClaimParams) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 4:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field VoteThreshold", wireType)
 			}
@@ -740,6 +361,45 @@ func (m *ClaimParams) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VoteFrequency", wireType)
+			}
+			m.VoteFrequency = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.VoteFrequency |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AbstainEnabled", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.AbstainEnabled = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipParams(dAtA[iNdEx:])
