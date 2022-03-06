@@ -12686,8 +12686,6 @@ paths:
                   voteFrequency:
                     type: string
                     format: uint64
-                  abstainEnabled:
-                    type: boolean
                 description: Params represents the parameters for the module.
             title: >-
               QueryParamsResponse is the response type for the Query/Params RPC
@@ -21664,8 +21662,6 @@ definitions:
       voteFrequency:
         type: string
         format: uint64
-      abstainEnabled:
-        type: boolean
     description: Params represents the parameters for the module.
   enci.oracle.v1beta1.Prevote:
     type: object
@@ -21762,8 +21758,6 @@ definitions:
           voteFrequency:
             type: string
             format: uint64
-          abstainEnabled:
-            type: boolean
         description: Params represents the parameters for the module.
     title: QueryParamsResponse is the response type for the Query/Params RPC method
   enci.oracle.v1beta1.QueryPrevoteRoundsResponse:

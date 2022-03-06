@@ -16,5 +16,4 @@ message Params {
     (gogoproto.nullable)   = false
   ];
   uint64 vote_frequency = 4 [(gogoproto.moretags) = "yaml:\"vote_frequency\""];  // represents the number of blocks between each voting period
-  bool abstain_enabled = 5 [(gogoproto.moretags) = "yaml:\"abstain_enabled\""];
 }

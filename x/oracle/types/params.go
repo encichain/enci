@@ -11,7 +11,9 @@ import (
 // Parameter keys
 var (
 	KeyVoteFrequency = []byte("VoteFrequency")
-	KeyClaimParams   = []byte("ClaimParams")
+	KeyPrevotePeriod = []byte("PrevotePeriod")
+	KeyVotePeriod    = []byte("VotePeriod")
+	KeyVoteThreshold = []byte("VoteThreshold")
 )
 
 // Default params for testing
@@ -25,9 +27,8 @@ var (
 var (
 	DefaultVoteFrequency = coretypes.BlocksPerDay
 	DefaultVoteThreshold = sdk.NewDecWithPrec(50, 2) // 0.50 -> 50%
-	DefaultVotePeriod    = uint64(4)
-	DefaultPrevotePeriod = uint64(4)
-	DefaultClaimParams   = map[string](ClaimParams){}
+	DefaultVotePeriod    = uint64(3)
+	DefaultPrevotePeriod = uint64(3)
 )
 
 var _ paramtypes.ParamSet = (*Params)(nil)
@@ -40,8 +41,10 @@ func ParamKeyTable() paramtypes.KeyTable {
 // DefaultParams creates default oracle module parameters
 func DefaultParams() Params {
 	return Params{
+		PrevotePeriod: DefaultPrevotePeriod,
+		VotePeriod:    DefaultVotePeriod,
+		VoteThreshold: DefaultVoteThreshold,
 		VoteFrequency: DefaultVoteFrequency,
-		ClaimParams:   DefaultClaimParams,
 	}
 }
 
@@ -49,7 +52,9 @@ func DefaultParams() Params {
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(KeyVoteFrequency, &p.VoteFrequency, validateVoteFrequency),
-		paramtypes.NewParamSetPair(KeyClaimParams, &p.ClaimParams, validateClaimParams),
+		paramtypes.NewParamSetPair(KeyPrevotePeriod, &p.PrevotePeriod, validatePrevotePeriod),
+		paramtypes.NewParamSetPair(KeyVotePeriod, &p.VotePeriod, validateVotePeriod),
+		paramtypes.NewParamSetPair(KeyVoteThreshold, &p.VoteThreshold, validateVoteThreshold),
 	}
 }
 
@@ -58,44 +63,41 @@ func (p Params) Validate() error {
 	if p.VoteFrequency < 1 {
 		return fmt.Errorf("invalid vote frequency: %d", p.VoteFrequency)
 	}
-
-	// Validate claim params
-	for _, param := range p.ClaimParams {
-		if param.VotePeriod <= 0 {
-			return fmt.Errorf("vote period must be greater than 0: %d", param.VotePeriod)
-		}
-		if param.PrevotePeriod <= 0 {
-			return fmt.Errorf("prevote period must be greater than 0: %d", param.PrevotePeriod)
-		}
-		if param.VoteThreshold.LTE(sdk.NewDecWithPrec(33, 2)) {
-			return fmt.Errorf("oracle parameter VoteTheshold must be greater than 33 percent")
-		}
-		if param.VoteThreshold.GT(sdk.OneDec()) {
-			return fmt.Errorf("vote threshold too large: %s", param.VoteThreshold)
-		}
+	if p.VotePeriod <= 0 {
+		return fmt.Errorf("vote period must be greater than 0: %d", p.VotePeriod)
+	}
+	if p.PrevotePeriod <= 0 {
+		return fmt.Errorf("prevote period must be greater than 0: %d", p.PrevotePeriod)
+	}
+	if p.VoteThreshold.LTE(sdk.NewDecWithPrec(33, 2)) {
+		return fmt.Errorf("oracle parameter VoteTheshold must be greater than 33 percent")
+	}
+	if p.VoteThreshold.GT(sdk.OneDec()) {
+		return fmt.Errorf("vote threshold too large: %s", p.VoteThreshold)
 	}
 	return nil
 }
 
-func validateClaimParams(i interface{}) error {
-	claimParams, ok := i.(map[string](ClaimParams))
+func validatePrevotePeriod(i interface{}) error {
+	v, ok := i.(uint64)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	for _, param := range claimParams {
-		if param.VotePeriod <= 0 {
-			return fmt.Errorf("vote period must be greater than 0: %d", param.VotePeriod)
-		}
-		if param.PrevotePeriod <= 0 {
-			return fmt.Errorf("prevote period must be greater than 0: %d", param.PrevotePeriod)
-		}
-		if param.VoteThreshold.LTE(sdk.NewDecWithPrec(33, 2)) {
-			return fmt.Errorf("oracle parameter VoteTheshold must be greater than 33 percent")
-		}
-		if param.VoteThreshold.GT(sdk.OneDec()) {
-			return fmt.Errorf("vote threshold too large: %s", param.VoteThreshold)
-		}
+	if v < 1 {
+		return fmt.Errorf("invalid Prevote period: %d", v)
+	}
+	return nil
+}
+
+func validateVotePeriod(i interface{}) error {
+	v, ok := i.(uint64)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v < 1 {
+		return fmt.Errorf("invalid Vote period: %d", v)
 	}
 	return nil
 }
@@ -111,5 +113,21 @@ func validateVoteFrequency(i interface{}) error {
 		return fmt.Errorf("invalid vote frequency: %d", v)
 	}
 
+	return nil
+}
+
+func validateVoteThreshold(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.LTE(sdk.NewDecWithPrec(33, 2)) {
+		return fmt.Errorf("vote threshold should be greater than 33%")
+	}
+
+	if v.GT(sdk.OneDec()) {
+		return fmt.Errorf("vote threshold msut be below 100%")
+	}
 	return nil
 }
