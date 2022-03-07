@@ -16,7 +16,7 @@ type Querier struct {
 
 var _ types.QueryServer = Querier{}
 
-// Params implements the Query/Params gRPC method
+// Params returns the x/oracle params set
 func (q Querier) Params(c context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	params := q.GetParams(ctx)
@@ -24,7 +24,7 @@ func (q Querier) Params(c context.Context, req *types.QueryParamsRequest) (*type
 	return &types.QueryParamsResponse{Params: params}, nil
 }
 
-// VoteRounds implements the Query VoteRounds gRPC method
+// VoteRounds returns a slice of VoteRound for every claim type
 func (q Querier) VoteRounds(c context.Context, req *types.QueryVoteRoundsRequest) (*types.QueryVoteRoundsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
@@ -32,7 +32,7 @@ func (q Querier) VoteRounds(c context.Context, req *types.QueryVoteRoundsRequest
 	return &types.QueryVoteRoundsResponse{VoteRounds: rounds}, nil
 }
 
-// PrevoteRounds implements the Query PrevoteRounds gRPC method
+// PrevoteRounds returns a slice of PrevoteRound for every claim type
 func (q Querier) PrevoteRounds(c context.Context, req *types.QueryPrevoteRoundsRequest) (*types.QueryPrevoteRoundsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
@@ -40,7 +40,7 @@ func (q Querier) PrevoteRounds(c context.Context, req *types.QueryPrevoteRoundsR
 	return &types.QueryPrevoteRoundsResponse{PrevoteRounds: rounds}, nil
 }
 
-// VoterDelegations implements the Query Voter Delegations gRPC method
+// VoterDelegations returns a slice of all active VoterDelegation
 func (q Querier) VoterDelegations(c context.Context, req *types.QueryVoterDelegationsRequest) (*types.QueryVoterDelegationsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
@@ -48,7 +48,7 @@ func (q Querier) VoterDelegations(c context.Context, req *types.QueryVoterDelega
 	return &types.QueryVoterDelegationsResponse{VoterDelegations: delegations}, nil
 }
 
-// QueryDelegateAddress implements Query Delegate Address gRPC method
+// QueryDelegateAddress returns a delegate address connected to validator address if delegation exists
 func (q Querier) DelegateAddress(c context.Context, req *types.QueryDelegateAddressRequest) (*types.QueryDelegateAddressResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
@@ -73,7 +73,7 @@ func (q Querier) DelegateAddress(c context.Context, req *types.QueryDelegateAddr
 	}, nil
 }
 
-// DelegatorAddress implements Query Validator Address gRPC method
+// DelegatorAddress returns a validator address connected to a delegate address, if delegation exists
 func (q Querier) DelegatorAddress(c context.Context, req *types.QueryDelegatorAddressRequest) (*types.QueryDelegatorAddressResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
@@ -96,4 +96,26 @@ func (q Querier) DelegatorAddress(c context.Context, req *types.QueryDelegatorAd
 	return &types.QueryDelegatorAddressResponse{
 		Validator: validatorAddr.String(),
 	}, nil
+}
+
+// NextVotePeriod returns the block height of the beginning of the next VotePeriod
+func (q Querier) NextVotePeriod(c context.Context, req *types.QueryNextVotePeriodRequest) (*types.QueryNextVotePeriodResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	height := uint64(ctx.BlockHeight())
+	params := q.GetParams(ctx)
+
+	nextPeriod := (height/params.VoteFrequency+1)*params.VoteFrequency + params.PrevotePeriod - 1
+
+	return &types.QueryNextVotePeriodResponse{Block: nextPeriod}, nil
+}
+
+// NextPrevote returns the block height of the beginning of the next PrevotePeriod
+func (q Querier) NextPrevote(c context.Context, req *types.QueryNextPrevoteRequest) (*types.QueryNextPrevoteResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	height := uint64(ctx.BlockHeight())
+	params := q.GetParams(ctx)
+
+	nextPeriod := (height/params.VoteFrequency+1)*params.VoteFrequency - 1
+
+	return &types.QueryNextPrevoteResponse{Block: nextPeriod}, nil
 }

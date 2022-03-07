@@ -44,6 +44,38 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
+// IsVotePeriod checks if current block is part of a VotePeriod
+func (k Keeper) IsVotePeriod(ctx sdk.Context) bool {
+	params := k.GetParams(ctx)
+
+	if mod := uint64(ctx.BlockHeight()+1) % params.VoteFrequency; mod <= params.VotePeriod+params.PrevotePeriod {
+		if mod <= params.PrevotePeriod {
+			return false
+		}
+		return true
+	}
+	return false
+}
+
+// IsPrevotePeriod check if current block is part of a PrevotePeriod
+func (k Keeper) IsPrevotePeriod(ctx sdk.Context) bool {
+	params := k.GetParams(ctx)
+
+	if mod := uint64(ctx.BlockHeight()+1) % params.VoteFrequency; mod <= params.PrevotePeriod {
+		return true
+	}
+	return false
+}
+
+// IsVotePeriodEnd checks if it is the last block of a VotePeriod
+func (k Keeper) IsVotePeriodEnd(ctx sdk.Context) bool {
+	params := k.GetParams(ctx)
+	if p := uint64(ctx.BlockHeight()+1) % params.VoteFrequency; p%(params.PrevotePeriod+params.VotePeriod) == 0 {
+		return true
+	}
+	return false
+}
+
 // GetVote returns a Vote from the store, by *claim type* | *Validator* address
 func (k Keeper) GetVote(ctx sdk.Context, val sdk.ValAddress, claimType string) types.Vote {
 	store := ctx.KVStore(k.storeKey)
