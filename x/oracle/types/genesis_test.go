@@ -4,7 +4,6 @@ import (
 	fmt "fmt"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/encichain/enci/x/oracle/exported"
 	"github.com/encichain/enci/x/oracle/types"
@@ -14,26 +13,25 @@ import (
 
 func TestDefaultGenesisState(t *testing.T) {
 	gs := types.DefaultGenesis()
-	require.NotNil(t, gs.Claims)
-	require.Len(t, gs.Claims, 0)
+	require.NotNil(t, gs.Votes)
+	require.Len(t, gs.Votes, 0)
 
-	require.NotNil(t, gs.Rounds)
-	require.Len(t, gs.Rounds, 0)
+	require.NotNil(t, gs.Prevotes)
+	require.Len(t, gs.Prevotes, 0)
 
 	require.NotNil(t, gs.Params)
 	require.Equal(t, gs.Params, types.DefaultParams())
+
+	require.NotNil(t, gs.VoterDelegations)
+	require.Len(t, gs.VoterDelegations, 0)
 }
 
 func TestNewGenesisState(t *testing.T) {
 	var (
-		claims          []exported.Claim
-		rounds          []types.Round
-		pending         map[string]([]uint64)
-		delegations     []types.MsgDelegate
-		prevotes        [][]byte
-		finalizedRounds map[string](uint64)
+		voteRounds    []types.VoteRound
+		delegations   []types.VoterDelegation
+		prevoteRounds []types.PrevoteRound
 	)
-
 	testCases := []struct {
 		msg      string
 		malleate func()
@@ -42,7 +40,18 @@ func TestNewGenesisState(t *testing.T) {
 		{
 			"can proto marshal",
 			func() {
-				claims = []exported.Claim{&types.TestClaim{}}
+				claimAny, _ := codectypes.NewAnyWithValue(&types.TestClaim{})
+				voteRounds = []types.VoteRound{
+					{ClaimType: "test",
+						Votes: []types.Vote{
+							{
+								Claim:     claimAny,
+								Validator: "testvalidator",
+								VotePower: 100,
+							},
+						},
+						AggregatePower: 100,
+					}}
 				rounds = []types.Round{}
 				pending = map[string][]uint64{
 					"test": {1},
@@ -155,40 +164,6 @@ func TestGenesisStateValidate(t *testing.T) {
 				require.NoError(t, genesisState.Validate())
 			} else {
 				require.Error(t, genesisState.Validate())
-			}
-		})
-	}
-}
-
-func TestUnpackInterfaces(t *testing.T) {
-	var gs = types.GenesisState{
-		Claims: []*codectypes.Any{{}},
-	}
-
-	testCases := []struct {
-		msg      string
-		unpacker codectypes.AnyUnpacker
-		expPass  bool
-	}{
-		{
-			"success",
-			codectypes.NewInterfaceRegistry(),
-			true,
-		},
-		{
-			"error",
-			codec.NewLegacyAmino(),
-			false,
-		},
-	}
-
-	for _, tc := range testCases {
-		t.Run(fmt.Sprintf("Case %s", tc.msg), func(t *testing.T) {
-
-			if tc.expPass {
-				require.NoError(t, gs.UnpackInterfaces(tc.unpacker))
-			} else {
-				require.Error(t, gs.UnpackInterfaces(tc.unpacker))
 			}
 		})
 	}

@@ -1,103 +1,65 @@
 package types
 
 import (
-	fmt "fmt"
+	"encoding/json"
 
-	types "github.com/cosmos/cosmos-sdk/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/encichain/enci/x/oracle/exported"
-	proto "github.com/gogo/protobuf/proto"
+	"github.com/cosmos/cosmos-sdk/codec"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 )
-
-var _ types.UnpackInterfacesMessage = GenesisState{}
-
-// DefaultIndex is the default capability global index
-const DefaultIndex uint64 = 1
 
 // NewGenesisState creates a new GenesisState object
 func NewGenesisState(
 	params Params,
-	rounds []Round,
-	_claims []exported.Claim,
-	pending map[string]([]uint64),
-	delegations []MsgDelegate,
-	prevotes [][]byte,
-	finalizedRounds map[string](uint64),
+	delegations []VoterDelegation,
+	voteRounds []VoteRound,
+	prevoteRounds []PrevoteRound,
 ) *GenesisState {
 
-	claims := make([]*types.Any, len(_claims))
-	for i, claim := range _claims {
-		msg, ok := claim.(proto.Message)
-		if !ok {
-			panic(fmt.Errorf("cannot proto marshal %T", claim))
-		}
-		any, err := types.NewAnyWithValue(msg)
-		if err != nil {
-			panic(err)
-		}
-		claims[i] = any
-	}
-
-	genPending := map[string]GenesisState_ListOfUint{}
-	for i, p := range pending {
-		genPending[i] = GenesisState_ListOfUint{p}
-	}
-
 	return &GenesisState{
-		Params:          params,
-		Rounds:          rounds,
-		Claims:          claims,
-		Pending:         genPending,
-		Delegations:     delegations,
-		Prevotes:        prevotes,
-		FinalizedRounds: finalizedRounds,
+		Params:           params,
+		VoterDelegations: delegations,
+		Votes:            voteRounds,
+		Prevotes:         prevoteRounds,
 	}
 }
 
 // DefaultGenesis returns the default Capability genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-		Params:          DefaultParams(),
-		Claims:          []*types.Any{},
-		Rounds:          []Round{},
-		Pending:         map[string]GenesisState_ListOfUint{},
-		FinalizedRounds: map[string](uint64){},
+		Params:           DefaultParams(),
+		VoterDelegations: []VoterDelegation{},
+		Votes:            []VoteRound{},
+		Prevotes:         []PrevoteRound{},
 	}
 }
 
 // Validate performs basic genesis state validation returning an error upon any
 // failure.
 func (gs GenesisState) Validate() error {
-
-	for i, delegation := range gs.Delegations {
-		if _, err := sdk.AccAddressFromBech32(delegation.Delegate); err != nil {
-			return fmt.Errorf("invalid feeder at index %d: %w", i, err)
-		}
-		if _, err := sdk.AccAddressFromBech32(delegation.Validator); err != nil {
-			return fmt.Errorf("invalid feeder at index %d: %w", i, err)
-		}
-	}
-
-	for _, c := range gs.Claims {
-		claim, ok := c.GetCachedValue().(exported.Claim)
-		if !ok {
-			return fmt.Errorf("expected claim")
-		}
-		if err := claim.ValidateBasic(); err != nil {
-			return err
-		}
-	}
-	if err := gs.Params.ValidateBasic(); err != nil {
+	err := gs.Params.Validate()
+	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
+// GetGenesisStateFromAppState returns x/bank GenesisState given raw application
+// genesis state.
+func GetGenesisStateFromAppState(cdc codec.JSONCodec, appState map[string]json.RawMessage) *GenesisState {
+	var genesisState GenesisState
+
+	if appState[ModuleName] != nil {
+		cdc.MustUnmarshalJSON(appState[ModuleName], &genesisState)
+	}
+
+	return &genesisState
+}
+
 // UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
-func (gs GenesisState) UnpackInterfaces(unpacker types.AnyUnpacker) error {
-	for _, any := range gs.Claims {
-		var claim exported.Claim
-		err := unpacker.UnpackAny(any, &claim)
+func (gs GenesisState) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	for _, round := range gs.Votes {
+		err := round.UnpackInterfaces(unpacker)
 		if err != nil {
 			return err
 		}

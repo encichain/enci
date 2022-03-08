@@ -62,7 +62,7 @@ func (suite *KeeperTestSuite) populateClaims(ctx sdk.Context, numClaims int) []e
 	claims := make([]exported.Claim, numClaims)
 	for i := 0; i < numClaims; i++ {
 		claims[i] = types.NewTestClaim(int64(i), "test", "test")
-		suite.k.CreateClaim(ctx, claims[i])
+		//suite.k.CreateClaim(ctx, claims[i])
 	}
 	return claims
 }
