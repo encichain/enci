@@ -14,14 +14,56 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	if err := genState.Validate(); err != nil {
 		panic(fmt.Sprintf("failed to validate %s genesis state: %s", types.ModuleName, err))
 	}
-
+	// Set params
 	k.SetParams(ctx, genState.Params)
 
+	// Set voter delegations to store
+	for _, d := range genState.VoterDelegations {
+		valAddr, err := sdk.ValAddressFromBech32(d.ValidatorAddress)
+		if err != nil {
+			panic(err)
+		}
+		delAddr, err := sdk.AccAddressFromBech32(d.DelegateAddress)
+		if err != nil {
+			panic(err)
+		}
+		k.SetVoterDelegation(ctx, delAddr, valAddr)
+	}
+	// Set Prevote round and prevotes
+	for _, pRound := range genState.Prevotes {
+		k.SetPrevoteRound(ctx, pRound)
+		for _, prevote := range pRound.Prevotes {
+			valAddr, err := sdk.ValAddressFromBech32(prevote.Validator)
+			if err != nil {
+				panic(err)
+			}
+			k.SetPrevote(ctx, valAddr, prevote, pRound.ClaimType)
+		}
+	}
+	// Set Vote round and votes
+	for _, vRound := range genState.Votes {
+		k.SetVoteRound(ctx, vRound)
+		for _, vote := range vRound.Votes {
+			valAddr, err := sdk.ValAddressFromBech32(vote.Validator)
+			if err != nil {
+				panic(err)
+			}
+			k.SetVote(ctx, valAddr, vote, vRound.ClaimType)
+		}
+	}
 }
 
 // ExportGenesis returns the capability module's exported genesis.
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	params := k.GetParams(ctx)
+	delegations := k.GetAllVoterDelegations(ctx)
+	voteRounds := k.GetAllVoteRounds(ctx)
+	prevoteRounds := k.GetAllPrevoteRounds(ctx)
 
-	return types.NewGenesisState(params)
+	return types.NewGenesisState(
+		params,
+		delegations,
+		voteRounds,
+		prevoteRounds,
+	)
 }

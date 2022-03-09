@@ -16,6 +16,11 @@ type Querier struct {
 
 var _ types.QueryServer = Querier{}
 
+// NewQuerier returns a x/oracle implementation of a QueryServer
+func NewQuerier(keeper Keeper) types.QueryServer {
+	return &Querier{Keeper: keeper}
+}
+
 // Params returns the x/oracle params set
 func (q Querier) Params(c context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
