@@ -21,29 +21,29 @@ func NewMsgDelegate(val, del sdk.AccAddress) *MsgDelegate {
 }
 
 // ValidateBasic implements sdk.Msg
-func (m *MsgDelegate) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(m.Validator); err != nil {
+func (msg MsgDelegate) ValidateBasic() error {
+	if _, err := sdk.ValAddressFromBech32(msg.Validator); err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, err.Error())
 	}
-	if _, err := sdk.AccAddressFromBech32(m.Delegate); err != nil {
+	if _, err := sdk.AccAddressFromBech32(msg.Delegate); err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, err.Error())
 	}
 	return nil
 }
 
-// GetSignBytes implements sdk.Msg
-func (m *MsgDelegate) GetSignBytes() []byte {
-	panic("amino support disabled")
+// GetSignBytes implements the LegacyMsg.GetSignBytes method
+func (msg MsgDelegate) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 // GetSigners implements sdk.Msg
-func (m *MsgDelegate) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{m.MustGetValidator()}
+func (msg MsgDelegate) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{sdk.AccAddress(msg.MustGetValidator())}
 }
 
 // MustGetValidator returns the sdk.AccAddress for the validator
-func (m *MsgDelegate) MustGetValidator() sdk.AccAddress {
-	val, err := sdk.AccAddressFromBech32(m.Validator)
+func (msg MsgDelegate) MustGetValidator() sdk.ValAddress {
+	val, err := sdk.ValAddressFromBech32(msg.Validator)
 	if err != nil {
 		panic(err)
 	}
@@ -51,8 +51,8 @@ func (m *MsgDelegate) MustGetValidator() sdk.AccAddress {
 }
 
 // MustGetDelegate returns the sdk.AccAddress for the delegate
-func (m *MsgDelegate) MustGetDelegate() sdk.AccAddress {
-	val, err := sdk.AccAddressFromBech32(m.Delegate)
+func (msg MsgDelegate) MustGetDelegate() sdk.AccAddress {
+	val, err := sdk.AccAddressFromBech32(msg.Delegate)
 	if err != nil {
 		panic(err)
 	}
@@ -62,7 +62,7 @@ func (m *MsgDelegate) MustGetDelegate() sdk.AccAddress {
 // ===== Implements legacytx.LegacyMsg interface =====
 
 // Route implements sdk.Msg
-func (m *MsgDelegate) Route() string { return ModuleName }
+func (msg MsgDelegate) Route() string { return ModuleName }
 
 // Type implements sdk.Msg
-func (m *MsgDelegate) Type() string { return TypeMsgDelegate }
+func (msg MsgDelegate) Type() string { return TypeMsgDelegate }

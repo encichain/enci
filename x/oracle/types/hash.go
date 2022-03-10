@@ -2,11 +2,11 @@ package types
 
 import (
 	"bytes"
-	"crypto/sha256"
 	"encoding/hex"
 	fmt "fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/tendermint/tendermint/crypto/tmhash"
 )
 
 // VoteHash is a SHA256 hash of the salt, hash of the claim, and validator address which is meant to hide vote
@@ -15,7 +15,7 @@ type VoteHash []byte
 
 // VoteHash returns the SHA-256 hash for a precommit given the proper args
 func CreateVoteHash(salt string, claimHash string, validator sdk.ValAddress) VoteHash {
-	h := sha256.New()
+	h := tmhash.NewTruncated()
 	_, err := h.Write([]byte(fmt.Sprintf("%s:%s:%s", salt, claimHash, validator.String())))
 	if err != nil {
 		panic(err)

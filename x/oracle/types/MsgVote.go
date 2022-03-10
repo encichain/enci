@@ -31,11 +31,15 @@ func NewMsgVote(s sdk.AccAddress, claim exported.Claim, salt string) (*MsgVote, 
 	if err != nil {
 		return nil, err
 	}
-	return &MsgVote{Signer: s.String(), Claim: any, Salt: salt}, nil
+	return &MsgVote{
+		Signer: s.String(),
+		Claim:  any,
+		Salt:   salt,
+	}, nil
 }
 
 // GetSigners get msg signers
-func (msg *MsgVote) GetSigners() []sdk.AccAddress {
+func (msg MsgVote) GetSigners() []sdk.AccAddress {
 	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
 	if err != nil {
 		return nil
@@ -44,16 +48,15 @@ func (msg *MsgVote) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{accAddr}
 }
 
-// GetSignBytes get msg get getsingbytes
-func (msg *MsgVote) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
+// GetSignBytes implements the LegacyMsg.GetSignBytes method
+func (msg MsgVote) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 // ValidateBasic validation
-func (msg *MsgVote) ValidateBasic() error {
+func (msg MsgVote) ValidateBasic() error {
 	if msg.Signer == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "creator can't be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "voter can't be empty")
 	}
 	claim := msg.GetClaim()
 	if claim == nil {
@@ -102,11 +105,11 @@ func (msg MsgVote) UnpackInterfaces(ctx types.AnyUnpacker) error {
 // ===== Implements legacytx.LegacyMsg interface =====
 
 // Route get msg route
-func (msg *MsgVote) Route() string {
+func (msg MsgVote) Route() string {
 	return RouterKey
 }
 
 // Type get msg type
-func (msg *MsgVote) Type() string {
+func (msg MsgVote) Type() string {
 	return TypeMsgVote
 }
