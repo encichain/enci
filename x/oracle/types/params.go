@@ -123,11 +123,11 @@ func validateVoteThreshold(i interface{}) error {
 	}
 
 	if v.LTE(sdk.NewDecWithPrec(33, 2)) {
-		return fmt.Errorf("vote threshold should be greater than 33%")
+		return fmt.Errorf("vote threshold should be greater than 33%%: %s", v)
 	}
 
 	if v.GT(sdk.OneDec()) {
-		return fmt.Errorf("vote threshold msut be below 100%")
+		return fmt.Errorf("vote threshold must be below 100%%: %s", v)
 	}
 	return nil
 }

@@ -40,7 +40,15 @@ func (gs GenesisState) Validate() error {
 	if err != nil {
 		return err
 	}
-
+	// Validate stored claims in VoteRound
+	for _, voteRound := range gs.Votes {
+		for _, vote := range voteRound.Votes {
+			_, err := vote.GetClaim()
+			if err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }
 

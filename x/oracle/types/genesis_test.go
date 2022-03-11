@@ -4,8 +4,9 @@ import (
 	fmt "fmt"
 	"testing"
 
+	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	"github.com/encichain/enci/x/oracle/exported"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/encichain/enci/x/oracle/types"
 
 	"github.com/stretchr/testify/require"
@@ -40,22 +41,33 @@ func TestNewGenesisState(t *testing.T) {
 		{
 			"can proto marshal",
 			func() {
-				claimAny, _ := codectypes.NewAnyWithValue(&types.TestClaim{})
-				voteRounds = []types.VoteRound{
-					{ClaimType: "test",
-						Votes: []types.Vote{
-							{
-								Claim:     claimAny,
-								Validator: "testvalidator",
-								VotePower: 100,
-							},
-						},
-						AggregatePower: 100,
-					}}
-				rounds = []types.Round{}
-				pending = map[string][]uint64{
-					"test": {1},
-				}
+				claim := types.TestClaim{}
+				claimHash := claim.Hash()
+				claimAny, _ := codectypes.NewAnyWithValue(&claim)
+				opAddrStr := "encivaloper1y8t2xrx5n7tzs5wtszyfeyjdtcq7d3qcjgmeee"
+				voteRounds = []types.VoteRound{{
+					ClaimType: "test",
+					Votes: []types.Vote{{
+						Claim:     claimAny,
+						Validator: opAddrStr,
+						VotePower: 100,
+					},
+					},
+					AggregatePower: 100,
+				}}
+				opAddr, _ := sdk.ValAddressFromBech32(opAddrStr)
+				prevoteRounds = []types.PrevoteRound{{
+					ClaimType: "test",
+					Prevotes: []types.Prevote{{
+						Hash:        types.CreateVoteHash("123", claimHash.String(), opAddr).String(),
+						Validator:   opAddrStr,
+						SubmitBlock: 101,
+					}},
+				}}
+				delegations = []types.VoterDelegation{{
+					DelegateAddress:  "enci1y8t2xrx5n7tzs5wtszyfeyjdtcq7d3qc84hfe8",
+					ValidatorAddress: opAddrStr,
+				}}
 			},
 			true,
 		},
@@ -69,24 +81,18 @@ func TestNewGenesisState(t *testing.T) {
 				require.NotPanics(t, func() {
 					types.NewGenesisState(
 						types.DefaultParams(),
-						rounds,
-						claims,
-						pending,
 						delegations,
-						prevotes,
-						finalizedRounds,
+						voteRounds,
+						prevoteRounds,
 					)
 				})
 			} else {
 				require.Panics(t, func() {
 					types.NewGenesisState(
 						types.DefaultParams(),
-						rounds,
-						claims,
-						pending,
 						delegations,
-						prevotes,
-						finalizedRounds,
+						voteRounds,
+						prevoteRounds,
 					)
 				})
 			}
@@ -96,15 +102,12 @@ func TestNewGenesisState(t *testing.T) {
 
 func TestGenesisStateValidate(t *testing.T) {
 	var (
-		genesisState    *types.GenesisState
-		testClaim       []exported.Claim
-		pending         map[string]([]uint64)
-		delegations     []types.MsgDelegate
-		prevotes        [][]byte
-		finalizedRounds map[string](uint64)
+		genesisState  *types.GenesisState
+		voteRounds    []types.VoteRound
+		delegations   []types.VoterDelegation
+		prevoteRounds []types.PrevoteRound
 	)
-	round := []types.Round{}
-	params := types.DefaultParams()
+	//params := types.DefaultParams()
 
 	testCases := []struct {
 		msg      string
@@ -114,33 +117,21 @@ func TestGenesisStateValidate(t *testing.T) {
 		{
 			"valid",
 			func() {
-				testClaim = make([]exported.Claim, 100)
-				for i := 0; i < 100; i++ {
-					testClaim[i] = &types.TestClaim{
-						BlockHeight: int64(i + 1),
-						Content:     "test",
-						ClaimType:   "test",
-					}
-				}
-				genesisState = types.NewGenesisState(
-					params, round, testClaim, pending, delegations, prevotes, finalizedRounds,
-				)
+				genesisState = types.DefaultGenesis()
 			},
 			true,
 		},
 		{
 			"invalid",
 			func() {
-				testClaim = make([]exported.Claim, 100)
-				for i := 0; i < 100; i++ {
-					testClaim[i] = &types.TestClaim{
-						BlockHeight: int64(i),
-						Content:     "test",
-						ClaimType:   "test",
-					}
+				invParams := types.Params{
+					PrevotePeriod: 0,
+					VotePeriod:    1,
+					VoteThreshold: types.DefaultVoteThreshold,
+					VoteFrequency: 0,
 				}
 				genesisState = types.NewGenesisState(
-					params, round, testClaim, pending, delegations, prevotes, finalizedRounds,
+					invParams, delegations, voteRounds, prevoteRounds,
 				)
 			},
 			false,
@@ -149,7 +140,16 @@ func TestGenesisStateValidate(t *testing.T) {
 			"expected claim",
 			func() {
 				genesisState = &types.GenesisState{
-					Claims: []*codectypes.Any{{}},
+					Params:           types.DefaultParams(),
+					VoterDelegations: delegations,
+					Votes: []types.VoteRound{{
+						Votes: []types.Vote{{
+							Claim:     &codectypes.Any{},
+							Validator: "encivaloper1y8t2xrx5n7tzs5wtszyfeyjdtcq7d3qcjgmeee",
+							VotePower: 100,
+						}},
+					}},
+					Prevotes: prevoteRounds,
 				}
 			},
 			false,
@@ -164,6 +164,55 @@ func TestGenesisStateValidate(t *testing.T) {
 				require.NoError(t, genesisState.Validate())
 			} else {
 				require.Error(t, genesisState.Validate())
+			}
+		})
+	}
+}
+
+func TestUnpackInterfaces(t *testing.T) {
+	claim := types.TestClaim{}
+	claimAny, _ := codectypes.NewAnyWithValue(&claim)
+	gs := types.GenesisState{
+		Params:           types.DefaultParams(),
+		VoterDelegations: []types.VoterDelegation{},
+		Votes: []types.VoteRound{{
+			ClaimType: "test",
+			Votes: []types.Vote{{
+				Claim:     claimAny,
+				Validator: "encivaloper1y8t2xrx5n7tzs5wtszyfeyjdtcq7d3qcjgmeee",
+				VotePower: 100,
+			}},
+			AggregatePower: 100,
+		}},
+	}
+
+	testCases := []struct {
+		msg      string
+		unpacker codectypes.AnyUnpacker
+		expPass  bool
+	}{
+		{
+			"success",
+			codectypes.NewInterfaceRegistry(),
+			true,
+		},
+		{
+			"error",
+			codec.NewLegacyAmino(),
+			false,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("Case %s", tc.msg), func(t *testing.T) {
+
+			if tc.expPass {
+				require.NoError(t, gs.UnpackInterfaces(tc.unpacker))
+				_, err := gs.Votes[0].Votes[0].GetClaim()
+				require.NoError(t, err)
+
+			} else {
+				require.Error(t, gs.UnpackInterfaces(tc.unpacker))
 			}
 		})
 	}

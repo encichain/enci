@@ -38,11 +38,11 @@ func NewMsgVote(s sdk.AccAddress, claim exported.Claim, salt string) (*MsgVote, 
 	}, nil
 }
 
-// GetSigners get msg signers
+// GetSigners get msg signers. The signer can be either the validator or its delegate
 func (msg MsgVote) GetSigners() []sdk.AccAddress {
 	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
 	if err != nil {
-		return nil
+		panic(err)
 	}
 
 	return []sdk.AccAddress{accAddr}
