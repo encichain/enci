@@ -6,7 +6,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	staking "github.com/cosmos/cosmos-sdk/x/staking/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/encichain/enci/x/oracle/types"
 )
@@ -27,24 +26,51 @@ func (k msgServer) Vote(goCtx context.Context, msg *types.MsgVote) (*types.MsgVo
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	claim := msg.GetClaim()
-	signer := msg.MustGetSigner()
-	valAddr := getValidatorAddr(ctx, k, signer)
-
-	// TODO: Add Feeder delegate check. If not submitted by validator it must be submitted by feeder delegate
-	// make sure this message is submitted by a validator
-	val := k.StakingKeeper.Validator(ctx, valAddr)
-	if val == nil {
-		return nil, sdkerrors.Wrap(staking.ErrNoValidatorFound, valAddr.String())
+	if claim == nil {
+		return nil, sdkerrors.Wrap(types.ErrNoClaimExists, msg.Claim.String())
+	}
+	signer := msg.GetSigner()
+	if signer == nil {
+		return nil, sdkerrors.Wrap(types.ErrNoSigner, msg.Signer)
+	}
+	// Check if vote submitted during voting period
+	if isVotePeriod := k.IsVotePeriod(ctx); !isVotePeriod {
+		return nil, sdkerrors.Wrap(types.ErrNotVotePeriod, fmt.Sprint(ctx.BlockHeight()))
 	}
 
-	// Check if there is a Prevote in store for specific vote if enabled for claim
-	prevoteHash, err := k.isCorrectRound(ctx, msg, signer)
+	// Get validator address. If no delegator, signer of msg is the validator or invalid
+	valAddr := getDelegatorAddr(ctx, k, signer)
+	val, found := k.StakingKeeper.GetValidator(ctx, valAddr)
+	if !found {
+		return nil, sdkerrors.Wrap(stakingtypes.ErrNoValidatorFound, valAddr.String())
+	}
+
+	// Check if there is a Prevote in store for specific vote
+	prevote, err := k.GetPrevote(ctx, valAddr, claim.Type())
 	if err != nil {
 		return nil, err
 	}
 
-	// store the validator vote
-	k.CreateVote(ctx, claim, valAddr)
+	// Verify prevote was submitted during proper Prevote period
+	if prevote.SubmitBlock < k.PreviousPrevotePeriod(ctx) {
+		return nil, sdkerrors.Wrap(types.ErrInvalidPrevoteBlock, fmt.Sprint(prevote.SubmitBlock))
+	}
+
+	//Verify prevote hash matches Vote msg data
+	hash := types.CreateVoteHash(msg.Salt, claim.Hash().String(), valAddr)
+	if prevote.Hash != hash.String() {
+		return nil, sdkerrors.Wrapf(types.ErrVerificationFailed, "prevote hash: %s, vote hash: %s", prevote.Hash, hash.String())
+	}
+
+	// create vote object
+	vote, err := types.NewVote(claim, valAddr, uint64(val.GetConsensusPower(sdk.DefaultPowerReduction)))
+	if err != nil {
+		return nil, fmt.Errorf("could not create vote object for claim: %s", claim.String())
+	}
+
+	// Set vote to store and delete prevote
+	k.SetVote(ctx, valAddr, vote, claim.Type())
+	k.DeletePrevote(ctx, valAddr, claim.Type())
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
@@ -52,39 +78,38 @@ func (k msgServer) Vote(goCtx context.Context, msg *types.MsgVote) (*types.MsgVo
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.EventTypeVote),
 			sdk.NewAttribute(sdk.AttributeKeySender, signer.String()),
-			sdk.NewAttribute(types.AttributeKeyValidator, valAddr.String()),
-			sdk.NewAttribute(types.AttributeKeyClaimHash, claim.Hash().String()),
 		),
 	)
 
-	if len(prevoteHash) != 0 {
-		k.DeletePrevote(ctx, prevoteHash)
-	}
-
-	return &types.MsgVoteResponse{
-		Hash: claim.Hash(),
-	}, nil
+	return &types.MsgVoteResponse{}, nil
 }
 
 // Delegate implements types.MsgServer
 func (k msgServer) Delegate(c context.Context, msg *types.MsgDelegate) (*types.MsgDelegateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	val, del := msg.MustGetValidator(), msg.MustGetDelegate()
-
-	if k.Keeper.StakingKeeper.Validator(ctx, sdk.ValAddress(val)) == nil {
-		return nil, sdkerrors.Wrap(stakingtypes.ErrNoValidatorFound, val.String())
+	val, err := msg.GetValidatorAddress()
+	if err != nil {
+		return nil, err
+	}
+	del, err := msg.GetDelegateAddress()
+	if err != nil {
+		return nil, err
 	}
 
-	k.SetValidatorDelegateAddress(ctx, val, del)
+	// Check if validator account exists
+	if _, found := k.Keeper.StakingKeeper.GetValidator(ctx, sdk.ValAddress(val)); !found {
+		return nil, sdkerrors.Wrap(stakingtypes.ErrNoValidatorFound, val.String())
+	}
+	// Set new delegation to store
+	k.SetVoterDelegation(ctx, del, val)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeyAction, types.EventTypeDelegate),
+			sdk.NewAttribute(sdk.AttributeKeyAction, types.EventTypeVoterDelegation),
 			sdk.NewAttribute(sdk.AttributeKeySender, msg.Validator),
-			sdk.NewAttribute(types.AttributeKeyValidator, msg.Validator),
 			sdk.NewAttribute(types.AttributeKeyDelegate, msg.Delegate),
 		),
 	)
@@ -94,83 +119,50 @@ func (k msgServer) Delegate(c context.Context, msg *types.MsgDelegate) (*types.M
 
 func (k msgServer) Prevote(goCtx context.Context, msg *types.MsgPrevote) (*types.MsgPrevoteResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	signer := msg.MustGetSigner()
-
-	valAddr := getValidatorAddr(ctx, k, signer)
-
-	// TODO: Add Feeder delegate check. If not submitted by validator it must be submitted by feeder delegate
-	// make sure this message is submitted by a validator
-	val := k.StakingKeeper.Validator(ctx, valAddr)
-	if val == nil {
-		return nil, sdkerrors.Wrap(staking.ErrNoValidatorFound, valAddr.String())
+	signer := msg.GetSigner()
+	if signer == nil {
+		return nil, sdkerrors.Wrap(types.ErrNoSigner, msg.Signer)
+	}
+	// Verify prevote is submitted during Prevote Period
+	if isPrevotePeriod := k.IsPrevotePeriod(ctx); !isPrevotePeriod {
+		return nil, sdkerrors.Wrap(types.ErrNotPrevotePeriod, fmt.Sprint(ctx.BlockHeight()))
 	}
 
-	k.CreatePrevote(ctx, msg.Hash)
+	// Check if address has a delegator. If no delegator, it is either the validator or invalid
+	valAddr := getDelegatorAddr(ctx, k, signer)
+	// Validate returned validator address. This also catches prevotes submitted by unauthorized address
+	_, found := k.StakingKeeper.GetValidator(ctx, valAddr)
+	if !found {
+		return nil, sdkerrors.Wrap(stakingtypes.ErrNoValidatorFound, valAddr.String())
+	}
 
-	ctx.EventManager().EmitEvent(
+	voteHash, err := types.HexStringToVoteHash(msg.Hash)
+	if err != nil {
+		return nil, sdkerrors.Wrap(types.ErrInvalidHash, msg.Hash)
+	}
+
+	prevote := types.NewPrevote(voteHash, valAddr, uint64(ctx.BlockHeight()))
+	// Set prevote to store
+	k.SetPrevote(ctx, valAddr, prevote, msg.ClaimType)
+
+	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.EventTypePrevote),
 			sdk.NewAttribute(sdk.AttributeKeySender, signer.String()),
-			sdk.NewAttribute(types.AttributeKeyValidator, valAddr.String()),
-			sdk.NewAttribute(types.AttributeKeyPrevoteHash, fmt.Sprintf("%x", msg.Hash)),
 		),
-	)
+	})
 
 	return &types.MsgPrevoteResponse{}, nil
 }
 
-// HELPERS
+func getDelegatorAddr(ctx sdk.Context, k msgServer, signer sdk.AccAddress) sdk.ValAddress {
+	// get delegate's validator
+	valAddr, err := k.GetVoterDelegator(ctx, signer)
 
-func (k msgServer) isCorrectRound(ctx sdk.Context, msg *types.MsgVote, signer sdk.AccAddress) ([]byte, error) {
-	claim := msg.GetClaim()
-	claimType := claim.Type()
-
-	// will return empty struct if doesn't exist
-	claimParams := k.ClaimParamsForType(ctx, claimType)
-	if claimParams.ClaimType != claimType {
-		return nil, sdkerrors.Wrap(types.ErrNoClaimTypeExists, claimType)
-	}
-
-	claimRoundID := claim.GetRoundID()
-	lastFinalizedRound := k.GetLastFinalizedRound(ctx, claimType)
-
-	// RoundID should be greater than the LastFinalizedRound
-	if claimRoundID <= lastFinalizedRound {
-		return []byte{}, sdkerrors.Wrap(
-			types.ErrIncorrectClaimRound,
-			fmt.Sprintf("expected current round %d, to be greater than last finalized round %d", claimRoundID, lastFinalizedRound),
-		)
-	}
-
-	// if no prevote we are done
-	if claimParams.Prevote != true {
-		return []byte{}, nil
-	}
-
-	// when using prevote claims must be submited only after the prevote round
-	// claim.RoundID + VotePeriod >= currentRound
-	currentRound := k.GetCurrentRound(ctx, claimType)
-	if claimRoundID+claimParams.VotePeriod < currentRound {
-		return []byte{}, sdkerrors.Wrap(types.ErrIncorrectClaimRound, fmt.Sprintf("expected %d, got %d", currentRound-claimParams.VotePeriod, claimRoundID))
-	}
-	// TODO: Refactor: This should check if the prevoteHash matches the generated hash. If it does not match, reject the vote
-	prevoteHash := types.VoteHash(msg.Salt, claim.Hash().String(), signer)
-	hasPrevote := k.HasPrevote(ctx, prevoteHash)
-	if hasPrevote == false {
-		return []byte{}, sdkerrors.Wrap(types.ErrNoPrevote, claim.Hash().String())
-	}
-
-	return prevoteHash, nil
-}
-
-func getValidatorAddr(ctx sdk.Context, k msgServer, signer sdk.AccAddress) sdk.ValAddress {
-	// get delegator's validator
-	valAddr := sdk.ValAddress(k.GetValidatorAddressFromDelegate(ctx, signer))
-
-	// if there is no delegation it must be the validator
-	if valAddr == nil {
+	// if there is no delegation it must be the validator or invalid
+	if err != nil {
 		valAddr = sdk.ValAddress(signer)
 	}
 

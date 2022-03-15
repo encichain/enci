@@ -38,25 +38,30 @@ func (msg MsgDelegate) GetSignBytes() []byte {
 
 // GetSigners implements sdk.Msg
 func (msg MsgDelegate) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{sdk.AccAddress(msg.MustGetValidator())}
-}
-
-// MustGetValidator returns the sdk.AccAddress for the validator
-func (msg MsgDelegate) MustGetValidator() sdk.ValAddress {
 	val, err := sdk.ValAddressFromBech32(msg.Validator)
 	if err != nil {
 		panic(err)
 	}
-	return val
+
+	return []sdk.AccAddress{sdk.AccAddress(val)}
+}
+
+// MustGetValidator returns the sdk.AccAddress for the validator
+func (msg MsgDelegate) GetValidatorAddress() (sdk.ValAddress, error) {
+	val, err := sdk.ValAddressFromBech32(msg.Validator)
+	if err != nil {
+		return nil, err
+	}
+	return val, nil
 }
 
 // MustGetDelegate returns the sdk.AccAddress for the delegate
-func (msg MsgDelegate) MustGetDelegate() sdk.AccAddress {
+func (msg MsgDelegate) GetDelegateAddress() (sdk.AccAddress, error) {
 	val, err := sdk.AccAddressFromBech32(msg.Delegate)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return val
+	return val, nil
 }
 
 // ===== Implements legacytx.LegacyMsg interface =====

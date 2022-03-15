@@ -7,6 +7,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/encichain/enci/x/oracle/types"
 )
@@ -44,12 +45,16 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-// IsVotePeriod checks if current block is part of a VotePeriod
+// IsVotePeriod checks if current block is part of a VotePeriod...
+// 0 modulus values are included in the check
+// Ex: let VoteFrequency = 100, VotePeriod = 3, and PrevotePeriod = 3
+// excluding genesis, first Prevote period will begin at block height 99 (calculated as 100) and end at 101
+// for a total of three blocks. VotePeriod would begin at 102 and end at 104
 func (k Keeper) IsVotePeriod(ctx sdk.Context) bool {
 	params := k.GetParams(ctx)
 
-	if mod := uint64(ctx.BlockHeight()+1) % params.VoteFrequency; mod <= params.VotePeriod+params.PrevotePeriod {
-		if mod <= params.PrevotePeriod {
+	if i := uint64(ctx.BlockHeight()+1) % params.VoteFrequency; i < params.VotePeriod+params.PrevotePeriod {
+		if i < params.PrevotePeriod {
 			return false
 		}
 		return true
@@ -61,7 +66,7 @@ func (k Keeper) IsVotePeriod(ctx sdk.Context) bool {
 func (k Keeper) IsPrevotePeriod(ctx sdk.Context) bool {
 	params := k.GetParams(ctx)
 
-	if mod := uint64(ctx.BlockHeight()+1) % params.VoteFrequency; mod <= params.PrevotePeriod {
+	if i := uint64(ctx.BlockHeight()+1) % params.VoteFrequency; i < params.PrevotePeriod {
 		return true
 	}
 	return false
@@ -70,10 +75,16 @@ func (k Keeper) IsPrevotePeriod(ctx sdk.Context) bool {
 // IsVotePeriodEnd checks if it is the last block of a VotePeriod
 func (k Keeper) IsVotePeriodEnd(ctx sdk.Context) bool {
 	params := k.GetParams(ctx)
-	if p := uint64(ctx.BlockHeight()+1) % params.VoteFrequency; p%(params.PrevotePeriod+params.VotePeriod) == 0 {
+	if i := uint64(ctx.BlockHeight()+1) % params.VoteFrequency; i%(params.PrevotePeriod+params.VotePeriod-1) == 0 {
 		return true
 	}
 	return false
+}
+
+// PreviousVotePeriod returns the height of the start of the previous prevotePeriod
+func (k Keeper) PreviousPrevotePeriod(ctx sdk.Context) uint64 {
+	params := k.GetParams(ctx)
+	return (uint64(ctx.BlockHeight()+1) / params.VoteFrequency) * params.VoteFrequency
 }
 
 // GetVote returns a Vote from the store, by *claim type* | *Validator* address
@@ -132,17 +143,17 @@ func (k Keeper) GetAllVotes(ctx sdk.Context) []types.Vote {
 }
 
 // GetPrevote returns a Prevote from the store, by *claim type* | *Validator* address
-func (k Keeper) GetPrevote(ctx sdk.Context, val sdk.ValAddress, claimType string) types.Prevote {
+func (k Keeper) GetPrevote(ctx sdk.Context, val sdk.ValAddress, claimType string) (types.Prevote, error) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.GetPrevoteKey(val, claimType))
 	prevote := types.Prevote{}
 
 	if bz == nil {
-		return prevote
+		return prevote, sdkerrors.Wrap(types.ErrNoPrevote, val.String())
 	}
 	k.cdc.MustUnmarshal(bz, &prevote)
 
-	return prevote
+	return prevote, nil
 }
 
 // SetPrevote sets a Prevote to the store, by *claim type* | *Validator* address
@@ -154,6 +165,12 @@ func (k Keeper) SetPrevote(ctx sdk.Context, val sdk.ValAddress, prevote types.Pr
 		SubmitBlock: prevote.SubmitBlock,
 	})
 	store.Set(types.GetPrevoteKey(val, claimType), bz)
+}
+
+// DeletePrevote deletes a prevote for a specified claim type from a validator
+func (k Keeper) DeletePrevote(ctx sdk.Context, val sdk.ValAddress, claimType string) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(types.GetPrevoteKey(val, claimType))
 }
 
 // IteratePrevotes iterates through all stored prevote and performs callback function

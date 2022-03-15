@@ -5,6 +5,7 @@ import (
 	"github.com/encichain/enci/x/oracle/types"
 )
 
+// TODO: Check for existing claim
 //AddVoteToRound appends a Vote to a VoteRound
 func (k Keeper) AppendVoteToRound(ctx sdk.Context, vote types.Vote, claimType string) {
 	round := k.GetVoteRound(ctx, claimType)

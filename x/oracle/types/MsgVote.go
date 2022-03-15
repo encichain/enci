@@ -78,7 +78,7 @@ func (msg MsgVote) GetClaim() exported.Claim {
 	return claim
 }
 
-// GetSigner get the submitter
+// GetSigner gets the submitter account address
 func (msg MsgVote) GetSigner() sdk.AccAddress {
 	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
 	if err != nil {
@@ -87,7 +87,7 @@ func (msg MsgVote) GetSigner() sdk.AccAddress {
 	return accAddr
 }
 
-// MustGetSigner returns submitter
+// MustGetSigner returns the account address, panics if nil
 func (msg MsgVote) MustGetSigner() sdk.AccAddress {
 	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
 	if err != nil {

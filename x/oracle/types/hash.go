@@ -10,7 +10,7 @@ import (
 )
 
 // VoteHash is a SHA256 hash of the salt, hash of the claim, and validator address which is meant to hide vote
-// Format: SHA256("{salt}:{claim}:{validator address}")
+// Format: SHA256("{salt}:{SHA256(claim)}:{validator address}")
 type VoteHash []byte
 
 // VoteHash returns the SHA-256 hash for a precommit given the proper args

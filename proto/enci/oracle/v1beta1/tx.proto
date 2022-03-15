@@ -38,8 +38,6 @@ message MsgVote {
 
 // MsgVoteResponse defines the Msg/SubmitEvidence response type.
 message MsgVoteResponse {
-  // hash defines the hash of the evidence.
-  string hash = 1 [(gogoproto.moretags) = "yaml:\"hash\""];
 }
 
 // MsgPrevote - sdk.Msg for prevoting on an array of oracle claim types.
@@ -49,8 +47,9 @@ message MsgPrevote {
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;
 
-  string hash = 1 [(gogoproto.moretags) = "yaml:\"hash\""];
-  string signer = 2 [(gogoproto.moretags) = "yaml:\"signer\""];
+  string claim_type = 1 [(gogoproto.moretags) = "yaml:\"claim_type\""];
+  string hash = 2 [(gogoproto.moretags) = "yaml:\"hash\""];
+  string signer = 3 [(gogoproto.moretags) = "yaml:\"signer\""];
 }
 
 message MsgPrevoteResponse {}

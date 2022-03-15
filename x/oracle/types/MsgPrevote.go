@@ -51,6 +51,15 @@ func (msg MsgPrevote) ValidateBasic() error {
 	return nil
 }
 
+// GetSigner gets the submitter account address
+func (msg MsgPrevote) GetSigner() sdk.AccAddress {
+	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
+	if err != nil {
+		return nil
+	}
+	return accAddr
+}
+
 // MustGetSigner returns submitter
 func (msg MsgPrevote) MustGetSigner() sdk.AccAddress {
 	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)

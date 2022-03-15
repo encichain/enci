@@ -21643,10 +21643,6 @@ definitions:
     type: object
   enci.oracle.v1beta1.MsgVoteResponse:
     type: object
-    properties:
-      hash:
-        type: string
-        description: hash defines the hash of the evidence.
     description: MsgVoteResponse defines the Msg/SubmitEvidence response type.
   enci.oracle.v1beta1.Params:
     type: object
