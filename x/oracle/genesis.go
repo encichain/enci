@@ -33,11 +33,10 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, pRound := range genState.Prevotes {
 		k.SetPrevoteRound(ctx, pRound)
 		for _, prevote := range pRound.Prevotes {
-			valAddr, err := sdk.ValAddressFromBech32(prevote.Validator)
+			err := k.SetPrevote(ctx, prevote, pRound.ClaimType)
 			if err != nil {
 				panic(err)
 			}
-			k.SetPrevote(ctx, valAddr, prevote, pRound.ClaimType)
 		}
 	}
 	// Set Vote round and votes

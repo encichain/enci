@@ -11,10 +11,9 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	enciapp "github.com/encichain/enci/app"
 	coretypes "github.com/encichain/enci/types"
-	"github.com/encichain/enci/x/oracle/keeper"
-	"github.com/encichain/enci/x/oracle/types"
 )
 
+/*
 // AddClaimType Registers claimType as an orcale params
 func AddClaimType(ctx sdk.Context, k keeper.Keeper, claimType string) {
 	params := types.DefaultParams()
@@ -25,7 +24,7 @@ func AddClaimType(ctx sdk.Context, k keeper.Keeper, claimType string) {
 	}
 	k.SetParams(ctx, params)
 }
-
+*/
 // CreateTestInput Returns a simapp with custom OracleKeeper
 // to avoid messing with the hooks.
 func CreateTestInput() (*enciapp.EnciApp, sdk.Context) {

@@ -37,7 +37,6 @@ func (suite *KeeperTestSuite) SetupTest() {
 	checkTx := false
 	app, ctx := app.CreateTestInput()
 	// cdc := app.LegacyAmino()
-
 	powers := []int64{10, 10, 10, 10}
 	addrs, validators, _ := testoracle.CreateValidators(suite.T(), ctx, app, powers)
 

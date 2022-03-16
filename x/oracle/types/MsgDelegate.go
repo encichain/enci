@@ -13,7 +13,7 @@ const (
 )
 
 // NewMsgDelegate returns a new MsgDelegateFeedConsent
-func NewMsgDelegate(val, del sdk.AccAddress) *MsgDelegate {
+func NewMsgDelegate(val sdk.ValAddress, del sdk.AccAddress) *MsgDelegate {
 	return &MsgDelegate{
 		Validator: val.String(),
 		Delegate:  del.String(),

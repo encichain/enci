@@ -44,7 +44,7 @@ func TxDelegate() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgDelegate(ctx.GetFromAddress(), del)
+			msg := types.NewMsgDelegate(sdk.ValAddress(ctx.GetFromAddress()), del)
 			if err = msg.ValidateBasic(); err != nil {
 				return fmt.Errorf("message validation failed: %w", err)
 			}

@@ -75,6 +75,6 @@ func (suite *KeeperTestSuite) TestQueryVoteRounds() {
 	res, err = queryClient.VoteRounds(sdk.WrapSDKContext(ctx), &types.QueryVoteRoundsRequest{})
 
 	require.NoError(err)
-	require.Len(res, 1)
+	require.Len(res.VoteRounds, 1)
 
 }

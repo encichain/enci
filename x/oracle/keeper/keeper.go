@@ -54,10 +54,7 @@ func (k Keeper) IsVotePeriod(ctx sdk.Context) bool {
 	params := k.GetParams(ctx)
 
 	if i := uint64(ctx.BlockHeight()+1) % params.VoteFrequency; i < params.VotePeriod+params.PrevotePeriod {
-		if i < params.PrevotePeriod {
-			return false
-		}
-		return true
+		return i < params.PrevotePeriod
 	}
 	return false
 }
@@ -145,9 +142,8 @@ func (k Keeper) GetAllVotes(ctx sdk.Context) []types.Vote {
 // GetPrevote returns a Prevote from the store, by *claim type* | *Validator* address
 func (k Keeper) GetPrevote(ctx sdk.Context, val sdk.ValAddress, claimType string) (types.Prevote, error) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.GetPrevoteKey(val, claimType))
 	prevote := types.Prevote{}
-
+	bz := store.Get(types.GetPrevoteKey(val, claimType))
 	if bz == nil {
 		return prevote, sdkerrors.Wrap(types.ErrNoPrevote, val.String())
 	}
@@ -157,14 +153,19 @@ func (k Keeper) GetPrevote(ctx sdk.Context, val sdk.ValAddress, claimType string
 }
 
 // SetPrevote sets a Prevote to the store, by *claim type* | *Validator* address
-func (k Keeper) SetPrevote(ctx sdk.Context, val sdk.ValAddress, prevote types.Prevote, claimType string) {
+func (k Keeper) SetPrevote(ctx sdk.Context, prevote types.Prevote, claimType string) error {
 	store := ctx.KVStore(k.storeKey)
+	valAddr, err := sdk.ValAddressFromBech32(prevote.Validator)
+	if err != nil {
+		return err
+	}
 	bz := k.cdc.MustMarshal(&types.Prevote{
 		Hash:        prevote.Hash,
 		Validator:   prevote.Validator,
 		SubmitBlock: prevote.SubmitBlock,
 	})
-	store.Set(types.GetPrevoteKey(val, claimType), bz)
+	store.Set(types.GetPrevoteKey(valAddr, claimType), bz)
+	return nil
 }
 
 // DeletePrevote deletes a prevote for a specified claim type from a validator

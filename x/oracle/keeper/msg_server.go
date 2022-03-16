@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"encoding/hex"
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -42,7 +43,7 @@ func (k msgServer) Vote(goCtx context.Context, msg *types.MsgVote) (*types.MsgVo
 	valAddr := getDelegatorAddr(ctx, k, signer)
 	val, found := k.StakingKeeper.GetValidator(ctx, valAddr)
 	if !found {
-		return nil, sdkerrors.Wrap(stakingtypes.ErrNoValidatorFound, valAddr.String())
+		return nil, sdkerrors.Wrapf(stakingtypes.ErrNoValidatorFound, "invalid submitter address %s", val.String())
 	}
 
 	// Check if there is a Prevote in store for specific vote
@@ -57,7 +58,7 @@ func (k msgServer) Vote(goCtx context.Context, msg *types.MsgVote) (*types.MsgVo
 	}
 
 	//Verify prevote hash matches Vote msg data
-	hash := types.CreateVoteHash(msg.Salt, claim.Hash().String(), valAddr)
+	hash := types.CreateVoteHash(msg.Salt, hex.EncodeToString(claim.Hash()), valAddr)
 	if prevote.Hash != hash.String() {
 		return nil, sdkerrors.Wrapf(types.ErrVerificationFailed, "prevote hash: %s, vote hash: %s", prevote.Hash, hash.String())
 	}
@@ -133,7 +134,7 @@ func (k msgServer) Prevote(goCtx context.Context, msg *types.MsgPrevote) (*types
 	// Validate returned validator address. This also catches prevotes submitted by unauthorized address
 	_, found := k.StakingKeeper.GetValidator(ctx, valAddr)
 	if !found {
-		return nil, sdkerrors.Wrap(stakingtypes.ErrNoValidatorFound, valAddr.String())
+		return nil, sdkerrors.Wrapf(stakingtypes.ErrNoValidatorFound, "invalid submitter address %s", valAddr.String())
 	}
 
 	voteHash, err := types.HexStringToVoteHash(msg.Hash)
@@ -143,7 +144,7 @@ func (k msgServer) Prevote(goCtx context.Context, msg *types.MsgPrevote) (*types
 
 	prevote := types.NewPrevote(voteHash, valAddr, uint64(ctx.BlockHeight()))
 	// Set prevote to store
-	k.SetPrevote(ctx, valAddr, prevote, msg.ClaimType)
+	k.SetPrevote(ctx, prevote, msg.ClaimType)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
@@ -158,10 +159,10 @@ func (k msgServer) Prevote(goCtx context.Context, msg *types.MsgPrevote) (*types
 }
 
 func getDelegatorAddr(ctx sdk.Context, k msgServer, signer sdk.AccAddress) sdk.ValAddress {
-	// get delegate's validator
+	// get signer's validator
 	valAddr, err := k.GetVoterDelegator(ctx, signer)
 
-	// if there is no delegation it must be the validator or invalid
+	// if there is no delegation then msg signer must be the validator or invalid
 	if err != nil {
 		valAddr = sdk.ValAddress(signer)
 	}
