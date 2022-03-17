@@ -36,7 +36,7 @@ func (suite *KeeperTestSuite) TestMsgVote() {
 	delegate := suite.addrs[4]
 	suite.app.OracleKeeper.SetParams(suite.ctx, types.DefaultParams())
 	suite.k.SetVoterDelegation(suite.ctx, delegate, validator)
-
+	params := suite.app.OracleKeeper.GetParams(suite.ctx)
 	testCases := []struct {
 		description string
 		msg         sdk.Msg
@@ -51,6 +51,7 @@ func (suite *KeeperTestSuite) TestMsgVote() {
 				sdk.AccAddress(validator),
 			),
 			func() {
+				suite.ctx = suite.ctx.WithBlockHeight(int64(params.PrevotePeriod))
 				claim := types.NewTestClaim(4, "test", "test")
 				claimHash := claim.Hash()
 				voteHash := types.CreateVoteHash("", hex.EncodeToString(claimHash), validator)
