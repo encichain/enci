@@ -1,5 +1,6 @@
 package cli
 
+/*
 import (
 	"context"
 	"fmt"
@@ -224,3 +225,4 @@ func CmdValidatorAddress() *cobra.Command {
 		},
 	}
 }
+*/

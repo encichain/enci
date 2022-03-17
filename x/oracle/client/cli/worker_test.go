@@ -1,5 +1,6 @@
 package cli_test
 
+/*
 import (
 	"fmt"
 	"strconv"
@@ -198,3 +199,4 @@ func (s *IntegrationTestSuite) TestWorkerPrevoteCmd() {
 // 		})
 // 	}
 // }
+*/

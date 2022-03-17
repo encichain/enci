@@ -1,5 +1,6 @@
 package cli_test
 
+/*
 import (
 	"strings"
 	"testing"
@@ -82,3 +83,4 @@ func (s *IntegrationTestSuite) TestGetQueryCmd() {
 		})
 	}
 }
+*/

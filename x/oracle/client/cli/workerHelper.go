@@ -1,5 +1,6 @@
 package cli
 
+/*
 import (
 	"context"
 	"crypto/rand"
@@ -164,3 +165,4 @@ func genrandstr(s int) string {
 	_, _ = rand.Read(b)
 	return base64.URLEncoding.EncodeToString(b)
 }
+*/

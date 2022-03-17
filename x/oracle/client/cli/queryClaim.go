@@ -1,5 +1,6 @@
 package cli
 
+/*
 import (
 	"context"
 
@@ -74,3 +75,4 @@ func CmdAllClaims() *cobra.Command {
 
 	return cmd
 }
+*/

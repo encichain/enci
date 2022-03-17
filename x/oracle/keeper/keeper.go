@@ -54,7 +54,7 @@ func (k Keeper) IsVotePeriod(ctx sdk.Context) bool {
 	params := k.GetParams(ctx)
 
 	if i := uint64(ctx.BlockHeight()+1) % params.VoteFrequency; i < params.VotePeriod+params.PrevotePeriod {
-		return i < params.PrevotePeriod
+		return i >= params.PrevotePeriod
 	}
 	return false
 }
@@ -139,6 +139,37 @@ func (k Keeper) GetAllVotes(ctx sdk.Context) []types.Vote {
 	return votes
 }
 
+// GetVotesByClaim returns a slice of all stored votes for a specific claim type
+func (k Keeper) GetVotesByClaimType(ctx sdk.Context, claimType string) (votes []types.Vote) {
+	store := ctx.KVStore(k.storeKey)
+	voteClaimKey := append(types.VoteKey, []byte(claimType)...)
+	iter := sdk.KVStorePrefixIterator(store, voteClaimKey)
+
+	defer iter.Close()
+	for ; iter.Valid(); iter.Next() {
+		vote := types.Vote{}
+		k.cdc.MustUnmarshal(iter.Value(), &vote)
+		votes = append(votes, vote)
+	}
+	return
+}
+
+// DeleteVote deletes a vote for a specified claim type from a validator
+func (k Keeper) DeleteVote(ctx sdk.Context, val sdk.ValAddress, claimType string) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(types.GetVoteKey(val, claimType))
+}
+
+// DeleteAllVotes deletes all votes from the store for all claim types
+func (k Keeper) DeleteAllVotes(ctx sdk.Context) {
+	store := ctx.KVStore(k.storeKey)
+	iter := sdk.KVStorePrefixIterator(store, types.VoteKey)
+	defer iter.Close()
+	for ; iter.Valid(); iter.Next() {
+		store.Delete(iter.Key())
+	}
+}
+
 // GetPrevote returns a Prevote from the store, by *claim type* | *Validator* address
 func (k Keeper) GetPrevote(ctx sdk.Context, val sdk.ValAddress, claimType string) (types.Prevote, error) {
 	store := ctx.KVStore(k.storeKey)
@@ -202,4 +233,30 @@ func (k Keeper) GetAllPrevotes(ctx sdk.Context) []types.Prevote {
 		return false
 	})
 	return prevotes
+}
+
+// GetPrevotesByClaimType returns a slice of all stored prevotes for a claim type
+func (k Keeper) GetPrevotesByClaimType(ctx sdk.Context, claimType string) (prevotes []types.Prevote) {
+	store := ctx.KVStore(k.storeKey)
+	prevoteClaimKey := append(types.PrevoteKey, []byte(claimType)...)
+	iter := sdk.KVStorePrefixIterator(store, prevoteClaimKey)
+
+	defer iter.Close()
+	for ; iter.Valid(); iter.Next() {
+		prevote := types.Prevote{}
+		k.cdc.MustUnmarshal(iter.Value(), &prevote)
+		prevotes = append(prevotes, prevote)
+	}
+	return
+}
+
+// DeleteAllPrevotes deletes all prevotes from the store for all claim types
+func (k Keeper) DeleteAllPrevotes(ctx sdk.Context) {
+	store := ctx.KVStore(k.storeKey)
+	iter := sdk.KVStorePrefixIterator(store, types.PrevoteKey)
+
+	defer iter.Close()
+	for ; iter.Valid(); iter.Next() {
+		store.Delete(iter.Key())
+	}
 }

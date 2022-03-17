@@ -1,5 +1,6 @@
 package rest_test
 
+/*
 import (
 	"fmt"
 	"testing"
@@ -165,3 +166,4 @@ func (s *IntegrationTestSuite) TestGRPCQueries() {
 		})
 	}
 }
+*/
