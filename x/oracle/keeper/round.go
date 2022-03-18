@@ -58,6 +58,17 @@ func (k Keeper) IterateVoteRounds(ctx sdk.Context, cb func(voteRound types.VoteR
 	}
 }
 
+// ClearVoteRounds deletes all VoteRounds from the key store
+func (k Keeper) ClearVoteRounds(ctx sdk.Context) {
+	store := ctx.KVStore(k.storeKey)
+	iter := sdk.KVStorePrefixIterator(store, types.VoteRoundKey)
+
+	defer iter.Close()
+	for ; iter.Valid(); iter.Next() {
+		store.Delete(iter.Key())
+	}
+}
+
 // GetAllVoteRounds returns all VoteRounds for all claim types
 func (k Keeper) GetAllVoteRounds(ctx sdk.Context) []types.VoteRound {
 	var voteRounds []types.VoteRound
@@ -127,4 +138,15 @@ func (k Keeper) SetPrevoteRound(ctx sdk.Context, prevoteRound types.PrevoteRound
 		Prevotes:  prevoteRound.Prevotes,
 	})
 	store.Set(types.GetPrevoteRoundKey(prevoteRound.ClaimType), bz)
+}
+
+// ClearPrevoteRounds deletes all Prevotes from the key store
+func (k Keeper) ClearPrevoteRounds(ctx sdk.Context) {
+	store := ctx.KVStore(k.storeKey)
+	iter := sdk.KVStorePrefixIterator(store, types.PrevoteRoundKey)
+
+	defer iter.Close()
+	for ; iter.Valid(); iter.Next() {
+		store.Delete(iter.Key())
+	}
 }

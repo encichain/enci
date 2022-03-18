@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/encichain/enci/app"
+	enciapp "github.com/encichain/enci/app"
 	"github.com/encichain/enci/x/oracle"
 	"github.com/encichain/enci/x/oracle/exported"
 	"github.com/encichain/enci/x/oracle/keeper"
@@ -14,6 +15,7 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/suite"
 )
@@ -21,9 +23,9 @@ import (
 type KeeperTestSuite struct {
 	suite.Suite
 
-	ctx sdk.Context
-	app *app.EnciApp
-
+	ctx         sdk.Context
+	app         *app.EnciApp
+	cdc         *codec.LegacyAmino
 	queryClient types.QueryClient
 	querier     sdk.Querier
 
@@ -48,6 +50,8 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.k = app.OracleKeeper
 
 	suite.app = app
+	legacyAmino := enciapp.MakeTestEncodingConfig().Amino
+	suite.cdc = legacyAmino
 
 	querier := keeper.Querier{Keeper: app.OracleKeeper}
 	queryHelper := baseapp.NewQueryServerTestHelper(ctx, app.InterfaceRegistry())
