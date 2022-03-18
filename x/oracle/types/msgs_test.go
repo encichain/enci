@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func testMsgCreateClaim(t *testing.T, c exported.Claim, s sdk.AccAddress) exported.MsgVoteI {
+func testCreateMsgVote(t *testing.T, c exported.Claim, s sdk.AccAddress) exported.MsgVoteI {
 	msg, err := types.NewMsgVote(s, c, "")
 	require.NoError(t, err)
 	return msg
@@ -24,7 +24,7 @@ func TestMsgCreateClaim(t *testing.T) {
 		expectErr bool
 	}{
 		{
-			testMsgCreateClaim(t, &types.TestClaim{
+			testCreateMsgVote(t, &types.TestClaim{
 				BlockHeight: 0,
 				Content:     "test",
 				ClaimType:   "test",
@@ -33,7 +33,7 @@ func TestMsgCreateClaim(t *testing.T) {
 			true,
 		},
 		{
-			testMsgCreateClaim(t, &types.TestClaim{
+			testCreateMsgVote(t, &types.TestClaim{
 				BlockHeight: 10,
 				Content:     "test",
 				ClaimType:   "test",
@@ -44,7 +44,7 @@ func TestMsgCreateClaim(t *testing.T) {
 	}
 
 	for i, tc := range testCases {
-		//require.Equal(t, sdk.MsgTypeURL(tc.msg), types.RouterKey, "unexpected result for tc #%d", i)
+		require.Equal(t, sdk.MsgTypeURL(tc.msg), "/enci.oracle.v1beta1.MsgVote", "unexpected result for tc #%d", i)
 		_, ok := tc.msg.(*types.MsgVote)
 		require.True(t, ok, "unexpected result for tc #%d", i)
 		require.Equal(t, tc.expectErr, tc.msg.ValidateBasic() != nil, "unexpected result for tc #%d", i)
