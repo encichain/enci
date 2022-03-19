@@ -1,6 +1,8 @@
 package types
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/tendermint/tendermint/crypto/tmhash"
@@ -16,10 +18,11 @@ var (
 )
 
 // NewMsgPrevote returns a new MsgPrevotePrevote with a signer.
-func NewMsgPrevote(s sdk.AccAddress, hash VoteHash) *MsgPrevote {
+func NewMsgPrevote(claimType string, accountAddr sdk.AccAddress, hash VoteHash) *MsgPrevote {
 	return &MsgPrevote{
-		Signer: s.String(),
-		Hash:   hash.String()}
+		ClaimType: claimType,
+		Signer:    accountAddr.String(),
+		Hash:      hash.String()}
 }
 
 // GetSigners implements sdk.Msg
@@ -46,6 +49,10 @@ func (msg MsgPrevote) ValidateBasic() error {
 	// Hex encoded hash is double the size of hash bytes
 	if len(msg.Hash) != tmhash.TruncatedSize*2 {
 		return ErrInvalidHashLength
+	}
+
+	if len(msg.ClaimType) == 0 {
+		return fmt.Errorf("claim type cannot be empty: %s", msg.ClaimType)
 	}
 
 	return nil

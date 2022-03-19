@@ -19,7 +19,7 @@ var (
 	ErrNoVoteDelegate      = sdkerrors.Register(ModuleName, 7, "no vote delegate exists for the validator")
 	ErrNoVoteDelegator     = sdkerrors.Register(ModuleName, 8, "address is not listed as vote delegate for any validator")
 	ErrInvalidHash         = sdkerrors.Register(ModuleName, 9, "invalid hash")
-	ErrInvalidHashLength   = sdkerrors.Register(ModuleName, 10, fmt.Sprintf("invalid truncated hash length. should be : %d", tmhash.TruncatedSize))
+	ErrInvalidHashLength   = sdkerrors.Register(ModuleName, 10, fmt.Sprintf("invalid truncated hash length. should be : %d", 2*tmhash.TruncatedSize))
 	ErrNotPrevotePeriod    = sdkerrors.Register(ModuleName, 11, "current block is not part of a prevote period")
 	ErrInvalidPrevoteBlock = sdkerrors.Register(ModuleName, 12, "prevote submit block is invalid for this vote")
 	ErrNotVotePeriod       = sdkerrors.Register(ModuleName, 13, "current block is not part of a voting period")

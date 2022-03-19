@@ -26,7 +26,7 @@ func (c *TestClaim) ValidateBasic() error {
 	if len(c.Content) == 0 {
 		return fmt.Errorf("claim content should not be empty")
 	}
-	if c.BlockHeight < 1 {
+	if c.BlockHeight < 0 {
 		return fmt.Errorf("invalid claim height: %d", c.BlockHeight)
 	}
 	return nil

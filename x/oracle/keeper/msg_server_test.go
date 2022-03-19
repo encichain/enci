@@ -18,7 +18,7 @@ func newTestMsgVote(r *require.Assertions, claim exported.Claim, sender sdk.AccA
 
 func newTestMsgPrevote(r *require.Assertions, claim exported.Claim, sender sdk.AccAddress, validator sdk.ValAddress) *types.MsgPrevote {
 	hash := types.CreateVoteHash("", hex.EncodeToString(claim.Hash()), validator)
-	msg := types.NewMsgPrevote(sender, hash)
+	msg := types.NewMsgPrevote(claim.Type(), sender, hash)
 	r.NotNil(msg)
 	return msg
 }
