@@ -29,7 +29,7 @@ func (q Querier) Params(c context.Context, req *types.QueryParamsRequest) (*type
 	return &types.QueryParamsResponse{Params: params}, nil
 }
 
-// VoteRounds returns a slice of VoteRound for every claim type
+// VoteRounds returns a slice of VoteRound for every claim type, containing all current votes
 func (q Querier) VoteRounds(c context.Context, req *types.QueryVoteRoundsRequest) (*types.QueryVoteRoundsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
@@ -37,7 +37,7 @@ func (q Querier) VoteRounds(c context.Context, req *types.QueryVoteRoundsRequest
 	return &types.QueryVoteRoundsResponse{VoteRounds: rounds}, nil
 }
 
-// PrevoteRounds returns a slice of PrevoteRound for every claim type
+// PrevoteRounds returns a PrevoteRound for every claim type, containing all current prevotes
 func (q Querier) PrevoteRounds(c context.Context, req *types.QueryPrevoteRoundsRequest) (*types.QueryPrevoteRoundsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 

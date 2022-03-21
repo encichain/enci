@@ -142,7 +142,7 @@ func (k Keeper) GetAllVotes(ctx sdk.Context) []types.Vote {
 // GetVotesByClaim returns a slice of all stored votes for a specific claim type
 func (k Keeper) GetVotesByClaimType(ctx sdk.Context, claimType string) (votes []types.Vote) {
 	store := ctx.KVStore(k.storeKey)
-	voteClaimKey := append(types.VoteKey, []byte(claimType)...)
+	voteClaimKey := append(types.VoteKey, types.ClaimLengthPrefix([]byte(claimType))...)
 	iter := sdk.KVStorePrefixIterator(store, voteClaimKey)
 
 	defer iter.Close()
@@ -238,7 +238,7 @@ func (k Keeper) GetAllPrevotes(ctx sdk.Context) []types.Prevote {
 // GetPrevotesByClaimType returns a slice of all stored prevotes for a claim type
 func (k Keeper) GetPrevotesByClaimType(ctx sdk.Context, claimType string) (prevotes []types.Prevote) {
 	store := ctx.KVStore(k.storeKey)
-	prevoteClaimKey := append(types.PrevoteKey, []byte(claimType)...)
+	prevoteClaimKey := append(types.PrevoteKey, types.ClaimLengthPrefix([]byte(claimType))...)
 	iter := sdk.KVStorePrefixIterator(store, prevoteClaimKey)
 
 	defer iter.Close()

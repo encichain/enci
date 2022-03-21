@@ -1,6 +1,8 @@
 package types
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 )
@@ -25,12 +27,12 @@ const (
 
 // Keys for x/oracle store
 // stored as format: key -> encoding(value)
-// 0x01 | claimtype bytes															-> ProtocolBuffer(VoteRound)
-// 0x02 | claimtype bytes															-> ProtocolBuffer(PrevoteRound)
-// 0x03 | claimtype bytes | address length byte | validator operator address bytes	-> ProtocolBuffer(Prevote)
-// 0x04 | claimtype bytes | address length byte | validator operator address bytes 	-> ProtocolBuffer(Vote)
-// 0x05 | address length byte | validator operator address bytes  					-> sdk.AccAddress
-// 0x06 | address length byte | delegate address bytes  							-> sdk.ValAddress
+// 0x01 | claimtype length bz | claimtype bytes															-> ProtocolBuffer(VoteRound)
+// 0x02 | claimtype length bz | claimtype bytes															-> ProtocolBuffer(PrevoteRound)
+// 0x03 | claimtype length bz | claimtype bytes | address length bz | validator operator address bytes	-> ProtocolBuffer(Prevote)
+// 0x04 | claimtype length bz | claimtype bytes | address length bz | validator operator address bytes 	-> ProtocolBuffer(Vote)
+// 0x05 | address length bz | validator operator address bytes  										-> sdk.AccAddress
+// 0x06 | address length bz | delegate address bytes  													-> sdk.ValAddress
 var (
 	VoteRoundKey    = []byte{0x01} // prefix for a key to a VoteRound stored by claim type
 	PrevoteRoundKey = []byte{0x02} // prefix for a key to a PrevoteRound stored by claim type
@@ -47,23 +49,23 @@ func KeyPrefix(p string) []byte {
 
 // GetVoteRoundKey returns a key to a VoteRound - stored by *claimType*
 func GetVoteRoundKey(claimType string) []byte {
-	return append(VoteRoundKey, []byte(claimType)...)
+	return append(VoteRoundKey, ClaimLengthPrefix([]byte(claimType))...)
 }
 
 // GetPrevoteRoundKey returns a key to a PrevoteRound - stored by *claimType*
 func GetPrevoteRoundKey(claimType string) []byte {
-	return append(PrevoteRoundKey, []byte(claimType)...)
+	return append(PrevoteRoundKey, ClaimLengthPrefix([]byte(claimType))...)
 }
 
 // GetPrevoteKey returns a key to a Prevote - stored by *claimType* | *Validator* operator address
 func GetPrevoteKey(val sdk.ValAddress, claimType string) []byte {
-	key := append(PrevoteKey, []byte(claimType)...)
+	key := append(PrevoteKey, ClaimLengthPrefix([]byte(claimType))...)
 	return append(key, address.MustLengthPrefix(val)...)
 }
 
 // GetVoteKey returns a key to a Vote - stored by *claimType*| *Validator* operator address
 func GetVoteKey(val sdk.ValAddress, claimType string) []byte {
-	key := append(VoteKey, []byte(claimType)...)
+	key := append(VoteKey, ClaimLengthPrefix([]byte(claimType))...)
 	return append(key, address.MustLengthPrefix(val)...)
 }
 
@@ -75,4 +77,15 @@ func GetDelValKey(del sdk.AccAddress) []byte {
 // GetValDelKey returns the delegate for a given validator address - stored by *Validator* operator address
 func GetValDelKey(val sdk.ValAddress) []byte {
 	return append(ValDelKey, address.MustLengthPrefix(val)...)
+}
+
+// ClaimLengthPrefix prefixes a claim type with its length, due to variable length.
+func ClaimLengthPrefix(bz []byte) []byte {
+	bzLen := len(bz)
+
+	if bzLen > 255 {
+		panic(fmt.Errorf("invalid claim length: %d", bzLen))
+	}
+
+	return append([]byte{byte(bzLen)}, bz...)
 }

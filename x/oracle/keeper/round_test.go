@@ -65,7 +65,7 @@ func (suite *KeeperTestSuite) TestGetAllVoteRound() {
 
 	voteRounds = k.GetAllVoteRounds(ctx)
 	require.Len(voteRounds, 2)
-	require.Equal(voteRound, voteRounds[1])
+	require.Equal(voteRound, voteRounds[0])
 
 	// Clear vote rounds from store
 	k.ClearVoteRounds(ctx)
@@ -107,7 +107,7 @@ func (suite *KeeperTestSuite) TestGetAllPrevoteRound() {
 	prevoteRounds = k.GetAllPrevoteRounds(ctx)
 	require.Len(prevoteRounds, 2)
 
-	require.Equal(prevoteRound, prevoteRounds[1])
+	require.Equal(prevoteRound, prevoteRounds[0])
 
 	// Clear prevote rounds from store
 	k.ClearPrevoteRounds(ctx)
