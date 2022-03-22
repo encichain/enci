@@ -260,3 +260,24 @@ func (k Keeper) DeleteAllPrevotes(ctx sdk.Context) {
 		store.Delete(iter.Key())
 	}
 }
+
+// RegisterClaimType registers claim type to the store
+func (k Keeper) RegisterClaimType(ctx sdk.Context, claimType string) {
+	store := ctx.KVStore(k.storeKey)
+	bz := k.cdc.MustMarshal(&types.ClaimType{ClaimType: claimType})
+	store.Set(types.GetClaimTypeKey(claimType), bz)
+}
+
+// GetAllClaimTypes returns a slice of all registered claim types in string form
+func (k Keeper) GetAllClaimTypes(ctx sdk.Context) (claimTypes []string) {
+	store := ctx.KVStore(k.storeKey)
+	iter := sdk.KVStorePrefixIterator(store, types.ClaimTypeKey)
+
+	defer iter.Close()
+	for ; iter.Valid(); iter.Next() {
+		claimType := types.ClaimType{}
+		k.cdc.MustUnmarshal(iter.Value(), &claimType)
+		claimTypes = append(claimTypes, claimType.ClaimType)
+	}
+	return
+}

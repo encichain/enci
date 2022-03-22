@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"encoding/hex"
+	"strconv"
 	"testing"
 
 	"github.com/encichain/enci/app"
@@ -287,6 +288,17 @@ func (suite *KeeperTestSuite) TestGetAllPrevotes() {
 	k.DeleteAllPrevotes(ctx)
 	prevotes = k.GetAllPrevotes(ctx)
 	require.Equal(0, len(prevotes))
+}
+
+func (suite *KeeperTestSuite) TestClaimType() {
+	k, ctx, require := suite.app.OracleKeeper, suite.ctx, suite.Require()
+
+	for i := 0; i < 10; i++ {
+		k.RegisterClaimType(ctx, "test"+strconv.Itoa(i))
+		require.Equal("test"+strconv.Itoa(i), k.GetAllClaimTypes(ctx)[i])
+	}
+	claimTypes := k.GetAllClaimTypes(ctx)
+	require.Len(claimTypes, 10)
 }
 
 func TestKeeperTestSuite(t *testing.T) {

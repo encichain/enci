@@ -14,6 +14,7 @@ var (
 	KeyPrevotePeriod = []byte("PrevotePeriod")
 	KeyVotePeriod    = []byte("VotePeriod")
 	KeyVoteThreshold = []byte("VoteThreshold")
+	KeyOracleEnabled = []byte("OracleEnabled")
 )
 
 // Default params for testing
@@ -29,6 +30,7 @@ var (
 	DefaultVoteThreshold = sdk.NewDecWithPrec(50, 2) // 0.50 -> 50%
 	DefaultVotePeriod    = uint64(3)
 	DefaultPrevotePeriod = uint64(3)
+	DefaultOracleEnabled = false
 )
 
 var _ paramtypes.ParamSet = (*Params)(nil)
@@ -45,6 +47,7 @@ func DefaultParams() Params {
 		VotePeriod:    DefaultVotePeriod,
 		VoteThreshold: DefaultVoteThreshold,
 		VoteFrequency: DefaultVoteFrequency,
+		OracleEnabled: DefaultOracleEnabled,
 	}
 }
 
@@ -55,6 +58,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyPrevotePeriod, &p.PrevotePeriod, validatePrevotePeriod),
 		paramtypes.NewParamSetPair(KeyVotePeriod, &p.VotePeriod, validateVotePeriod),
 		paramtypes.NewParamSetPair(KeyVoteThreshold, &p.VoteThreshold, validateVoteThreshold),
+		paramtypes.NewParamSetPair(KeyOracleEnabled, &p.OracleEnabled, validateOracleEnabled),
 	}
 }
 
@@ -128,6 +132,14 @@ func validateVoteThreshold(i interface{}) error {
 
 	if v.GT(sdk.OneDec()) {
 		return fmt.Errorf("vote threshold must be below 100%%: %s", v)
+	}
+	return nil
+}
+
+func validateOracleEnabled(i interface{}) error {
+	_, ok := i.(bool)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 	return nil
 }

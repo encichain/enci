@@ -55,6 +55,21 @@ service Query {
   rpc NextPrevote(QueryNextPrevoteRequest) returns (QueryNextPrevoteResponse) {
     option (google.api.http).get = "/enci/oracle/v1beta1/next_prevote";
   }
+
+  // ClaimTypes queries the names of the registered oracle claim types
+  rpc ClaimTypes(QueryClaimTypesRequest) returns (QueryClaimTypesResponse) {
+    option (google.api.http).get = "/enci/oracle/v1beta1/claim_types";
+  }
+
+  // IsVotePeriod queries if the current block is part of a vote period
+  rpc IsVotePeriod(QueryIsVotePeriodRequest) returns (QueryIsVotePeriodResponse) {
+    option (google.api.http).get = "/enci/oracle/v1beta1/is_vote_period";
+  }
+
+  // IsPrevotePeriod queries if the current block is part of a prevote period
+  rpc IsPrevotePeriod(QueryIsPrevotePeriodRequest) returns (QueryIsPrevotePeriodResponse) {
+    option (google.api.http).get = "/enci/oracle/v1beta1/is_prevote_period";
+  }
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method
@@ -124,3 +139,27 @@ message QueryNextPrevoteResponse {
   uint64 block = 1;
 }
 
+message QueryClaimTypesRequest {
+}
+
+message QueryClaimTypesResponse {
+  repeated string claim_types = 1;
+}
+
+// QueryNextPrevoteRequest is the request type for the Query NextPrevote RPC method
+message QueryIsVotePeriodRequest {
+}
+
+// QueryNextPrevoteRequest is the response type for the Query NextPrevote RPC method
+message QueryIsVotePeriodResponse {
+  bool is_vote_period = 1;
+}
+
+// QueryNextPrevoteRequest is the request type for the Query NextPrevote RPC method
+message QueryIsPrevotePeriodRequest {
+}
+
+// QueryNextPrevoteRequest is the response type for the Query NextPrevote RPC method
+message QueryIsPrevotePeriodResponse {
+  bool is_prevote_period = 1;
+}

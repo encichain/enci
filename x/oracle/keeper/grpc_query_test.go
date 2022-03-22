@@ -57,12 +57,14 @@ func (suite *KeeperTestSuite) TestQueryParam() {
 func (suite *KeeperTestSuite) TestQueryVoteRounds() {
 	app, ctx, queryClient := suite.app, suite.ctx, suite.queryClient
 	require := suite.Require()
-	// No VoteRound set
+	// Register claim type
+	app.OracleKeeper.RegisterClaimType(ctx, "test")
+	// No Votes or Voteround set
 	res, err := queryClient.VoteRounds(sdk.WrapSDKContext(ctx), &types.QueryVoteRoundsRequest{})
 	require.NoError(err)
 	require.NotNil(res)
 
-	// Set VoteRound
+	// Set Vote
 	claim := types.TestClaim{}
 	claimAny, err := codectypes.NewAnyWithValue(&claim)
 	require.NoError(err)
@@ -71,7 +73,8 @@ func (suite *KeeperTestSuite) TestQueryVoteRounds() {
 		Validator: "encivaloper1y8t2xrx5n7tzs5wtszyfeyjdtcq7d3qcjgmeee",
 		VotePower: 100,
 	}
-	app.OracleKeeper.AppendVoteToRound(ctx, vote, "test")
+	valAddr, _ := sdk.ValAddressFromBech32(vote.Validator)
+	app.OracleKeeper.SetVote(ctx, valAddr, vote, "test")
 	res, err = queryClient.VoteRounds(sdk.WrapSDKContext(ctx), &types.QueryVoteRoundsRequest{})
 
 	require.NoError(err)

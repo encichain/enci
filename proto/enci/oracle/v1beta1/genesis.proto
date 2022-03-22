@@ -21,10 +21,15 @@ message GenesisState {
     repeated VoterDelegation voter_delegations = 2 [(gogoproto.nullable) = false];
     repeated VoteRound votes = 3 [(gogoproto.nullable) = false];
     repeated PrevoteRound prevotes = 4 [(gogoproto.nullable) = false];
+    repeated ClaimType claim_types = 5;
 }
 
 // VoterDelegation gives voting privileges to a delegate on behalf of the validator 
 message VoterDelegation {
     string delegate_address = 1; 
     string validator_address = 2; 
+}
+
+message ClaimType {
+    string claim_type =1;
 }

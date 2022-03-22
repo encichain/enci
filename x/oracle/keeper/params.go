@@ -35,6 +35,11 @@ func (k Keeper) GetPrevotePeriod(ctx sdk.Context) (res uint64) {
 	return
 }
 
+func (k Keeper) IsOracleEnabled(ctx sdk.Context) (res bool) {
+	k.paramStore.Get(ctx, types.KeyOracleEnabled, &res)
+	return
+}
+
 // SetParams sets the total set of oracle parameters.
 func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	k.paramStore.SetParamSet(ctx, &params)

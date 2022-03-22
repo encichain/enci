@@ -704,6 +704,250 @@ func (m *QueryNextPrevoteResponse) GetBlock() uint64 {
 	return 0
 }
 
+type QueryClaimTypesRequest struct {
+}
+
+func (m *QueryClaimTypesRequest) Reset()         { *m = QueryClaimTypesRequest{} }
+func (m *QueryClaimTypesRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryClaimTypesRequest) ProtoMessage()    {}
+func (*QueryClaimTypesRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c227d6a44a2e181b, []int{16}
+}
+func (m *QueryClaimTypesRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryClaimTypesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryClaimTypesRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryClaimTypesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryClaimTypesRequest.Merge(m, src)
+}
+func (m *QueryClaimTypesRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryClaimTypesRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryClaimTypesRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryClaimTypesRequest proto.InternalMessageInfo
+
+type QueryClaimTypesResponse struct {
+	ClaimTypes []string `protobuf:"bytes,1,rep,name=claim_types,json=claimTypes,proto3" json:"claim_types,omitempty"`
+}
+
+func (m *QueryClaimTypesResponse) Reset()         { *m = QueryClaimTypesResponse{} }
+func (m *QueryClaimTypesResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryClaimTypesResponse) ProtoMessage()    {}
+func (*QueryClaimTypesResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c227d6a44a2e181b, []int{17}
+}
+func (m *QueryClaimTypesResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryClaimTypesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryClaimTypesResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryClaimTypesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryClaimTypesResponse.Merge(m, src)
+}
+func (m *QueryClaimTypesResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryClaimTypesResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryClaimTypesResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryClaimTypesResponse proto.InternalMessageInfo
+
+func (m *QueryClaimTypesResponse) GetClaimTypes() []string {
+	if m != nil {
+		return m.ClaimTypes
+	}
+	return nil
+}
+
+// QueryNextPrevoteRequest is the request type for the Query NextPrevote RPC method
+type QueryIsVotePeriodRequest struct {
+}
+
+func (m *QueryIsVotePeriodRequest) Reset()         { *m = QueryIsVotePeriodRequest{} }
+func (m *QueryIsVotePeriodRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryIsVotePeriodRequest) ProtoMessage()    {}
+func (*QueryIsVotePeriodRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c227d6a44a2e181b, []int{18}
+}
+func (m *QueryIsVotePeriodRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryIsVotePeriodRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryIsVotePeriodRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryIsVotePeriodRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIsVotePeriodRequest.Merge(m, src)
+}
+func (m *QueryIsVotePeriodRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryIsVotePeriodRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIsVotePeriodRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIsVotePeriodRequest proto.InternalMessageInfo
+
+// QueryNextPrevoteRequest is the response type for the Query NextPrevote RPC method
+type QueryIsVotePeriodResponse struct {
+	IsVotePeriod bool `protobuf:"varint,1,opt,name=is_vote_period,json=isVotePeriod,proto3" json:"is_vote_period,omitempty"`
+}
+
+func (m *QueryIsVotePeriodResponse) Reset()         { *m = QueryIsVotePeriodResponse{} }
+func (m *QueryIsVotePeriodResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryIsVotePeriodResponse) ProtoMessage()    {}
+func (*QueryIsVotePeriodResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c227d6a44a2e181b, []int{19}
+}
+func (m *QueryIsVotePeriodResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryIsVotePeriodResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryIsVotePeriodResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryIsVotePeriodResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIsVotePeriodResponse.Merge(m, src)
+}
+func (m *QueryIsVotePeriodResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryIsVotePeriodResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIsVotePeriodResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIsVotePeriodResponse proto.InternalMessageInfo
+
+func (m *QueryIsVotePeriodResponse) GetIsVotePeriod() bool {
+	if m != nil {
+		return m.IsVotePeriod
+	}
+	return false
+}
+
+// QueryNextPrevoteRequest is the request type for the Query NextPrevote RPC method
+type QueryIsPrevotePeriodRequest struct {
+}
+
+func (m *QueryIsPrevotePeriodRequest) Reset()         { *m = QueryIsPrevotePeriodRequest{} }
+func (m *QueryIsPrevotePeriodRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryIsPrevotePeriodRequest) ProtoMessage()    {}
+func (*QueryIsPrevotePeriodRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c227d6a44a2e181b, []int{20}
+}
+func (m *QueryIsPrevotePeriodRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryIsPrevotePeriodRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryIsPrevotePeriodRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryIsPrevotePeriodRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIsPrevotePeriodRequest.Merge(m, src)
+}
+func (m *QueryIsPrevotePeriodRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryIsPrevotePeriodRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIsPrevotePeriodRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIsPrevotePeriodRequest proto.InternalMessageInfo
+
+// QueryNextPrevoteRequest is the response type for the Query NextPrevote RPC method
+type QueryIsPrevotePeriodResponse struct {
+	IsPrevotePeriod bool `protobuf:"varint,1,opt,name=is_prevote_period,json=isPrevotePeriod,proto3" json:"is_prevote_period,omitempty"`
+}
+
+func (m *QueryIsPrevotePeriodResponse) Reset()         { *m = QueryIsPrevotePeriodResponse{} }
+func (m *QueryIsPrevotePeriodResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryIsPrevotePeriodResponse) ProtoMessage()    {}
+func (*QueryIsPrevotePeriodResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c227d6a44a2e181b, []int{21}
+}
+func (m *QueryIsPrevotePeriodResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryIsPrevotePeriodResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryIsPrevotePeriodResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryIsPrevotePeriodResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIsPrevotePeriodResponse.Merge(m, src)
+}
+func (m *QueryIsPrevotePeriodResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryIsPrevotePeriodResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIsPrevotePeriodResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIsPrevotePeriodResponse proto.InternalMessageInfo
+
+func (m *QueryIsPrevotePeriodResponse) GetIsPrevotePeriod() bool {
+	if m != nil {
+		return m.IsPrevotePeriod
+	}
+	return false
+}
+
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "enci.oracle.v1beta1.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "enci.oracle.v1beta1.QueryParamsResponse")
@@ -721,63 +965,80 @@ func init() {
 	proto.RegisterType((*QueryNextVotePeriodResponse)(nil), "enci.oracle.v1beta1.QueryNextVotePeriodResponse")
 	proto.RegisterType((*QueryNextPrevoteRequest)(nil), "enci.oracle.v1beta1.QueryNextPrevoteRequest")
 	proto.RegisterType((*QueryNextPrevoteResponse)(nil), "enci.oracle.v1beta1.QueryNextPrevoteResponse")
+	proto.RegisterType((*QueryClaimTypesRequest)(nil), "enci.oracle.v1beta1.QueryClaimTypesRequest")
+	proto.RegisterType((*QueryClaimTypesResponse)(nil), "enci.oracle.v1beta1.QueryClaimTypesResponse")
+	proto.RegisterType((*QueryIsVotePeriodRequest)(nil), "enci.oracle.v1beta1.QueryIsVotePeriodRequest")
+	proto.RegisterType((*QueryIsVotePeriodResponse)(nil), "enci.oracle.v1beta1.QueryIsVotePeriodResponse")
+	proto.RegisterType((*QueryIsPrevotePeriodRequest)(nil), "enci.oracle.v1beta1.QueryIsPrevotePeriodRequest")
+	proto.RegisterType((*QueryIsPrevotePeriodResponse)(nil), "enci.oracle.v1beta1.QueryIsPrevotePeriodResponse")
 }
 
 func init() { proto.RegisterFile("enci/oracle/v1beta1/query.proto", fileDescriptor_c227d6a44a2e181b) }
 
 var fileDescriptor_c227d6a44a2e181b = []byte{
-	// 803 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x96, 0x4d, 0x4f, 0xdb, 0x4c,
-	0x10, 0xc7, 0x63, 0x1e, 0x40, 0x0f, 0x1b, 0x41, 0xe9, 0x82, 0xda, 0xc4, 0x09, 0x86, 0x18, 0x5a,
-	0xc2, 0x9b, 0x4d, 0xc2, 0xa9, 0xad, 0x7a, 0x28, 0x6a, 0xaf, 0x88, 0xe6, 0xd0, 0x4a, 0xbd, 0xa4,
-	0x4e, 0xb2, 0x35, 0x56, 0x83, 0xd7, 0xd8, 0x4e, 0x14, 0x84, 0x90, 0x50, 0x3f, 0x01, 0x52, 0xd5,
-	0x5b, 0x4f, 0xbd, 0x55, 0xea, 0x07, 0xe1, 0x88, 0xd4, 0x4b, 0x4f, 0x55, 0x05, 0xfd, 0x20, 0x95,
-	0x77, 0xc7, 0xc1, 0x71, 0xd6, 0x26, 0xdc, 0xe2, 0x9d, 0x99, 0xff, 0xff, 0xb7, 0x2f, 0x33, 0x80,
-	0x16, 0x89, 0xdd, 0xb4, 0x74, 0xea, 0x1a, 0xcd, 0x36, 0xd1, 0xbb, 0x95, 0x06, 0xf1, 0x8d, 0x8a,
-	0x7e, 0xd4, 0x21, 0xee, 0xb1, 0xe6, 0xb8, 0xd4, 0xa7, 0x78, 0x2e, 0x48, 0xd0, 0x78, 0x82, 0x06,
-	0x09, 0xf2, 0x7a, 0x93, 0x7a, 0x87, 0xd4, 0xd3, 0x1b, 0x86, 0x47, 0x78, 0x76, 0xbf, 0xd6, 0x31,
-	0x4c, 0xcb, 0x36, 0x7c, 0x8b, 0xda, 0x5c, 0x40, 0x9e, 0x37, 0xa9, 0x49, 0xd9, 0x4f, 0x3d, 0xf8,
-	0x05, 0xab, 0x79, 0x93, 0x52, 0xb3, 0x4d, 0x74, 0xf6, 0xd5, 0xe8, 0x7c, 0xd0, 0x0d, 0x1b, 0x1c,
-	0xe5, 0x22, 0x84, 0x0c, 0xc7, 0xd2, 0x0d, 0xdb, 0xa6, 0x3e, 0x53, 0xf3, 0x20, 0xba, 0x24, 0x02,
-	0x76, 0x0c, 0xd7, 0x38, 0x4c, 0xcd, 0x80, 0x0d, 0xf0, 0x8c, 0x92, 0x28, 0xc3, 0x24, 0x36, 0xf1,
-	0xac, 0x50, 0x24, 0xcf, 0x77, 0x58, 0xe7, 0xe0, 0xfc, 0x83, 0x87, 0xd4, 0x79, 0x84, 0x5f, 0x07,
-	0x5b, 0xde, 0x67, 0xa6, 0x35, 0x72, 0xd4, 0x21, 0x9e, 0xaf, 0xee, 0xa3, 0xb9, 0x81, 0x55, 0xcf,
-	0xa1, 0xb6, 0x47, 0xf0, 0x13, 0x34, 0xc9, 0xe1, 0x72, 0xd2, 0x92, 0x54, 0xce, 0x56, 0x0b, 0x9a,
-	0xe0, 0x3c, 0x35, 0x5e, 0xb4, 0x3b, 0x7e, 0xf1, 0x7b, 0x31, 0x53, 0x83, 0x02, 0x35, 0x87, 0x1e,
-	0x30, 0xc5, 0x37, 0xd4, 0x27, 0x35, 0xda, 0xb1, 0x5b, 0x7d, 0xaf, 0xf7, 0xe8, 0xe1, 0x50, 0x04,
-	0xfc, 0x5e, 0xa1, 0x6c, 0x97, 0xfa, 0xa4, 0xee, 0xb2, 0xe5, 0x9c, 0xb4, 0xf4, 0x5f, 0x39, 0x5b,
-	0x55, 0x84, 0xa6, 0xfd, 0x6a, 0xf0, 0x45, 0xdd, 0xbe, 0x9c, 0x5a, 0x40, 0x79, 0xbe, 0x1b, 0x97,
-	0x74, 0x87, 0xec, 0xdb, 0x48, 0x16, 0x05, 0x81, 0x60, 0x0f, 0xcd, 0x38, 0x3c, 0x30, 0x08, 0x51,
-	0x12, 0xef, 0x3c, 0xa2, 0x01, 0x1c, 0xd3, 0x4e, 0x54, 0x57, 0x55, 0x50, 0xb1, 0xbf, 0x59, 0xf7,
-	0x25, 0x69, 0x13, 0x93, 0xbf, 0x87, 0x90, 0xa6, 0x87, 0x16, 0x12, 0xe2, 0x00, 0xf4, 0x16, 0xdd,
-	0x0f, 0xe4, 0xdc, 0x7a, 0xeb, 0x26, 0x08, 0x4c, 0x2b, 0x89, 0x07, 0x13, 0x51, 0x02, 0xac, 0xd9,
-	0x6e, 0xcc, 0x40, 0x7d, 0x0a, 0x64, 0xb0, 0x46, 0xdd, 0x17, 0xad, 0x96, 0x4b, 0xbc, 0x90, 0x0c,
-	0xcb, 0xe8, 0x7f, 0xb0, 0x24, 0xec, 0xf6, 0xa7, 0x6a, 0xfd, 0x6f, 0xf5, 0x39, 0x50, 0x0f, 0xd7,
-	0x02, 0x75, 0x11, 0x4d, 0x75, 0x8d, 0xb6, 0xd5, 0x0a, 0x62, 0x50, 0x7d, 0xb3, 0xa0, 0x3e, 0x43,
-	0x85, 0x68, 0x39, 0x89, 0x39, 0xa7, 0x17, 0xc7, 0xb8, 0x49, 0xdc, 0x3a, 0xca, 0x3d, 0x16, 0xe3,
-	0x2e, 0xc2, 0xdd, 0xef, 0x91, 0x9e, 0x1f, 0x9c, 0xd3, 0x3e, 0x71, 0x2d, 0xda, 0x0a, 0xef, 0x62,
-	0x07, 0xb0, 0xe2, 0x51, 0x10, 0x9e, 0x47, 0x13, 0x8d, 0x36, 0x6d, 0x7e, 0x64, 0x48, 0xe3, 0x35,
-	0xfe, 0xa1, 0xe6, 0xe1, 0x35, 0x07, 0x45, 0xe1, 0x73, 0x00, 0xbd, 0x6d, 0x94, 0x1b, 0x0e, 0xa5,
-	0x89, 0x55, 0xcf, 0x10, 0x9a, 0x60, 0x25, 0xf8, 0x4c, 0x42, 0x93, 0xbc, 0xaf, 0xf0, 0xaa, 0xf0,
-	0x9a, 0x87, 0x9b, 0x58, 0x2e, 0xdf, 0x9e, 0xc8, 0xdd, 0xd5, 0xe5, 0x4f, 0x3f, 0xff, 0x7e, 0x1e,
-	0x5b, 0xc0, 0x05, 0x3d, 0x79, 0x1e, 0xe1, 0x73, 0x09, 0xa1, 0x9b, 0x1e, 0xc5, 0x1b, 0xc9, 0xea,
-	0x43, 0x3d, 0x2e, 0x6f, 0x8e, 0x96, 0x0c, 0x38, 0xab, 0x0c, 0xa7, 0x84, 0x17, 0x85, 0x38, 0xec,
-	0xe5, 0x72, 0x86, 0xaf, 0x12, 0x9a, 0x1e, 0xe8, 0x5b, 0xac, 0xa5, 0xec, 0x59, 0xd0, 0xfd, 0xb2,
-	0x3e, 0x72, 0x3e, 0xb0, 0xad, 0x33, 0xb6, 0x15, 0xac, 0x8a, 0x8f, 0x8a, 0xd7, 0x00, 0xde, 0x77,
-	0x09, 0xcd, 0xc6, 0x1b, 0x19, 0x57, 0xd2, 0x8f, 0x42, 0x30, 0x14, 0xe4, 0xea, 0x5d, 0x4a, 0x80,
-	0x53, 0x63, 0x9c, 0x65, 0xfc, 0x38, 0xf9, 0x0c, 0xa3, 0x23, 0x24, 0x60, 0xbd, 0x17, 0x6b, 0x21,
-	0xbc, 0x9d, 0xec, 0x2b, 0x6e, 0x55, 0xb9, 0x72, 0x87, 0x0a, 0x00, 0xad, 0x30, 0xd0, 0x0d, 0xbc,
-	0x26, 0x04, 0x0d, 0x5b, 0x55, 0x3f, 0xe9, 0x77, 0xfc, 0x29, 0xfe, 0x21, 0xa1, 0xd9, 0xf8, 0xa8,
-	0xc1, 0xb7, 0x5b, 0xc7, 0x47, 0x5a, 0xda, 0xb9, 0x26, 0x4d, 0xb2, 0xd1, 0x70, 0xa9, 0xab, 0x9f,
-	0x84, 0xe4, 0xa7, 0xf8, 0x9b, 0x84, 0x66, 0x06, 0x67, 0x08, 0x4e, 0x79, 0x76, 0xc2, 0x59, 0x24,
-	0x6f, 0x8f, 0x5e, 0x00, 0xa0, 0x5b, 0x0c, 0x74, 0x15, 0x3f, 0x12, 0x82, 0xda, 0xa4, 0xe7, 0xd7,
-	0xd9, 0x9f, 0x35, 0x87, 0x13, 0x7d, 0x91, 0x50, 0x36, 0x32, 0x98, 0xf0, 0x66, 0xba, 0xe1, 0xe0,
-	0x68, 0x93, 0xb7, 0x46, 0xcc, 0x06, 0xb6, 0x35, 0xc6, 0xb6, 0x8c, 0x4b, 0xc9, 0x6c, 0xd0, 0x49,
-	0xbb, 0xbb, 0x17, 0x57, 0x8a, 0x74, 0x79, 0xa5, 0x48, 0x7f, 0xae, 0x14, 0xe9, 0xfc, 0x5a, 0xc9,
-	0x5c, 0x5e, 0x2b, 0x99, 0x5f, 0xd7, 0x4a, 0xe6, 0x5d, 0xd9, 0xb4, 0xfc, 0x83, 0x4e, 0x43, 0x6b,
-	0xd2, 0x43, 0x26, 0xd3, 0x3c, 0x30, 0x2c, 0x9b, 0x0b, 0xf6, 0x42, 0x49, 0xff, 0xd8, 0x21, 0x5e,
-	0x63, 0x92, 0xfd, 0xab, 0xb3, 0xf3, 0x2f, 0x00, 0x00, 0xff, 0xff, 0x18, 0xb7, 0x9f, 0x23, 0x1f,
-	0x0a, 0x00, 0x00,
+	// 979 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x96, 0x4d, 0x6f, 0xdc, 0x44,
+	0x18, 0xc7, 0x33, 0xa5, 0x8d, 0x9a, 0x67, 0x9b, 0x97, 0x4e, 0x23, 0x48, 0x9c, 0xc4, 0x49, 0x9c,
+	0x94, 0x6c, 0x93, 0xd6, 0xce, 0xa6, 0x27, 0x8a, 0x38, 0x34, 0xc0, 0xa1, 0x1c, 0xaa, 0xb0, 0x42,
+	0x20, 0x71, 0x59, 0xbc, 0xde, 0xc1, 0xb5, 0xd8, 0x78, 0x5c, 0xdb, 0xbb, 0x4a, 0x55, 0x55, 0x42,
+	0x7c, 0x82, 0x22, 0xc4, 0x05, 0x71, 0xe2, 0x80, 0x84, 0xc4, 0x07, 0xe9, 0xb1, 0x12, 0x17, 0xc4,
+	0x01, 0xa1, 0x84, 0x0f, 0x52, 0x79, 0xe6, 0xb1, 0xd7, 0x2f, 0x63, 0x67, 0x7b, 0x5b, 0xcf, 0xf3,
+	0xf6, 0x7b, 0xe6, 0xe5, 0xff, 0x2c, 0x6c, 0x32, 0xdf, 0xf1, 0x2c, 0x1e, 0xda, 0xce, 0x90, 0x59,
+	0xe3, 0x4e, 0x9f, 0xc5, 0x76, 0xc7, 0x7a, 0x3a, 0x62, 0xe1, 0x33, 0x33, 0x08, 0x79, 0xcc, 0xe9,
+	0xad, 0xc4, 0xc1, 0x94, 0x0e, 0x26, 0x3a, 0x68, 0xfb, 0x0e, 0x8f, 0x4e, 0x79, 0x64, 0xf5, 0xed,
+	0x88, 0x49, 0xef, 0x2c, 0x36, 0xb0, 0x5d, 0xcf, 0xb7, 0x63, 0x8f, 0xfb, 0x32, 0x81, 0xb6, 0xec,
+	0x72, 0x97, 0x8b, 0x9f, 0x56, 0xf2, 0x0b, 0x57, 0x57, 0x5d, 0xce, 0xdd, 0x21, 0xb3, 0xc4, 0x57,
+	0x7f, 0xf4, 0xad, 0x65, 0xfb, 0x58, 0x51, 0x5b, 0x47, 0x93, 0x1d, 0x78, 0x96, 0xed, 0xfb, 0x3c,
+	0x16, 0xd9, 0x22, 0xb4, 0x6e, 0xa9, 0x80, 0x03, 0x3b, 0xb4, 0x4f, 0x1b, 0x3d, 0xb0, 0x01, 0xe9,
+	0xb1, 0xad, 0xf2, 0x70, 0x99, 0xcf, 0x22, 0x2f, 0x4d, 0xb2, 0x2a, 0x3b, 0xec, 0x49, 0x70, 0xf9,
+	0x21, 0x4d, 0xc6, 0x32, 0xd0, 0xcf, 0x93, 0x96, 0x4f, 0x44, 0xd1, 0x2e, 0x7b, 0x3a, 0x62, 0x51,
+	0x6c, 0x9c, 0xc0, 0xad, 0xc2, 0x6a, 0x14, 0x70, 0x3f, 0x62, 0xf4, 0x03, 0x98, 0x95, 0x70, 0x2b,
+	0x64, 0x8b, 0xb4, 0x5b, 0x47, 0x6b, 0xa6, 0x62, 0x3f, 0x4d, 0x19, 0x74, 0x7c, 0xf5, 0xd5, 0xbf,
+	0x9b, 0x33, 0x5d, 0x0c, 0x30, 0x56, 0xe0, 0x5d, 0x91, 0xf1, 0x4b, 0x1e, 0xb3, 0x2e, 0x1f, 0xf9,
+	0x83, 0xac, 0xd6, 0x37, 0xf0, 0x5e, 0xc5, 0x82, 0xf5, 0x3e, 0x85, 0xd6, 0x98, 0xc7, 0xac, 0x17,
+	0x8a, 0xe5, 0x15, 0xb2, 0xf5, 0x4e, 0xbb, 0x75, 0xa4, 0x2b, 0x8b, 0x66, 0xd1, 0x58, 0x17, 0xc6,
+	0x59, 0x3a, 0x63, 0x0d, 0x56, 0x65, 0x37, 0x21, 0x1b, 0x57, 0xca, 0x0f, 0x41, 0x53, 0x19, 0x91,
+	0xe0, 0x31, 0x2c, 0x04, 0xd2, 0x50, 0x84, 0xd8, 0x56, 0x77, 0x9e, 0xcb, 0x81, 0x1c, 0xf3, 0x41,
+	0x3e, 0xaf, 0xa1, 0xc3, 0x7a, 0xd6, 0x6c, 0xf8, 0x09, 0x1b, 0x32, 0x57, 0xde, 0x87, 0x94, 0xe6,
+	0x0c, 0x36, 0x6a, 0xec, 0x08, 0xf4, 0x15, 0xdc, 0x4c, 0xd2, 0x85, 0xbd, 0xc1, 0xc4, 0x88, 0x4c,
+	0xbb, 0xb5, 0x1b, 0x93, 0xcb, 0x84, 0x58, 0x4b, 0xe3, 0x52, 0x01, 0xe3, 0x01, 0x92, 0xe1, 0x1a,
+	0x0f, 0x1f, 0x0e, 0x06, 0x21, 0x8b, 0x52, 0x32, 0xaa, 0xc1, 0x75, 0x2c, 0xc9, 0xc4, 0xe9, 0xcf,
+	0x75, 0xb3, 0x6f, 0xe3, 0x23, 0xa4, 0xae, 0xc6, 0x22, 0xf5, 0x3a, 0xcc, 0x8d, 0xed, 0xa1, 0x37,
+	0x48, 0x6c, 0x18, 0x3d, 0x59, 0x30, 0x3e, 0x84, 0xb5, 0x7c, 0x38, 0x2b, 0x55, 0x6e, 0x0e, 0x2e,
+	0x71, 0xb3, 0x72, 0xe9, 0x3c, 0xf7, 0x95, 0x12, 0xf7, 0x3a, 0x9e, 0xfd, 0x63, 0x76, 0x16, 0x27,
+	0xfb, 0x74, 0xc2, 0x42, 0x8f, 0x0f, 0xd2, 0xb3, 0xb8, 0x8f, 0x58, 0x65, 0x2b, 0x26, 0x5e, 0x86,
+	0x6b, 0xfd, 0x21, 0x77, 0xbe, 0x13, 0x48, 0x57, 0xbb, 0xf2, 0xc3, 0x58, 0xc5, 0xdb, 0x9c, 0x04,
+	0xa5, 0xd7, 0x01, 0xf3, 0x1d, 0xc2, 0x4a, 0xd5, 0xd4, 0x98, 0x2c, 0x7d, 0x34, 0x1f, 0x0f, 0x6d,
+	0xef, 0xf4, 0x8b, 0x67, 0x01, 0xcb, 0xee, 0xc9, 0x03, 0x2c, 0x93, 0xb7, 0x60, 0xaa, 0x4d, 0x68,
+	0x39, 0xc9, 0x6a, 0x2f, 0x4e, 0x96, 0xc5, 0xdd, 0x98, 0xeb, 0x82, 0x93, 0x39, 0x1a, 0x1a, 0x72,
+	0x3c, 0x8a, 0xaa, 0x3d, 0x3f, 0xc4, 0xa7, 0x52, 0xb4, 0x61, 0xe6, 0x5d, 0x58, 0xf0, 0xa2, 0x9e,
+	0x78, 0x0c, 0x81, 0xb0, 0x08, 0xda, 0xeb, 0xdd, 0x1b, 0x5e, 0xce, 0xdb, 0xd8, 0xc0, 0x6d, 0x7b,
+	0x14, 0x61, 0x93, 0xc5, 0x0a, 0x9f, 0xe1, 0x79, 0x55, 0xcc, 0x58, 0x64, 0x1f, 0x6e, 0x7a, 0x89,
+	0x52, 0xb1, 0x6a, 0x9d, 0x45, 0xaf, 0x18, 0x73, 0xf4, 0xcf, 0x3c, 0x5c, 0x13, 0xc9, 0xe8, 0xf7,
+	0x04, 0x66, 0xa5, 0xee, 0xd0, 0x3d, 0xe5, 0x33, 0xa8, 0x8a, 0x9c, 0xd6, 0xbe, 0xdc, 0x51, 0x32,
+	0x19, 0x3b, 0x3f, 0xfc, 0xf5, 0xff, 0x4f, 0x57, 0x36, 0xe8, 0x9a, 0x55, 0xaf, 0xd7, 0xf4, 0x25,
+	0x01, 0x98, 0x68, 0x18, 0x3d, 0xa8, 0xcf, 0x5e, 0xd1, 0x40, 0xed, 0xee, 0x74, 0xce, 0x88, 0xb3,
+	0x27, 0x70, 0xb6, 0xe9, 0xa6, 0x12, 0x47, 0xbc, 0x6c, 0xc9, 0xf0, 0x2b, 0x81, 0xf9, 0x82, 0xae,
+	0x51, 0xb3, 0xa1, 0x67, 0x85, 0x3a, 0x6a, 0xd6, 0xd4, 0xfe, 0xc8, 0xb6, 0x2f, 0xd8, 0x76, 0xa9,
+	0xa1, 0xde, 0x2a, 0x19, 0x83, 0x78, 0x7f, 0x10, 0x58, 0x2a, 0x0b, 0x1d, 0xed, 0x34, 0x6f, 0x85,
+	0x42, 0x34, 0xb5, 0xa3, 0xb7, 0x09, 0x41, 0x4e, 0x53, 0x70, 0xb6, 0xe9, 0xfb, 0xf5, 0x7b, 0x98,
+	0x97, 0xd8, 0x84, 0x75, 0xb1, 0x24, 0x31, 0xf4, 0xb0, 0xbe, 0xae, 0x5a, 0xca, 0xb4, 0xce, 0x5b,
+	0x44, 0x20, 0x68, 0x47, 0x80, 0x1e, 0xd0, 0x3b, 0x4a, 0xd0, 0x54, 0xca, 0xac, 0xe7, 0x99, 0x22,
+	0xbe, 0xa0, 0x7f, 0x12, 0x58, 0x2a, 0x4b, 0x31, 0xbd, 0xbc, 0x74, 0x59, 0xf2, 0x9b, 0xf6, 0xb5,
+	0x4e, 0xe9, 0xa7, 0xc3, 0xe5, 0xa1, 0xf5, 0x3c, 0x25, 0x7f, 0x41, 0x7f, 0x23, 0xb0, 0x50, 0xd4,
+	0x58, 0xda, 0x70, 0xed, 0x94, 0x5a, 0xad, 0x1d, 0x4e, 0x1f, 0x80, 0xa0, 0xf7, 0x04, 0xe8, 0x1e,
+	0xbd, 0xad, 0x04, 0xf5, 0xd9, 0x59, 0x9c, 0x57, 0x3a, 0xfa, 0x33, 0x81, 0x56, 0x4e, 0xb8, 0xe9,
+	0xdd, 0xe6, 0x82, 0x45, 0xe9, 0xd7, 0xee, 0x4d, 0xe9, 0x8d, 0x6c, 0x77, 0x04, 0xdb, 0x0e, 0xdd,
+	0xae, 0x67, 0xc3, 0x97, 0x44, 0x7f, 0x24, 0x00, 0x93, 0x21, 0xd0, 0xa4, 0x3a, 0x95, 0x21, 0xd2,
+	0xa4, 0x3a, 0xd5, 0xb9, 0x62, 0xb4, 0x05, 0x94, 0x41, 0xb7, 0x94, 0x50, 0xb9, 0x91, 0x43, 0x7f,
+	0x21, 0x70, 0x23, 0x3f, 0x40, 0x68, 0x43, 0xfb, 0x8a, 0x21, 0xa4, 0x99, 0xd3, 0xba, 0x23, 0xd9,
+	0x81, 0x20, 0xbb, 0x4d, 0x77, 0x94, 0x64, 0xc5, 0x91, 0x45, 0x7f, 0x27, 0xb0, 0x58, 0x9a, 0x3d,
+	0x4d, 0x0f, 0x59, 0x3d, 0xc5, 0x9a, 0x1e, 0x72, 0xcd, 0x60, 0xbb, 0x44, 0x71, 0x2a, 0x33, 0xef,
+	0xf8, 0xf8, 0xd5, 0xb9, 0x4e, 0x5e, 0x9f, 0xeb, 0xe4, 0xbf, 0x73, 0x9d, 0xbc, 0xbc, 0xd0, 0x67,
+	0x5e, 0x5f, 0xe8, 0x33, 0x7f, 0x5f, 0xe8, 0x33, 0x5f, 0xb7, 0x5d, 0x2f, 0x7e, 0x32, 0xea, 0x9b,
+	0x0e, 0x3f, 0x15, 0xb9, 0x9c, 0x27, 0xb6, 0xe7, 0xcb, 0xac, 0x67, 0x69, 0x5e, 0x71, 0x12, 0xfd,
+	0x59, 0xf1, 0x27, 0xff, 0xfe, 0x9b, 0x00, 0x00, 0x00, 0xff, 0xff, 0xd3, 0x29, 0x32, 0x6a, 0x19,
+	0x0d, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -808,6 +1069,12 @@ type QueryClient interface {
 	NextVotePeriod(ctx context.Context, in *QueryNextVotePeriodRequest, opts ...grpc.CallOption) (*QueryNextVotePeriodResponse, error)
 	// NextPrevote queries the block height of the next prevote period
 	NextPrevote(ctx context.Context, in *QueryNextPrevoteRequest, opts ...grpc.CallOption) (*QueryNextPrevoteResponse, error)
+	// ClaimTypes queries the names of the registered oracle claim types
+	ClaimTypes(ctx context.Context, in *QueryClaimTypesRequest, opts ...grpc.CallOption) (*QueryClaimTypesResponse, error)
+	// IsVotePeriod queries if the current block is part of a vote period
+	IsVotePeriod(ctx context.Context, in *QueryIsVotePeriodRequest, opts ...grpc.CallOption) (*QueryIsVotePeriodResponse, error)
+	// IsPrevotePeriod queries if the current block is part of a prevote period
+	IsPrevotePeriod(ctx context.Context, in *QueryIsPrevotePeriodRequest, opts ...grpc.CallOption) (*QueryIsPrevotePeriodResponse, error)
 }
 
 type queryClient struct {
@@ -890,6 +1157,33 @@ func (c *queryClient) NextPrevote(ctx context.Context, in *QueryNextPrevoteReque
 	return out, nil
 }
 
+func (c *queryClient) ClaimTypes(ctx context.Context, in *QueryClaimTypesRequest, opts ...grpc.CallOption) (*QueryClaimTypesResponse, error) {
+	out := new(QueryClaimTypesResponse)
+	err := c.cc.Invoke(ctx, "/enci.oracle.v1beta1.Query/ClaimTypes", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) IsVotePeriod(ctx context.Context, in *QueryIsVotePeriodRequest, opts ...grpc.CallOption) (*QueryIsVotePeriodResponse, error) {
+	out := new(QueryIsVotePeriodResponse)
+	err := c.cc.Invoke(ctx, "/enci.oracle.v1beta1.Query/IsVotePeriod", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) IsPrevotePeriod(ctx context.Context, in *QueryIsPrevotePeriodRequest, opts ...grpc.CallOption) (*QueryIsPrevotePeriodResponse, error) {
+	out := new(QueryIsPrevotePeriodResponse)
+	err := c.cc.Invoke(ctx, "/enci.oracle.v1beta1.Query/IsPrevotePeriod", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Params queries the parameters of othe racle module
@@ -908,6 +1202,12 @@ type QueryServer interface {
 	NextVotePeriod(context.Context, *QueryNextVotePeriodRequest) (*QueryNextVotePeriodResponse, error)
 	// NextPrevote queries the block height of the next prevote period
 	NextPrevote(context.Context, *QueryNextPrevoteRequest) (*QueryNextPrevoteResponse, error)
+	// ClaimTypes queries the names of the registered oracle claim types
+	ClaimTypes(context.Context, *QueryClaimTypesRequest) (*QueryClaimTypesResponse, error)
+	// IsVotePeriod queries if the current block is part of a vote period
+	IsVotePeriod(context.Context, *QueryIsVotePeriodRequest) (*QueryIsVotePeriodResponse, error)
+	// IsPrevotePeriod queries if the current block is part of a prevote period
+	IsPrevotePeriod(context.Context, *QueryIsPrevotePeriodRequest) (*QueryIsPrevotePeriodResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -937,6 +1237,15 @@ func (*UnimplementedQueryServer) NextVotePeriod(ctx context.Context, req *QueryN
 }
 func (*UnimplementedQueryServer) NextPrevote(ctx context.Context, req *QueryNextPrevoteRequest) (*QueryNextPrevoteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NextPrevote not implemented")
+}
+func (*UnimplementedQueryServer) ClaimTypes(ctx context.Context, req *QueryClaimTypesRequest) (*QueryClaimTypesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ClaimTypes not implemented")
+}
+func (*UnimplementedQueryServer) IsVotePeriod(ctx context.Context, req *QueryIsVotePeriodRequest) (*QueryIsVotePeriodResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsVotePeriod not implemented")
+}
+func (*UnimplementedQueryServer) IsPrevotePeriod(ctx context.Context, req *QueryIsPrevotePeriodRequest) (*QueryIsPrevotePeriodResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsPrevotePeriod not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -1087,6 +1396,60 @@ func _Query_NextPrevote_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_ClaimTypes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryClaimTypesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ClaimTypes(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/enci.oracle.v1beta1.Query/ClaimTypes",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ClaimTypes(ctx, req.(*QueryClaimTypesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_IsVotePeriod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryIsVotePeriodRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).IsVotePeriod(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/enci.oracle.v1beta1.Query/IsVotePeriod",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).IsVotePeriod(ctx, req.(*QueryIsVotePeriodRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_IsPrevotePeriod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryIsPrevotePeriodRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).IsPrevotePeriod(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/enci.oracle.v1beta1.Query/IsPrevotePeriod",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).IsPrevotePeriod(ctx, req.(*QueryIsPrevotePeriodRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "enci.oracle.v1beta1.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -1122,6 +1485,18 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "NextPrevote",
 			Handler:    _Query_NextPrevote_Handler,
+		},
+		{
+			MethodName: "ClaimTypes",
+			Handler:    _Query_ClaimTypes_Handler,
+		},
+		{
+			MethodName: "IsVotePeriod",
+			Handler:    _Query_IsVotePeriod_Handler,
+		},
+		{
+			MethodName: "IsPrevotePeriod",
+			Handler:    _Query_IsPrevotePeriod_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1586,6 +1961,173 @@ func (m *QueryNextPrevoteResponse) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryClaimTypesRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryClaimTypesRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryClaimTypesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryClaimTypesResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryClaimTypesResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryClaimTypesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.ClaimTypes) > 0 {
+		for iNdEx := len(m.ClaimTypes) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.ClaimTypes[iNdEx])
+			copy(dAtA[i:], m.ClaimTypes[iNdEx])
+			i = encodeVarintQuery(dAtA, i, uint64(len(m.ClaimTypes[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryIsVotePeriodRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryIsVotePeriodRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryIsVotePeriodRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryIsVotePeriodResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryIsVotePeriodResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryIsVotePeriodResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.IsVotePeriod {
+		i--
+		if m.IsVotePeriod {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryIsPrevotePeriodRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryIsPrevotePeriodRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryIsPrevotePeriodRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryIsPrevotePeriodResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryIsPrevotePeriodResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryIsPrevotePeriodResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.IsPrevotePeriod {
+		i--
+		if m.IsPrevotePeriod {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -1779,6 +2321,72 @@ func (m *QueryNextPrevoteResponse) Size() (n int) {
 	_ = l
 	if m.Block != 0 {
 		n += 1 + sovQuery(uint64(m.Block))
+	}
+	return n
+}
+
+func (m *QueryClaimTypesRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *QueryClaimTypesResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.ClaimTypes) > 0 {
+		for _, s := range m.ClaimTypes {
+			l = len(s)
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *QueryIsVotePeriodRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *QueryIsVotePeriodResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.IsVotePeriod {
+		n += 2
+	}
+	return n
+}
+
+func (m *QueryIsPrevotePeriodRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *QueryIsPrevotePeriodResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.IsPrevotePeriod {
+		n += 2
 	}
 	return n
 }
@@ -2869,6 +3477,378 @@ func (m *QueryNextPrevoteResponse) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryClaimTypesRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryClaimTypesRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryClaimTypesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryClaimTypesResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryClaimTypesResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryClaimTypesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ClaimTypes", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ClaimTypes = append(m.ClaimTypes, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryIsVotePeriodRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryIsVotePeriodRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryIsVotePeriodRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryIsVotePeriodResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryIsVotePeriodResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryIsVotePeriodResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IsVotePeriod", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.IsVotePeriod = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryIsPrevotePeriodRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryIsPrevotePeriodRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryIsPrevotePeriodRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryIsPrevotePeriodResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryIsPrevotePeriodResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryIsPrevotePeriodResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IsPrevotePeriod", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.IsPrevotePeriod = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])

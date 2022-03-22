@@ -32,17 +32,31 @@ func (q Querier) Params(c context.Context, req *types.QueryParamsRequest) (*type
 // VoteRounds returns a slice of VoteRound for every claim type, containing all current votes
 func (q Querier) VoteRounds(c context.Context, req *types.QueryVoteRoundsRequest) (*types.QueryVoteRoundsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-
-	rounds := q.GetAllVoteRounds(ctx)
-	return &types.QueryVoteRoundsResponse{VoteRounds: rounds}, nil
+	claimTypes := q.GetAllClaimTypes(ctx)
+	voteRounds := []types.VoteRound{}
+	for _, claimType := range claimTypes {
+		votes := q.GetVotesByClaimType(ctx, claimType)
+		if len(votes) == 0 {
+			continue
+		}
+		voteRounds = append(voteRounds, types.NewVoteRound(claimType, votes))
+	}
+	return &types.QueryVoteRoundsResponse{VoteRounds: voteRounds}, nil
 }
 
 // PrevoteRounds returns a PrevoteRound for every claim type, containing all current prevotes
 func (q Querier) PrevoteRounds(c context.Context, req *types.QueryPrevoteRoundsRequest) (*types.QueryPrevoteRoundsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-
-	rounds := q.GetAllPrevoteRounds(ctx)
-	return &types.QueryPrevoteRoundsResponse{PrevoteRounds: rounds}, nil
+	claimTypes := q.GetAllClaimTypes(ctx)
+	prevoteRounds := []types.PrevoteRound{}
+	for _, claimType := range claimTypes {
+		prevotes := q.GetPrevotesByClaimType(ctx, claimType)
+		if len(prevotes) == 0 {
+			continue
+		}
+		prevoteRounds = append(prevoteRounds, types.NewPrevoteRound(claimType, prevotes))
+	}
+	return &types.QueryPrevoteRoundsResponse{PrevoteRounds: prevoteRounds}, nil
 }
 
 // VoterDelegations returns a slice of all active VoterDelegation
@@ -123,4 +137,23 @@ func (q Querier) NextPrevote(c context.Context, req *types.QueryNextPrevoteReque
 	nextPeriod := (height/params.VoteFrequency+1)*params.VoteFrequency - 1
 
 	return &types.QueryNextPrevoteResponse{Block: nextPeriod}, nil
+}
+
+// ClaimTypes returns all registered claim types
+func (q Querier) ClaimTypes(c context.Context, req *types.QueryClaimTypesRequest) (*types.QueryClaimTypesResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	claimTypes := q.GetAllClaimTypes(ctx)
+	return &types.QueryClaimTypesResponse{ClaimTypes: claimTypes}, nil
+}
+
+// IsVotePeriod returns if current block is part of a vote period
+func (q Querier) IsVotePeriod(c context.Context, req *types.QueryIsVotePeriodRequest) (*types.QueryIsVotePeriodResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	return &types.QueryIsVotePeriodResponse{IsVotePeriod: q.Keeper.IsVotePeriod(ctx)}, nil
+}
+
+// IsPrevotePeriod returns if current block is part of a prevote period
+func (q Querier) IsPrevotePeriod(c context.Context, req *types.QueryIsPrevotePeriodRequest) (*types.QueryIsPrevotePeriodResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	return &types.QueryIsPrevotePeriodResponse{IsPrevotePeriod: q.Keeper.IsPrevotePeriod(ctx)}, nil
 }

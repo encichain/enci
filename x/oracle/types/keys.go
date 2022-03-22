@@ -33,6 +33,7 @@ const (
 // 0x04 | claimtype length bz | claimtype bytes | address length bz | validator operator address bytes 	-> ProtocolBuffer(Vote)
 // 0x05 | address length bz | validator operator address bytes  										-> sdk.AccAddress
 // 0x06 | address length bz | delegate address bytes  													-> sdk.ValAddress
+// 0x07 | claimtype length bz | claimtype bytes															-> ProtocolBuffer(ClaimType)
 var (
 	VoteRoundKey    = []byte{0x01} // prefix for a key to a VoteRound stored by claim type
 	PrevoteRoundKey = []byte{0x02} // prefix for a key to a PrevoteRound stored by claim type
@@ -40,6 +41,7 @@ var (
 	VoteKey         = []byte{0x04} // prefix for a key to a Vote stored by claim type | validator operator address
 	DelValKey       = []byte{0x05} // prefix for a key to a Delegate address stored by validator operator address
 	ValDelKey       = []byte{0x06} // prefix for a key to a validator address stored by assigned delegate address
+	ClaimTypeKey    = []byte{0x07} // prefix for a key to a claim type - this is used for tracking claim types
 )
 
 // KeyPrefix helper
@@ -69,23 +71,27 @@ func GetVoteKey(val sdk.ValAddress, claimType string) []byte {
 	return append(key, address.MustLengthPrefix(val)...)
 }
 
-// GetDelValKey returns the validator for a given delegate address - stored by *delegate* address
+// GetDelValKey returns a key to the validator for a given delegate address - stored by *delegate* address
 func GetDelValKey(del sdk.AccAddress) []byte {
 	return append(DelValKey, address.MustLengthPrefix(del)...)
 }
 
-// GetValDelKey returns the delegate for a given validator address - stored by *Validator* operator address
+// GetValDelKey returns a key to the delegate for a given validator address - stored by *Validator* operator address
 func GetValDelKey(val sdk.ValAddress) []byte {
 	return append(ValDelKey, address.MustLengthPrefix(val)...)
+}
+
+// GetClaimTypeKey returns a key to the a registered claim type if it exists
+func GetClaimTypeKey(claimType string) []byte {
+	return append(ClaimTypeKey, ClaimLengthPrefix([]byte(claimType))...)
 }
 
 // ClaimLengthPrefix prefixes a claim type with its length, due to variable length.
 func ClaimLengthPrefix(bz []byte) []byte {
 	bzLen := len(bz)
-
+	// overflow
 	if bzLen > 255 {
 		panic(fmt.Errorf("invalid claim length: %d", bzLen))
 	}
-
 	return append([]byte{byte(bzLen)}, bz...)
 }
