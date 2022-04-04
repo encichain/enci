@@ -118,6 +118,7 @@ func (q Querier) DelegatorAddress(c context.Context, req *types.QueryDelegatorAd
 }
 
 // NextVotePeriod returns the block height of the beginning of the next VotePeriod
+// Note that genesis vote period is skipped
 func (q Querier) NextVotePeriod(c context.Context, req *types.QueryNextVotePeriodRequest) (*types.QueryNextVotePeriodResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	height := uint64(ctx.BlockHeight())
@@ -129,12 +130,13 @@ func (q Querier) NextVotePeriod(c context.Context, req *types.QueryNextVotePerio
 }
 
 // NextPrevote returns the block height of the beginning of the next PrevotePeriod
+// Note that genesis prevote period is skipped
 func (q Querier) NextPrevote(c context.Context, req *types.QueryNextPrevoteRequest) (*types.QueryNextPrevoteResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	height := uint64(ctx.BlockHeight())
 	params := q.GetParams(ctx)
 
-	nextPeriod := (height/params.VoteFrequency+1)*params.VoteFrequency - 1
+	nextPeriod := ((height/params.VoteFrequency)+1)*params.VoteFrequency - 1
 
 	return &types.QueryNextPrevoteResponse{Block: nextPeriod}, nil
 }

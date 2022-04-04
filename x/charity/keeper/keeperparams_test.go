@@ -72,8 +72,8 @@ func TestSyncParams(t *testing.T) {
 	// Attempt to sync taxcaps
 	app.CharityKeeper.SyncTaxCaps(app.Ctx)
 
-	for _, taxcap := range testTaxCaps {
-		require.Equal(t, paramsDefaultCap, app.CharityKeeper.GetTaxCap(app.Ctx, taxcap.Denom))
+	for _, taxCap := range testTaxCaps {
+		require.Equal(t, paramsDefaultCap, app.CharityKeeper.GetTaxCap(app.Ctx, taxCap.Denom))
 	}
 }
 
@@ -152,7 +152,7 @@ func TestCharityParamChangeProposal(t *testing.T) {
 func TestTaxRateParamChangeProposal(t *testing.T) {
 	app := CreateKeeperTestApp(t)
 
-	proposalfile := sdktestutil.WriteToNewTempFile(t, `
+	proposalFile := sdktestutil.WriteToNewTempFile(t, `
 	{
 		"title": "Charity TaxRate Change",
 		"description": "Update taxrate to 1%",
@@ -167,7 +167,7 @@ func TestTaxRateParamChangeProposal(t *testing.T) {
 	  }
 	`)
 	// Test parsing param change proposal file
-	proposal, err := paramsutils.ParseParamChangeProposalJSON(app.Cdc, proposalfile.Name())
+	proposal, err := paramsutils.ParseParamChangeProposalJSON(app.Cdc, proposalFile.Name())
 	require.NoError(t, err)
 	require.Equal(t, "Charity TaxRate Change", proposal.Title)
 	require.Equal(t, "Update taxrate to 1%", proposal.Description)

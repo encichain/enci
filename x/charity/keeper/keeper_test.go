@@ -101,9 +101,9 @@ func TestIterateTaxCap(t *testing.T) {
 func TestGetTaxCaps(t *testing.T) {
 	app := CreateKeeperTestApp(t)
 	app.CharityKeeper.SetTaxCap(app.Ctx, coretypes.MicroTokenDenom, types.DefaultCap)
-	taxcaps := app.CharityKeeper.GetTaxCaps(app.Ctx)
+	taxCaps := app.CharityKeeper.GetTaxCaps(app.Ctx)
 
-	require.Equal(t, []types.TaxCap{{Denom: coretypes.MicroTokenDenom, Cap: types.DefaultCap}}, taxcaps)
+	require.Equal(t, []types.TaxCap{{Denom: coretypes.MicroTokenDenom, Cap: types.DefaultCap}}, taxCaps)
 }
 
 func TestClearTaxCaps(t *testing.T) {
@@ -111,8 +111,8 @@ func TestClearTaxCaps(t *testing.T) {
 	defaultCap := sdk.NewInt(int64(2000000))
 	testTaxCaps := []types.TaxCap{{Denom: "uenci", Cap: defaultCap}, {Denom: "menci", Cap: defaultCap}, {Denom: "enci", Cap: defaultCap}}
 	// Set taxcaps to store
-	for _, taxcap := range testTaxCaps {
-		app.CharityKeeper.SetTaxCap(app.Ctx, taxcap.Denom, taxcap.Cap)
+	for _, taxCap := range testTaxCaps {
+		app.CharityKeeper.SetTaxCap(app.Ctx, taxCap.Denom, taxCap.Cap)
 	}
 
 	require.Equal(t, defaultCap, app.CharityKeeper.GetTaxCap(app.Ctx, "uenci"))
@@ -226,19 +226,19 @@ func TestGetCollectionEpochs(t *testing.T) {
 		}
 		app.CharityKeeper.SetPayouts(app.Ctx, i, payouts)
 
-		taxproceeds := sdk.Coins{sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(int64((i+1)*1000)))}
-		app.CharityKeeper.SetEpochTaxProceeds(app.Ctx, i, taxproceeds)
+		taxProceeds := sdk.Coins{sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(int64((i+1)*1000)))}
+		app.CharityKeeper.SetEpochTaxProceeds(app.Ctx, i, taxProceeds)
 	}
 	// Create expected []types.CollectionEpoch{} value
-	expectedval := []types.CollectionEpoch{}
+	expectedVal := []types.CollectionEpoch{}
 	for i := int64(0); i < 10; i++ {
 		payouts := []types.Payout{
 			{Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(i*sdk.DefaultPowerReduction.Int64() + 1)}}, Recipientaddr: addr1},
 			{Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(i*sdk.DefaultPowerReduction.Int64() + 1000)}}, Recipientaddr: addr2},
 		}
-		taxproceeds := sdk.Coins{sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(int64((i+1)*1000)))}
-		expectedval = append(expectedval, types.CollectionEpoch{Epoch: uint64(i), TaxCollected: taxproceeds, Payouts: payouts})
+		taxProceeds := sdk.Coins{sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(int64((i+1)*1000)))}
+		expectedVal = append(expectedVal, types.CollectionEpoch{Epoch: uint64(i), TaxCollected: taxProceeds, Payouts: payouts})
 	}
 	ctx := app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerEpoch * 10))
-	require.Equal(t, expectedval, app.CharityKeeper.GetCollectionEpochs(ctx))
+	require.Equal(t, expectedVal, app.CharityKeeper.GetCollectionEpochs(ctx))
 }

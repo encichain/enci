@@ -29,6 +29,9 @@ func (suite *KeeperTestSuite) TestParams() {
 	votePeriod := k.GetVotePeriod(ctx)
 	require.Equal(defaultParams.VotePeriod, votePeriod)
 
+	oracleEnabled := k.IsOracleEnabled(ctx)
+	require.Equal(defaultParams.OracleEnabled, oracleEnabled)
+
 	// Custom params
 	for i := uint64(1); i < 10; i++ {
 		params := types.Params{
