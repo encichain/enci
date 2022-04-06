@@ -21,7 +21,7 @@ message GenesisState {
     repeated VoterDelegation voter_delegations = 2 [(gogoproto.nullable) = false];
     repeated VoteRound votes = 3 [(gogoproto.nullable) = false];
     repeated PrevoteRound prevotes = 4 [(gogoproto.nullable) = false];
-    repeated ClaimType claim_types = 5;
+    repeated ClaimType claim_types = 5 [(gogoproto.nullable) = false];
 }
 
 // VoterDelegation gives voting privileges to a delegate on behalf of the validator 

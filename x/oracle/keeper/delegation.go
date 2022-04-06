@@ -58,7 +58,8 @@ func (k Keeper) IterateVoterDelegations(ctx sdk.Context, cb func(val sdk.ValAddr
 
 // GetAllVoterDelegations returns a slice of all stored VoterDelegation
 func (k Keeper) GetAllVoterDelegations(ctx sdk.Context) []types.VoterDelegation {
-	var delegations []types.VoterDelegation
+	delegations := []types.VoterDelegation{}
+
 	k.IterateVoterDelegations(ctx, func(val sdk.ValAddress, del sdk.AccAddress) bool {
 		delegation := types.VoterDelegation{
 			DelegateAddress:  del.String(),

@@ -50,6 +50,11 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 			k.SetVote(ctx, valAddr, vote, vRound.ClaimType)
 		}
 	}
+	// Set claim types
+	for _, claimType := range genState.ClaimTypes {
+		k.RegisterClaimType(ctx, claimType.ClaimType)
+	}
+
 }
 
 // ExportGenesis returns the capability module's exported genesis.
@@ -58,11 +63,18 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	delegations := k.GetAllVoterDelegations(ctx)
 	voteRounds := k.GetAllVoteRounds(ctx)
 	prevoteRounds := k.GetAllPrevoteRounds(ctx)
+	claimTypes := []types.ClaimType{}
+	claimTypesStr := k.GetAllClaimTypes(ctx)
+
+	for _, claim := range claimTypesStr {
+		claimTypes = append(claimTypes, types.ClaimType{ClaimType: claim})
+	}
 
 	return types.NewGenesisState(
 		params,
 		delegations,
 		voteRounds,
 		prevoteRounds,
+		claimTypes,
 	)
 }

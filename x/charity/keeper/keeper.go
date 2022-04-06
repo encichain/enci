@@ -186,6 +186,9 @@ func (k Keeper) GetTaxProceeds(ctx sdk.Context) sdk.Coins {
 	} else {
 		k.cdc.MustUnmarshal(bz, &csp)
 	}
+	if csp.TaxProceeds == nil {
+		return sdk.Coins{}
+	}
 	return csp.TaxProceeds
 }
 

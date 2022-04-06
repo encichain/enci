@@ -13,6 +13,7 @@ func NewGenesisState(
 	delegations []VoterDelegation,
 	voteRounds []VoteRound,
 	prevoteRounds []PrevoteRound,
+	claimTypes []ClaimType,
 ) *GenesisState {
 
 	return &GenesisState{
@@ -20,6 +21,7 @@ func NewGenesisState(
 		VoterDelegations: delegations,
 		Votes:            voteRounds,
 		Prevotes:         prevoteRounds,
+		ClaimTypes:       claimTypes,
 	}
 }
 
@@ -30,6 +32,7 @@ func DefaultGenesis() *GenesisState {
 		VoterDelegations: []VoterDelegation{},
 		Votes:            []VoteRound{},
 		Prevotes:         []PrevoteRound{},
+		ClaimTypes:       []ClaimType{},
 	}
 }
 

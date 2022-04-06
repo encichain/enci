@@ -25,6 +25,9 @@ func TestDefaultGenesisState(t *testing.T) {
 
 	require.NotNil(t, gs.VoterDelegations)
 	require.Len(t, gs.VoterDelegations, 0)
+
+	require.NotNil(t, gs.ClaimTypes)
+	require.Len(t, gs.ClaimTypes, 0)
 }
 
 func TestNewGenesisState(t *testing.T) {
@@ -32,6 +35,7 @@ func TestNewGenesisState(t *testing.T) {
 		voteRounds    []types.VoteRound
 		delegations   []types.VoterDelegation
 		prevoteRounds []types.PrevoteRound
+		claimTypes    []types.ClaimType
 	)
 	testCases := []struct {
 		msg      string
@@ -68,6 +72,9 @@ func TestNewGenesisState(t *testing.T) {
 					DelegateAddress:  "enci1y8t2xrx5n7tzs5wtszyfeyjdtcq7d3qc84hfe8",
 					ValidatorAddress: opAddrStr,
 				}}
+				claimTypes = []types.ClaimType{{
+					ClaimType: "test",
+				}}
 			},
 			true,
 		},
@@ -84,6 +91,7 @@ func TestNewGenesisState(t *testing.T) {
 						delegations,
 						voteRounds,
 						prevoteRounds,
+						claimTypes,
 					)
 				})
 			} else {
@@ -93,6 +101,7 @@ func TestNewGenesisState(t *testing.T) {
 						delegations,
 						voteRounds,
 						prevoteRounds,
+						claimTypes,
 					)
 				})
 			}
@@ -106,6 +115,7 @@ func TestGenesisStateValidate(t *testing.T) {
 		voteRounds    []types.VoteRound
 		delegations   []types.VoterDelegation
 		prevoteRounds []types.PrevoteRound
+		claimTypes    []types.ClaimType
 	)
 	//params := types.DefaultParams()
 
@@ -132,6 +142,7 @@ func TestGenesisStateValidate(t *testing.T) {
 				}
 				genesisState = types.NewGenesisState(
 					invParams, delegations, voteRounds, prevoteRounds,
+					claimTypes,
 				)
 			},
 			false,

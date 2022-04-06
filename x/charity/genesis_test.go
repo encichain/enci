@@ -24,7 +24,21 @@ type GenesisTestSuite struct {
 	app *coreapp.EnciApp
 }
 
-func (suite *GenesisTestSuite) TestExportGenesis() {
+func (suite *GenesisTestSuite) TestExportGenesisDeterminism() {
+	suite.app = coreapp.Setup(false)
+	app := suite.app
+	suite.ctx = app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := suite.ctx
+
+	initialGenState := types.DefaultGenesis()
+	charity.InitGenesis(ctx, app.CharityKeeper, *initialGenState)
+
+	exportedGenState := charity.ExportGenesis(ctx, app.CharityKeeper)
+
+	suite.Require().Equal(initialGenState, exportedGenState)
+}
+
+func (suite *GenesisTestSuite) TestImportExportGenesis() {
 	suite.app = coreapp.Setup(false)
 	app := suite.app
 	//ctx := app.Ctx.WithBlockHeight(int64(coretypes.BlocksPerEpoch) * 30)

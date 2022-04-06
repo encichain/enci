@@ -71,7 +71,7 @@ func (k Keeper) ClearVoteRounds(ctx sdk.Context) {
 
 // GetAllVoteRounds returns all VoteRounds for all claim types
 func (k Keeper) GetAllVoteRounds(ctx sdk.Context) []types.VoteRound {
-	var voteRounds []types.VoteRound
+	voteRounds := []types.VoteRound{}
 
 	k.IterateVoteRounds(ctx, func(voteRound types.VoteRound) bool {
 		voteRounds = append(voteRounds, types.VoteRound{
@@ -104,7 +104,7 @@ func (k Keeper) IteratePrevoteRounds(ctx sdk.Context, cb func(prevoteRound types
 
 // GetAllPrevoteRounds returns all PrevoteRounds
 func (k Keeper) GetAllPrevoteRounds(ctx sdk.Context) []types.PrevoteRound {
-	var prevoteRounds []types.PrevoteRound
+	prevoteRounds := []types.PrevoteRound{}
 
 	k.IteratePrevoteRounds(ctx, func(prevoteRound types.PrevoteRound) bool {
 		prevoteRounds = append(prevoteRounds, types.PrevoteRound{
