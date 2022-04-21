@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/cosmos/cosmos-sdk/baseapp"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/encichain/enci/x/oracle/keeper"
 	"github.com/encichain/enci/x/oracle/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func (suite *KeeperTestSuite) TestQueryParam() {
@@ -186,7 +188,7 @@ func (suite *KeeperTestSuite) TestQueryNextPeriod() {
 
 	// Check next vote period
 	voteRes, _ := queryClient.NextVotePeriod(sdk.WrapSDKContext(ctx), &types.QueryNextVotePeriodRequest{})
-	require.Equal(params.VoteFrequency+params.PrevotePeriod-1, voteRes.Block)
+	require.Equal(int(params.VoteFrequency+params.PrevotePeriod-1), int(voteRes.Block))
 
 	// We use querier instance as queryClient blockheight is not updated with new context
 	querier := keeper.NewQuerier(k)
@@ -198,6 +200,17 @@ func (suite *KeeperTestSuite) TestQueryNextPeriod() {
 
 	voteRes, _ = querier.NextVotePeriod(sdk.WrapSDKContext(ctx), &types.QueryNextVotePeriodRequest{})
 	require.Equal(params.VoteFrequency*2+params.PrevotePeriod-1, voteRes.Block)
+
+	//=========================
+	// Test with new queryClient
+	ctx = suite.app.BaseApp.NewContext(false, tmproto.Header{Height: int64(params.VoteFrequency)})
+	queryHelper := baseapp.NewQueryServerTestHelper(ctx, suite.app.InterfaceRegistry())
+	types.RegisterQueryServer(queryHelper, querier)
+	queryClient = types.NewQueryClient(queryHelper)
+
+	voteRes, err = queryClient.NextVotePeriod(sdk.WrapSDKContext(ctx), &types.QueryNextVotePeriodRequest{})
+	require.NoError(err)
+	require.Equal(int(params.VoteFrequency*1+params.PrevotePeriod-1), int(voteRes.Block))
 
 }
 

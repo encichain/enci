@@ -139,6 +139,7 @@ func loop(goctx context.Context, cancel context.CancelFunc, cmd *cobra.Command, 
 	for {
 		select {
 		case block := <-blockEvent:
+			fmt.Println("New block event at block: ", block.Data.(tendermint.EventDataNewBlock).Block.Header.Height)
 			// run the custom block handler
 			if err = instance.handleBlock(cmd, block); err != nil {
 				fmt.Println("There was an error handling a new block", err)

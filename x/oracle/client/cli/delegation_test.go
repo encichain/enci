@@ -1,6 +1,5 @@
 package cli_test
 
-/*
 import (
 	"fmt"
 
@@ -36,12 +35,12 @@ func (s *IntegrationTestSuite) TestDelegationCmd() {
 	s.Require().Equal(uint32(0), txRes.Code)
 
 	args = []string{
-		val.Address.String(),
+		val.ValAddress.String(),
 	}
 
-	out, err = clitestutil.ExecTestCLICmd(clientCtx, cli.CmdDelegeateAddress(), args)
+	out, err = clitestutil.ExecTestCLICmd(clientCtx, cli.CmdQueryDelegateAddress(), args)
 	s.Require().NoError(err)
-	delRes := &types.QueryDelegeateAddressResponse{}
+	delRes := &types.QueryDelegateAddressResponse{}
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), delRes), out.String())
 	s.Require().Equal(del.String(), delRes.Delegate)
 
@@ -49,9 +48,9 @@ func (s *IntegrationTestSuite) TestDelegationCmd() {
 		delRes.Delegate,
 	}
 
-	out, err = clitestutil.ExecTestCLICmd(clientCtx, cli.CmdValidatorAddress(), args)
+	out, err = clitestutil.ExecTestCLICmd(clientCtx, cli.CmdQueryDelegatorAddress(), args)
 	s.Require().NoError(err)
-	valRes := &types.QueryValidatorAddressResponse{}
+	valRes := &types.QueryDelegatorAddressResponse{}
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), valRes), out.String())
 
 	s.Require().Equal(val.Address.String(), valRes.Validator)
@@ -76,8 +75,7 @@ func (s *IntegrationTestSuite) TestDelegationCmd() {
 	args = []string{
 		val.Address.String(),
 	}
-	out, err = clitestutil.ExecTestCLICmd(clientCtx, cli.CmdDelegeateAddress(), args)
+	out, err = clitestutil.ExecTestCLICmd(clientCtx, cli.CmdQueryDelegateAddress(), args)
 	s.Require().Error(err)
 	s.Require().Contains(out.String(), "NotFound")
 }
-*/

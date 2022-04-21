@@ -124,7 +124,7 @@ func (q Querier) NextVotePeriod(c context.Context, req *types.QueryNextVotePerio
 	height := uint64(ctx.BlockHeight())
 	params := q.GetParams(ctx)
 
-	nextPeriod := (height/params.VoteFrequency+1)*params.VoteFrequency + params.PrevotePeriod - 1
+	nextPeriod := (height/(params.VoteFrequency+params.PrevotePeriod)+1)*params.VoteFrequency + params.PrevotePeriod - 1
 
 	return &types.QueryNextVotePeriodResponse{Block: nextPeriod}, nil
 }

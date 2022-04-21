@@ -1,15 +1,10 @@
 package cli_test
 
-/*
 import (
-	"strings"
 	"testing"
 
-	"github.com/encichain/enci/x/oracle/client/cli"
-	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/suite"
 
-	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	testnet "github.com/cosmos/cosmos-sdk/testutil/network"
 	network "github.com/encichain/enci/testutil/network"
 )
@@ -42,45 +37,3 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 func TestIntegrationTestSuite(t *testing.T) {
 	suite.Run(t, new(IntegrationTestSuite))
 }
-
-func (s *IntegrationTestSuite) TestGetQueryCmd() {
-	val := s.network.Validators[0]
-
-	testCases := map[string]struct {
-		cmd            *cobra.Command
-		args           []string
-		expectedOutput string
-		expectErr      bool
-	}{
-		"non-existent claim": {
-			cli.CmdClaim(),
-			[]string{"DF0C23E8634E480F84B9D5674A7CDC9816466DEC28A3358F73260F68D28D7660"},
-			"claim DF0C23E8634E480F84B9D5674A7CDC9816466DEC28A3358F73260F68D28D7660 not found",
-			true,
-		},
-		"list-claim (default pagination)": {
-			cli.CmdAllClaims(),
-			[]string{},
-			"claims: []\npagination:\n  next_key: null\n  total: \"0\"",
-			false,
-		},
-	}
-
-	for name, tc := range testCases {
-		tc := tc
-
-		s.Run(name, func() {
-			clientCtx := val.ClientCtx
-
-			out, err := clitestutil.ExecTestCLICmd(clientCtx, tc.cmd, tc.args)
-			if tc.expectErr {
-				s.Require().Error(err)
-			} else {
-				s.Require().NoError(err)
-			}
-
-			s.Require().Contains(strings.TrimSpace(out.String()), tc.expectedOutput)
-		})
-	}
-}
-*/
