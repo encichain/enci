@@ -8,6 +8,8 @@ import "gogoproto/gogo.proto";
 
 // Params represents the parameters for the module.
 message Params {
+  option (gogoproto.goproto_stringer) = false;
+  
   uint64 prevote_period = 1 [(gogoproto.moretags) = "yaml:\"prevote_period\""];
   uint64 vote_period = 2 [(gogoproto.moretags) = "yaml:\"vote_period\""];
   string vote_threshold = 3 [

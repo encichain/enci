@@ -9,7 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/encichain/enci/app"
 	oraclecli "github.com/encichain/enci/x/oracle/client/cli"
-	"github.com/tendermint/starport/starport/pkg/cosmoscmd"
+	"github.com/ignite-hq/cli/ignite/pkg/cosmoscmd"
 
 	"github.com/encichain/enci/cmd/encid/worker"
 )
