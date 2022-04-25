@@ -290,6 +290,47 @@ func (suite *KeeperTestSuite) TestGetAllPrevotes() {
 	require.Equal(0, len(prevotes))
 }
 
+func (suite *KeeperTestSuite) TestVoteBegin() {
+	ctx, k := suite.ctx.WithBlockHeight(10), suite.app.OracleKeeper
+	require := suite.Require()
+	params := types.DefaultParams()
+	params.OracleEnabled = true
+
+	isPrevoteBegin := k.IsPrevotePeriodBegin(ctx, params)
+	require.False(isPrevoteBegin)
+
+	isVoteBegin := k.IsVotePeriodBegin(ctx, params)
+	require.False(isVoteBegin)
+
+	// First prevote period after genesis
+	ctx = ctx.WithBlockHeight(int64(params.VoteFrequency) - 1)
+	isPrevoteBegin = k.IsPrevotePeriodBegin(ctx, params)
+	require.True(isPrevoteBegin)
+	isVoteBegin = k.IsVotePeriodBegin(ctx, params)
+	require.False(isVoteBegin)
+
+	// First Vote period after genesis
+	ctx = ctx.WithBlockHeight(int64(params.VoteFrequency+params.PrevotePeriod-1) - 1)
+	isPrevoteBegin = k.IsPrevotePeriodBegin(ctx, params)
+	require.False(isPrevoteBegin)
+	isVoteBegin = k.IsVotePeriodBegin(ctx, params)
+	require.True(isVoteBegin)
+
+	// Second prevote period after genesis
+	ctx = ctx.WithBlockHeight(int64(params.VoteFrequency*2) - 1)
+	isPrevoteBegin = k.IsPrevotePeriodBegin(ctx, params)
+	require.True(isPrevoteBegin)
+	isVoteBegin = k.IsVotePeriodBegin(ctx, params)
+	require.False(isVoteBegin)
+
+	// Second Vote period after genesis
+	ctx = ctx.WithBlockHeight(int64(params.VoteFrequency*2+params.PrevotePeriod-1) - 1)
+	isPrevoteBegin = k.IsPrevotePeriodBegin(ctx, params)
+	require.False(isPrevoteBegin)
+	isVoteBegin = k.IsVotePeriodBegin(ctx, params)
+	require.True(isVoteBegin)
+}
+
 func (suite *KeeperTestSuite) TestClaimType() {
 	k, ctx, require := suite.app.OracleKeeper, suite.ctx, suite.Require()
 

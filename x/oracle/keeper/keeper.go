@@ -48,8 +48,8 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 // IsVotePeriod checks if current block is part of a VotePeriod...
 // 0 modulus values are included in the check
 // Ex: let VoteFrequency = 100, VotePeriod = 3, and PrevotePeriod = 3
-// excluding genesis, first Prevote period will begin at block height 99 (calculated as 100) and end at 101
-// for a total of three blocks. VotePeriod would begin at 102 and end at 104
+// excluding genesis, first Prevote period will begin at block height 99 (calculated as 100) and end at 101 (as 102)
+// for a total of three blocks. VotePeriod would begin at 102 (as 103) and end at 104 (as 105)
 func (k Keeper) IsVotePeriod(ctx sdk.Context) bool {
 	params := k.GetParams(ctx)
 
@@ -64,6 +64,22 @@ func (k Keeper) IsPrevotePeriod(ctx sdk.Context) bool {
 	params := k.GetParams(ctx)
 
 	if i := uint64(ctx.BlockHeight()+1) % params.VoteFrequency; i < params.PrevotePeriod {
+		return true
+	}
+	return false
+}
+
+// IsVotePeriodBegin checks if current block is the last block before the start of a vote period
+func (k Keeper) IsVotePeriodBegin(ctx sdk.Context, params types.Params) bool {
+	if i := (ctx.BlockHeight() + 1) % int64(params.VoteFrequency); i == int64(params.PrevotePeriod-1) {
+		return true
+	}
+	return false
+}
+
+// IsPrevotePeriodBegin checks if current block is the last block before the start of a prevote period
+func (k Keeper) IsPrevotePeriodBegin(ctx sdk.Context, params types.Params) bool {
+	if i := (ctx.BlockHeight() + 1) % int64(params.VoteFrequency); i == 0 {
 		return true
 	}
 	return false
