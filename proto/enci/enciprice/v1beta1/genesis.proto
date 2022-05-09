@@ -1,0 +1,24 @@
+syntax = "proto3";
+package enci.enciprice.v1beta1;
+
+import "gogoproto/gogo.proto";
+import "enci/enciprice/v1beta1/enciprice.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/encichain/enci/x/enciprice/types";
+
+// GenesisState defines the enciprice module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
+  EnciUsd exchange_rate = 2 [(gogoproto.nullable) = false];
+  repeated MissCounter miss_counters = 3 [(gogoproto.nullable) = false];
+}
+
+
+// MissCounter defines a validator miss count pair to represent the
+// number of invalid x/oracle votes by the validator
+message MissCounter {
+  string validator_address = 1;
+  int32 miss_counter      = 2;
+}

@@ -1,0 +1,56 @@
+syntax = "proto3";
+package enci.enciprice.v1beta1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+//import "cosmos/base/query/v1beta1/pagination.proto";
+import "enci/enciprice/v1beta1/enciprice.proto";
+// this line is used by starport scaffolding # 1
+
+option go_package = "github.com/encichain/enci/x/enciprice/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/enci/enciprice/v1beta1/params";
+  }
+  // EnciUsd queries the current ENCI USD exchange rate on the chain
+  rpc EnciUsd(QueryEnciUsdRequest) returns (QueryEnciUsdResponse) {
+    option (google.api.http).get = "/enci/enciprice/v1beta1/enci_usd";
+  }
+  // MissCounter queries the amount of oracle misses during the slash window for a validator
+  rpc MissCounter(QueryMissCounterRequest) returns (QueryMissCounterResponse) {
+    option (google.api.http).get = "/enci/enciprice/v1beta1/miss_counter/{validator_address}";
+  }
+  // this line is used by starport scaffolding # 2
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryEnciUsdRequest is the request type for the Query/EnciUsd RPC method
+message QueryEnciUsdRequest {}
+
+// QueryEnciUsdResponse is the response type for the Query/EnciUsd RPC method
+message QueryEnciUsdResponse {
+  EnciUsd enci_usd = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryMissCounterRequest is the request type for the Query/MissCounter
+message QueryMissCounterRequest {
+  string validator_address = 1;
+}
+
+// QueryMissCounterResponse is the response type for the Query/MissCounter
+message QueryMissCounterResponse {
+  int32 miss_counter = 1;
+}
+
+// this line is used by starport scaffolding # 3

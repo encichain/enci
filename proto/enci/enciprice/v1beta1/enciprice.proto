@@ -1,0 +1,32 @@
+syntax = "proto3";
+package enci.enciprice.v1beta1;
+
+option go_package = "github.com/encichain/enci/x/enciprice/types";
+import "gogoproto/gogo.proto";
+
+message EnciUsd {
+    option (gogoproto.goproto_getters)  = false;
+    // Price in USD per 1 ENCI (1_000_000uenci)
+    string price = 1 [
+        (gogoproto.moretags) = "yaml:\"price\"",
+        (gogoproto.nullable) = false,
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+    ];
+    int64 blockheight = 2; // height of
+}
+
+// Params defines the parameters for the enciprice module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  
+  bool slash_enabled = 1 [(gogoproto.moretags) = "yaml:\"slash_enabled\""];
+  // The window of blocks where oracle misses are counted towards slashing
+  uint64 slash_window = 2 [(gogoproto.moretags) = "yaml:\"slash_window\""];
+  int64 miss_threshold = 3 [(gogoproto.moretags) = "yaml:\"miss_threshold\""];
+  // Fraction of stake to be slashed for exceeding miss threshold
+  string slash_fraction = 4 [
+    (gogoproto.moretags)   = "yaml:\"slash_fraction\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable)   = false
+  ];
+}

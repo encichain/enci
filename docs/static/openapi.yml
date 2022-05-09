@@ -13716,42 +13716,6 @@ paths:
                         }
       tags:
         - Query
-  /encichain/enci/enciprice/params:
-    get:
-      summary: Parameters queries the parameters of the module.
-      operationId: EncichainEnciEncipriceParams
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              params:
-                description: params holds all the parameters of this module.
-                type: object
-            description: >-
-              QueryParamsResponse is response type for the Query/Params RPC
-              method.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      tags:
-        - Query
   /ibc/apps/transfer/v1/denom_traces:
     get:
       summary: DenomTraces queries all denomination traces.
@@ -36234,16 +36198,6 @@ definitions:
     title: >-
       VoterDelegation gives voting privileges to a delegate on behalf of the
       validator
-  encichain.enci.enciprice.Params:
-    type: object
-    description: Params defines the parameters for the module.
-  encichain.enci.enciprice.QueryParamsResponse:
-    type: object
-    properties:
-      params:
-        description: params holds all the parameters of this module.
-        type: object
-    description: QueryParamsResponse is response type for the Query/Params RPC method.
   ibc.applications.transfer.v1.DenomTrace:
     type: object
     properties:
