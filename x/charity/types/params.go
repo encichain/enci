@@ -71,15 +71,15 @@ func (p *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 func (p Params) Validate() error {
 	// Validate charities
 	for _, charity := range p.Charities {
-		addrlength := len([]rune(charity.AccAddress))
+		addrLen := len([]rune(charity.AccAddress))
 		if charity.AccAddress != "" {
-			if addrlength < 39 {
+			if addrLen < 39 {
 				return fmt.Errorf("invalid address length")
 			}
 		}
 
-		hashlength := len([]rune(charity.Checksum))
-		if charity.Checksum != "" && hashlength != 64 {
+		hashLen := len([]rune(charity.Checksum))
+		if charity.Checksum != "" && hashLen != 64 {
 			return fmt.Errorf("invalid sha256 length")
 		}
 	}
@@ -93,14 +93,14 @@ func (p Params) Validate() error {
 	}
 
 	// Validate taxcaps
-	for _, taxcap := range p.TaxCaps {
+	for _, taxCap := range p.TaxCaps {
 
-		err := sdk.ValidateDenom(taxcap.Denom)
+		err := sdk.ValidateDenom(taxCap.Denom)
 		if err != nil {
 			return fmt.Errorf("taxCap Denom must be valid")
 		}
 
-		if taxcap.Cap.IsNegative() || taxcap.Cap.IsNil() {
+		if taxCap.Cap.IsNegative() || taxCap.Cap.IsNil() {
 			return fmt.Errorf("taxCap Cap is invalid: Must not be negative, nor nil")
 		}
 	}
@@ -128,15 +128,15 @@ func validateCharities(i interface{}) error {
 
 	// Iterate charities
 	for _, charity := range v {
-		addrlength := len([]rune(charity.AccAddress))
+		addrLen := len([]rune(charity.AccAddress))
 		if charity.AccAddress != "" {
-			if addrlength < 39 {
+			if addrLen < 39 {
 				return fmt.Errorf("invalid address length")
 			}
 		}
 
-		hashlength := len([]rune(charity.Checksum))
-		if charity.Checksum != "" && hashlength != 64 {
+		hashLen := len([]rune(charity.Checksum))
+		if charity.Checksum != "" && hashLen != 64 {
 			return fmt.Errorf("invalid sha256 hash length")
 		}
 	}
@@ -168,14 +168,14 @@ func validateTaxCaps(i interface{}) error {
 		return fmt.Errorf("invalid parameter type: %T. Expected sdk.Int", i)
 	}
 	// Iterate tax caps
-	for _, taxcap := range v {
+	for _, taxCap := range v {
 
-		err := sdk.ValidateDenom(taxcap.Denom)
+		err := sdk.ValidateDenom(taxCap.Denom)
 		if err != nil {
 			return fmt.Errorf("taxCap Denom must be valid")
 		}
 
-		if taxcap.Cap.IsNegative() || taxcap.Cap.IsNil() {
+		if taxCap.Cap.IsNegative() || taxCap.Cap.IsNil() {
 			return fmt.Errorf("taxCap Cap is invalid: Must not be negative, nor nil")
 		}
 

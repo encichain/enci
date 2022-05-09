@@ -221,9 +221,9 @@ func CreateKeeperTestApp(t *testing.T) TestApp {
 	accountKeeper.SetModuleAccount(ctx, charityCollectorAcc)
 	accountKeeper.SetModuleAccount(ctx, burnAcc)
 
-	faucetaddr := accountKeeper.GetModuleAccount(ctx, faucetAccount)
+	faucetAddr := accountKeeper.GetModuleAccount(ctx, faucetAccount)
 
-	bal := bankKeeper.HasBalance(ctx, faucetaddr.GetAddress(), sdk.Coin{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(int64(1))})
+	bal := bankKeeper.HasBalance(ctx, faucetAddr.GetAddress(), sdk.Coin{Denom: coretypes.MicroTokenDenom, Amount: sdk.NewInt(int64(1))})
 	if bal {
 		err := bankKeeper.MintCoins(ctx, faucetAccount, InitCoins)
 		require.NoError(t, err)

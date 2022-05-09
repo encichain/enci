@@ -84,11 +84,11 @@ func TestEndBlocker(t *testing.T) {
 	app := keeper.CreateKeeperTestApp(t)
 	sdk.GetConfig().SetBech32PrefixForAccount("enci", "encipub")
 	// Configure test charity accounts
-	bech32addr1 := "enci1aag23fr2qjxan9aktyfsywp3udxg036c9zxv55"
-	bech32addr2 := "enci1vvcw744ck9kzczrhf282lqmset47jnxe9090qt"
-	addr1, err := sdk.AccAddressFromBech32(bech32addr1)
+	bech32Addr1 := "enci1aag23fr2qjxan9aktyfsywp3udxg036c9zxv55"
+	bech32Addr2 := "enci1vvcw744ck9kzczrhf282lqmset47jnxe9090qt"
+	addr1, err := sdk.AccAddressFromBech32(bech32Addr1)
 	require.NoError(t, err)
-	addr2, err := sdk.AccAddressFromBech32(bech32addr2)
+	addr2, err := sdk.AccAddressFromBech32(bech32Addr2)
 	require.NoError(t, err)
 	acc1 := app.AccountKeeper.NewAccountWithAddress(app.Ctx, addr1)
 	require.NotNil(t, acc1)
@@ -100,10 +100,10 @@ func TestEndBlocker(t *testing.T) {
 	app.AccountKeeper.SetAccount(app.Ctx, acc1)
 	app.AccountKeeper.SetAccount(app.Ctx, acc2)
 	// Create checksums and encode to strings
-	checksum1 := keeper.CreateCharitySha256("Test Charity", bech32addr1)
+	checksum1 := keeper.CreateCharitySha256("Test Charity", bech32Addr1)
 	require.NotEqual(t, "", checksum1)
 
-	checksum2 := keeper.CreateCharitySha256("Test Charity 2", bech32addr2)
+	checksum2 := keeper.CreateCharitySha256("Test Charity 2", bech32Addr2)
 
 	// Set params and target charities
 	params := types.DefaultParams()
@@ -113,11 +113,11 @@ func TestEndBlocker(t *testing.T) {
 	}}
 	params.Charities = []types.Charity{
 		{CharityName: "Test Charity",
-			AccAddress: bech32addr1,
+			AccAddress: bech32Addr1,
 			Checksum:   checksum1,
 		},
 		{CharityName: "Test Charity 2",
-			AccAddress: bech32addr2,
+			AccAddress: bech32Addr2,
 			Checksum:   checksum2},
 	}
 
@@ -155,10 +155,10 @@ func TestEndBlocker(t *testing.T) {
 	charity.EndBlocker(app.Ctx, app.CharityKeeper)
 
 	// Check if target charity accounts have received donation
-	hasbal := app.BankKeeper.HasBalance(app.Ctx, addr1, sdk.NewCoin(coretypes.MicroTokenDenom, afterBurnBal[0].Amount.Quo(sdk.NewInt(int64(2)))))
-	hasbal2 := app.BankKeeper.HasBalance(app.Ctx, addr2, sdk.NewCoin(coretypes.MicroTokenDenom, afterBurnBal[0].Amount.Quo(sdk.NewInt(int64(2)))))
-	require.True(t, hasbal)
-	require.True(t, hasbal2)
+	hasBal := app.BankKeeper.HasBalance(app.Ctx, addr1, sdk.NewCoin(coretypes.MicroTokenDenom, afterBurnBal[0].Amount.Quo(sdk.NewInt(int64(2)))))
+	hasBal2 := app.BankKeeper.HasBalance(app.Ctx, addr2, sdk.NewCoin(coretypes.MicroTokenDenom, afterBurnBal[0].Amount.Quo(sdk.NewInt(int64(2)))))
+	require.True(t, hasBal)
+	require.True(t, hasBal2)
 
 	// Verify burn amount has been deducted by ensuring charity recipient balance < pre-burn charity collector amount
 	require.False(t, app.BankKeeper.HasBalance(app.Ctx, addr1, sdk.NewCoin(coretypes.MicroTokenDenom, keeper.InitTokens.Quo(sdk.NewInt(int64(2))))))
@@ -169,13 +169,13 @@ func TestEndBlocker(t *testing.T) {
 
 	// Check if Payouts have been created and set to store under *epoch*
 	require.Equal(t, []types.Payout{
-		{Recipientaddr: bech32addr1, Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: afterBurnBal[0].Amount.Quo(sdk.NewInt(int64(2)))}}},
-		{Recipientaddr: bech32addr2, Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: afterBurnBal[0].Amount.Quo(sdk.NewInt(int64(2)))}}}},
+		{Recipientaddr: bech32Addr1, Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: afterBurnBal[0].Amount.Quo(sdk.NewInt(int64(2)))}}},
+		{Recipientaddr: bech32Addr2, Coins: sdk.Coins{{Denom: coretypes.MicroTokenDenom, Amount: afterBurnBal[0].Amount.Quo(sdk.NewInt(int64(2)))}}}},
 		app.CharityKeeper.GetPayouts(app.Ctx, app.CharityKeeper.GetCurrentEpoch(app.Ctx)))
 
 	// Check if taxproceeds have been stored under current *epoch*
-	epochproceeds := sdk.NewCoins(sdk.Coin{Denom: coretypes.MicroTokenDenom, Amount: proceeds})
-	require.True(t, app.CharityKeeper.GetEpochTaxProceeds(app.Ctx, app.CharityKeeper.GetCurrentEpoch(app.Ctx))[0].Amount.GTE(epochproceeds[0].Amount))
+	epochProceeds := sdk.NewCoins(sdk.Coin{Denom: coretypes.MicroTokenDenom, Amount: proceeds})
+	require.True(t, app.CharityKeeper.GetEpochTaxProceeds(app.Ctx, app.CharityKeeper.GetCurrentEpoch(app.Ctx))[0].Amount.GTE(epochProceeds[0].Amount))
 
 	// Check if store taxcaps have been synced with param store taxcaps
 	require.Equal(t, app.CharityKeeper.GetParamTaxCaps(app.Ctx), app.CharityKeeper.GetTaxCaps(app.Ctx))

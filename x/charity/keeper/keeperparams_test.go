@@ -80,7 +80,7 @@ func TestSyncParams(t *testing.T) {
 func TestCharityParamChangeProposal(t *testing.T) {
 	app := CreateKeeperTestApp(t)
 
-	proposalfile := sdktestutil.WriteToNewTempFile(t, `
+	proposalFile := sdktestutil.WriteToNewTempFile(t, `
 	{
 		"title": "Charity Param Change",
 		"description": "Update charities",
@@ -123,7 +123,7 @@ func TestCharityParamChangeProposal(t *testing.T) {
 	}, charities)
 
 	// Test parsing param change proposal file
-	proposal, err := paramsutils.ParseParamChangeProposalJSON(app.Cdc, proposalfile.Name())
+	proposal, err := paramsutils.ParseParamChangeProposalJSON(app.Cdc, proposalFile.Name())
 
 	require.NoError(t, err)
 	require.Equal(t, "Charity Param Change", proposal.Title)
@@ -193,7 +193,7 @@ func TestTaxRateParamChangeProposal(t *testing.T) {
 func TestTaxCapsParamChangeProposal(t *testing.T) {
 	app := CreateKeeperTestApp(t)
 
-	proposalfile := sdktestutil.WriteToNewTempFile(t, `
+	proposalFile := sdktestutil.WriteToNewTempFile(t, `
 	{
 		"title": "Charity TaxCaps Change",
 		"description": "Update uenci taxcap to 2enci",
@@ -211,7 +211,7 @@ func TestTaxCapsParamChangeProposal(t *testing.T) {
 	  }
 	`)
 	// Test parsing param change proposal file
-	proposal, err := paramsutils.ParseParamChangeProposalJSON(app.Cdc, proposalfile.Name())
+	proposal, err := paramsutils.ParseParamChangeProposalJSON(app.Cdc, proposalFile.Name())
 	require.NoError(t, err)
 	require.Equal(t, "Charity TaxCaps Change", proposal.Title)
 	require.Equal(t, "Update uenci taxcap to 2enci", proposal.Description)
@@ -237,7 +237,7 @@ func TestTaxCapsParamChangeProposal(t *testing.T) {
 func TestBurnRateParamChangeProposal(t *testing.T) {
 	app := CreateKeeperTestApp(t)
 
-	proposalfile := sdktestutil.WriteToNewTempFile(t, `
+	proposalFile := sdktestutil.WriteToNewTempFile(t, `
 	{
 		"title": "Charity BurnRate Change",
 		"description": "Update BurnRate to 2%",
@@ -252,7 +252,7 @@ func TestBurnRateParamChangeProposal(t *testing.T) {
 	  }
 	`)
 	// Test parsing param change proposal file
-	proposal, err := paramsutils.ParseParamChangeProposalJSON(app.Cdc, proposalfile.Name())
+	proposal, err := paramsutils.ParseParamChangeProposalJSON(app.Cdc, proposalFile.Name())
 	require.NoError(t, err)
 	require.Equal(t, "Charity BurnRate Change", proposal.Title)
 	require.Equal(t, "Update BurnRate to 2%", proposal.Description)

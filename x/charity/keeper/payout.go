@@ -17,17 +17,17 @@ func (k Keeper) DisburseDonations(ctx sdk.Context, charities []types.Charity) (p
 	payouts = []types.Payout{}
 	errs = []string{}
 	// Get the donation split
-	finalsplit := k.CalculateSplit(ctx, charities)
+	finalSplit := k.CalculateSplit(ctx, charities)
 
 	// Perform charity payouts
 	for _, charity := range charities {
-		err := k.DonateCharity(ctx, finalsplit, charity)
+		err := k.DonateCharity(ctx, finalSplit, charity)
 		if err != nil {
 			errmsg := sdkerrors.Wrapf(err, "Payout failed for charity: %s, with error", charity.CharityName)
 			errs = append(errs, errmsg.Error())
 			continue
 		}
-		payout := types.Payout{Recipientaddr: charity.AccAddress, Coins: finalsplit}
+		payout := types.Payout{Recipientaddr: charity.AccAddress, Coins: finalSplit}
 		payouts = append(payouts, payout)
 	}
 	return
@@ -76,11 +76,11 @@ func (k Keeper) IsValidCharity(ctx sdk.Context, charity types.Charity) error {
 
 // CalculateSplit returns the sdk.Coins proceed donation split based on spendable balance of Charity Tax Collector account and number of charities
 func (k Keeper) CalculateSplit(ctx sdk.Context, charities []types.Charity) sdk.Coins {
-	taxaddr := k.AccountKeeper.GetModuleAddress(types.CharityCollectorName)
-	if taxaddr == nil {
+	taxAddr := k.AccountKeeper.GetModuleAddress(types.CharityCollectorName)
+	if taxAddr == nil {
 		return sdk.Coins{}
 	}
-	balance := k.BankKeeper.SpendableCoins(ctx, taxaddr)
+	balance := k.BankKeeper.SpendableCoins(ctx, taxAddr)
 	if balance.IsZero() {
 		return sdk.Coins{}
 	}

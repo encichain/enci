@@ -44,12 +44,12 @@ func (suite *CharityTestSuite) initKeepersWithmAccPerms() (authkeeper.AccountKee
 		appCodec, app.GetKey(authtypes.StoreKey), app.GetSubspace(authtypes.ModuleName),
 		authtypes.ProtoBaseAccount, maccPerms,
 	)
-	bankkeeper := bankkeeper.NewBaseKeeper(
+	bankKeeper := bankkeeper.NewBaseKeeper(
 		appCodec, app.GetKey(banktypes.StoreKey), authKeeper,
 		app.GetSubspace(banktypes.ModuleName), blackListAddrs,
 	)
 
-	return authKeeper, bankkeeper
+	return authKeeper, bankKeeper
 }
 
 // returns context and app with params set on account keeper

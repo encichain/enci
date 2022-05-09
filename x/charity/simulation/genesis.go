@@ -28,13 +28,13 @@ func GenCharities(r *rand.Rand) []types.Charity {
 	addrs := createTestAddresses(r)
 	amt := r.Intn(len(addrs)) + 1
 	for i := 0; i < amt; i++ {
-		cname := randomString(r, r.Intn(10))
+		cName := randomString(r, r.Intn(10))
 		addr := addrs[i]
 
 		ch := types.Charity{
-			CharityName: cname,
+			CharityName: cName,
 			AccAddress:  addr,
-			Checksum:    keeper.CreateCharitySha256(cname, addr),
+			Checksum:    keeper.CreateCharitySha256(cName, addr),
 		}
 
 		charities = append(charities, ch)

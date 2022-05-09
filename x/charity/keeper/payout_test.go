@@ -29,14 +29,14 @@ func TestPayoutFunctions(t *testing.T) {
 	require.True(t, app.BankKeeper.HasBalance(app.Ctx, modAcc.GetAddress(), bal[0].Add(coins[0])))
 	sdk.GetConfig().SetBech32PrefixForAccount("enci", "encipub")
 
-	bech32addr := "enci1aag23fr2qjxan9aktyfsywp3udxg036c9zxv55"
-	addr, err := sdk.AccAddressFromBech32(bech32addr)
+	bech32Addr := "enci1aag23fr2qjxan9aktyfsywp3udxg036c9zxv55"
+	addr, err := sdk.AccAddressFromBech32(bech32Addr)
 	require.NoError(t, err)
 	acc := app.AccountKeeper.NewAccountWithAddress(app.Ctx, addr)
 	require.NotNil(t, acc)
 
 	// Create checksum and encode to string
-	bz, _ := json.Marshal("Test Charity" + bech32addr)
+	bz, _ := json.Marshal("Test Charity" + bech32Addr)
 	csb := sha256.Sum256(bz)
 	checksum := hex.EncodeToString(csb[:])
 	require.NotEqual(t, "", checksum)
@@ -44,7 +44,7 @@ func TestPayoutFunctions(t *testing.T) {
 	params := types.DefaultParamsSet
 	params.Charities = []types.Charity{
 		{CharityName: "Test Charity",
-			AccAddress: bech32addr,
+			AccAddress: bech32Addr,
 			Checksum:   checksum,
 		},
 	}
@@ -66,13 +66,13 @@ func TestPayoutFunctions(t *testing.T) {
 	err = FundModuleAccount(app.BankKeeper, app.Ctx, types.CharityCollectorName, coins)
 	require.NoError(t, err)
 	// Test non-existent account
-	bech32addr = "enci1vvcw744ck9kzczrhf282lqmset47jnxe9090qt"
+	bech32Addr = "enci1vvcw744ck9kzczrhf282lqmset47jnxe9090qt"
 	require.NoError(t, err)
 
-	bz, _ = json.Marshal("Test Charity" + bech32addr)
+	bz, _ = json.Marshal("Test Charity" + bech32Addr)
 	csb = sha256.Sum256(bz)
 	checksum = hex.EncodeToString(csb[:])
-	params.Charities[0].AccAddress = bech32addr
+	params.Charities[0].AccAddress = bech32Addr
 	params.Charities[0].Checksum = checksum
 	app.CharityKeeper.SetParams(app.Ctx, params)
 
@@ -83,13 +83,13 @@ func TestPayoutFunctions(t *testing.T) {
 	}
 
 	// Test Donate with invalid Checksum
-	bech32addr = "enci1aag23fr2qjxan9aktyfsywp3udxg036c9zxv55"
-	addrforinvchecksum := "enci1aag23fr2qjxan9aktyfsywp3udxg036c9zxv54"
-	csb = sha256.Sum256([]byte("Test Charity" + addrforinvchecksum))
+	bech32Addr = "enci1aag23fr2qjxan9aktyfsywp3udxg036c9zxv55"
+	addrForInvChecksum := "enci1aag23fr2qjxan9aktyfsywp3udxg036c9zxv54"
+	csb = sha256.Sum256([]byte("Test Charity" + addrForInvChecksum))
 	checksum = hex.EncodeToString(csb[:])
 	params.Charities = []types.Charity{
 		{CharityName: "Test Charity",
-			AccAddress: bech32addr,
+			AccAddress: bech32Addr,
 			Checksum:   checksum,
 		},
 	}
@@ -104,11 +104,11 @@ func TestPayoutFunctions(t *testing.T) {
 
 	//Test CalculateSplit and DisburseDonations
 	// Configure test charity accounts
-	bech32addr1 := "enci1aag23fr2qjxan9aktyfsywp3udxg036c9zxv55"
-	bech32addr2 := "enci1vvcw744ck9kzczrhf282lqmset47jnxe9090qt"
-	addr1, err := sdk.AccAddressFromBech32(bech32addr1)
+	bech32Addr1 := "enci1aag23fr2qjxan9aktyfsywp3udxg036c9zxv55"
+	bech32Addr2 := "enci1vvcw744ck9kzczrhf282lqmset47jnxe9090qt"
+	addr1, err := sdk.AccAddressFromBech32(bech32Addr1)
 	require.NoError(t, err)
-	addr2, err := sdk.AccAddressFromBech32(bech32addr2)
+	addr2, err := sdk.AccAddressFromBech32(bech32Addr2)
 	require.NoError(t, err)
 	acc1 := app.AccountKeeper.NewAccountWithAddress(app.Ctx, addr1)
 	require.NotNil(t, acc1)
@@ -119,33 +119,33 @@ func TestPayoutFunctions(t *testing.T) {
 	app.AccountKeeper.SetAccount(app.Ctx, acc1)
 	app.AccountKeeper.SetAccount(app.Ctx, acc2)
 	// Create checksums and encode to strings
-	bz, _ = json.Marshal("Test Charity" + bech32addr1)
+	bz, _ = json.Marshal("Test Charity" + bech32Addr1)
 	csb1 := sha256.Sum256(bz)
 	checksum1 := hex.EncodeToString(csb1[:])
 	require.NotEqual(t, "", checksum1)
 
-	bz, _ = json.Marshal("Test Charity 2" + bech32addr2)
+	bz, _ = json.Marshal("Test Charity 2" + bech32Addr2)
 	csb2 := sha256.Sum256(bz)
 	checksum2 := hex.EncodeToString(csb2[:])
 
 	validCharities := []types.Charity{
 		{CharityName: "Test Charity",
-			AccAddress: bech32addr1,
+			AccAddress: bech32Addr1,
 			Checksum:   checksum1,
 		},
 		{CharityName: "Test Charity 2",
-			AccAddress: bech32addr2,
+			AccAddress: bech32Addr2,
 			Checksum:   checksum2},
 	}
 
 	invalidCharities := []types.Charity{
 		{CharityName: "Invalid charity1",
 			//invalid accAddress
-			AccAddress: bech32addr1 + "a",
-			Checksum:   CreateCharitySha256("Invalid charity1", (bech32addr1 + "a")),
+			AccAddress: bech32Addr1 + "a",
+			Checksum:   CreateCharitySha256("Invalid charity1", (bech32Addr1 + "a")),
 		},
 		{CharityName: "Invalid charity2",
-			AccAddress: bech32addr2,
+			AccAddress: bech32Addr2,
 			//invalid checksum
 			Checksum: checksum2},
 	}
@@ -157,16 +157,16 @@ func TestPayoutFunctions(t *testing.T) {
 	charities = app.CharityKeeper.GetCharity(app.Ctx)
 	require.Equal(t, params.Charities, charities)
 
-	taxaddr := app.AccountKeeper.GetModuleAddress(types.CharityCollectorName)
-	balance := app.BankKeeper.SpendableCoins(app.Ctx, taxaddr)
-	baseamt := app.BankKeeper.GetAllBalances(app.Ctx, taxaddr)
-	hasbalance := app.BankKeeper.HasBalance(app.Ctx, taxaddr, sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(int64(1000))))
-	require.Equal(t, baseamt, balance)
-	require.True(t, hasbalance)
+	taxAddr := app.AccountKeeper.GetModuleAddress(types.CharityCollectorName)
+	balance := app.BankKeeper.SpendableCoins(app.Ctx, taxAddr)
+	baseAmt := app.BankKeeper.GetAllBalances(app.Ctx, taxAddr)
+	hasBalance := app.BankKeeper.HasBalance(app.Ctx, taxAddr, sdk.NewCoin(coretypes.MicroTokenDenom, sdk.NewInt(int64(1000))))
+	require.Equal(t, baseAmt, balance)
+	require.True(t, hasBalance)
 
 	//Test calculate split
 	split := app.CharityKeeper.CalculateSplit(app.Ctx, app.CharityKeeper.GetCharity(app.Ctx))
-	require.Equal(t, baseamt[0].Amount.Quo(sdk.NewInt(int64(2))), split[0].Amount)
+	require.Equal(t, baseAmt[0].Amount.Quo(sdk.NewInt(int64(2))), split[0].Amount)
 
 	//DisburseDonations with invalid charities should return errors
 	payouts, errs := app.CharityKeeper.DisburseDonations(app.Ctx, charities)
@@ -186,5 +186,5 @@ func TestPayoutFunctions(t *testing.T) {
 	payouts, errs = app.CharityKeeper.DisburseDonations(app.Ctx, charities)
 	require.Empty(t, errs)
 	require.Equal(t, true, len(payouts) == 2)
-	require.Equal(t, []types.Payout{{Recipientaddr: bech32addr1, Coins: split}, {Recipientaddr: bech32addr2, Coins: split}}, payouts)
+	require.Equal(t, []types.Payout{{Recipientaddr: bech32Addr1, Coins: split}, {Recipientaddr: bech32Addr2, Coins: split}}, payouts)
 }

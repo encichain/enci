@@ -59,17 +59,17 @@ func (q Querier) TaxCap(context context.Context, req *types.QueryTaxCapRequest) 
 // TaxCaps returns all tax caps
 func (q Querier) TaxCaps(context context.Context, req *types.QueryTaxCapsRequest) (*types.QueryTaxCapsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(context)
-	var taxcaps []types.TaxCap
+	var taxCaps []types.TaxCap
 
 	// Iterate tax caps and append each to var taxcaps
 	q.IterateTaxCaps(ctx, func(denom string, taxcap sdk.Int) bool {
-		taxcaps = append(taxcaps, types.TaxCap{
+		taxCaps = append(taxCaps, types.TaxCap{
 			Denom: denom,
 			Cap:   taxcap,
 		})
 		return false
 	})
-	return &types.QueryTaxCapsResponse{TaxCaps: taxcaps}, nil
+	return &types.QueryTaxCapsResponse{TaxCaps: taxCaps}, nil
 }
 
 // BurnRate returns the charity burn rate
