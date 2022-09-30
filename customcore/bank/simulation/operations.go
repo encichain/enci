@@ -3,6 +3,7 @@ package simulation
 import (
 	"math/rand"
 	"strings"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -145,6 +146,7 @@ func sendMsgSend(
 	}
 	txGen := simappparams.MakeTestEncodingConfig().TxConfig
 	tx, err := helpers.GenTx(
+		rand.New(rand.NewSource(time.Now().UnixNano())),
 		txGen,
 		[]sdk.Msg{msg},
 		fees,
@@ -375,6 +377,7 @@ func sendMsgMultiSend(
 
 	txGen := simappparams.MakeTestEncodingConfig().TxConfig
 	tx, err := helpers.GenTx(
+		rand.New(rand.NewSource(time.Now().UnixNano())),
 		txGen,
 		[]sdk.Msg{msg},
 		fees,
