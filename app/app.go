@@ -9,8 +9,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec/types"
-	"github.com/ignite-hq/cli/ignite/pkg/cosmoscmd"
-	"github.com/ignite-hq/cli/ignite/pkg/openapiconsole"
+	"github.com/ignite/cli/ignite/pkg/cosmoscmd"
+	"github.com/ignite/cli/ignite/pkg/openapiconsole"
 	"github.com/spf13/cast"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"

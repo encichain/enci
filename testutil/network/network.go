@@ -16,7 +16,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/encichain/enci/app"
 	coretypes "github.com/encichain/enci/types"
-	"github.com/ignite-hq/cli/ignite/pkg/cosmoscmd"
+	"github.com/ignite/cli/ignite/pkg/cosmoscmd"
 	tmrand "github.com/tendermint/tendermint/libs/rand"
 	tmdb "github.com/tendermint/tm-db"
 )
