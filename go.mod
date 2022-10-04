@@ -18,8 +18,9 @@ require (
 	github.com/tendermint/tendermint v0.34.21
 	github.com/tendermint/tm-db v0.6.7
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4
+	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
 	//go.uber.org/goleak v1.1.12
-	google.golang.org/genproto v0.0.0-20220725144611-272f38e5d71b
+	google.golang.org/genproto v0.0.0-20220822174746-9e6da59bd2fc
 	google.golang.org/grpc v1.48.0
 	gopkg.in/yaml.v2 v2.4.0
 )
